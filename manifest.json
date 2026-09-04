@@ -1,0 +1,33 @@
+{
+  "name": "Diagnóstico en obra — AEA 90364",
+  "short_name": "Diagnóstico",
+  "description": "Guía de diagnóstico y reparación de instalaciones eléctricas atada a la AEA 90364 (7-770, 7-771, 7-701 y 7-718): fichas de falla con procedimiento y veredicto, cálculos de obra e informe de la intervención. Funciona sin conexión.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#E4E8EB",
+  "theme_color": "#1B2733",
+  "lang": "es-AR",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
