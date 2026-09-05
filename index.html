@@ -5424,6 +5424,105 @@ ev:function(v){
   };
 },
 cita:'AEA 90364-7-771, 771.23.5.1 y 771.23.5.1.1 con la Tabla 771.23.I; AEA 90364-7-770, 770.19.5.2 y 770.19.5.2.1 con la Tabla 770.19.I. El valor mínimo es de 1000 Ω por cada volt de tensión aplicada por cada tramo de la instalación de 100 m o fracción, y la medición se considera satisfactoria si cada circuito, con los aparatos de utilización desconectados, alcanza el valor de la tabla: 250 V → ≥ 0,25 MΩ (MBTS y MBTF), 500 V → ≥ 0,5 MΩ (hasta 500 V), 1000 V → ≥ 1,0 MΩ (sobre 500 V).'
+},
+
+/* ---------- K11 · circuito de motor ---------- */
+{
+id:'K11', t:'Circuito de motor', s:'IB al 125 %, protección exigible y ΔU en régimen y en arranque',
+ver:['G1','B3','P1'],
+campos:[
+ {id:'sis', lbl:'Sistema', tipo:'sel', opts:[['mono','Monofásico — 220 V'],['tri','Trifásico — 380 V']]},
+ {id:'inch', lbl:'Corriente nominal de chapa In', u:'A'},
+ {id:'pkw', lbl:'Potencia nominal de chapa', ayuda:'Decide si la protección específica del motor es exigible o sólo recomendable', u:'kW'},
+ {id:'arr', lbl:'Tipo de arranque', tipo:'sel', opts:[
+    ['dir','Directo — Ia/In ≈ 7'],
+    ['yd','Estrella-triángulo — Ia/In ≈ 2,3'],
+    ['sua','Arrancador suave — Ia/In ≈ 3'],
+    ['vfd','Variador de frecuencia — Ia/In ≈ 1,5'],
+    ['est','Resistencias estatóricas — Ia/In ≈ 4,5']]},
+ {id:'iain', lbl:'Relación Ia/In de catálogo (opcional)', ayuda:'Si la cargás, prevalece sobre el valor típico del tipo de arranque', u:''},
+ {id:'l', lbl:'Longitud del circuito', u:'m'},
+ {id:'s', lbl:'Sección adoptada', tipo:'sel', opts:opcSecc(70)}
+],
+ev:function(v){
+  var TIP = {dir:7, yd:2.3, sua:3, vfd:1.5, est:4.5};
+  var sis=v.sis||'mono', In=num(v.inch), kW=num(v.pkw), L=num(v.l), s=num(v.s);
+  var propio=num(v.iain), k = (propio!==null) ? propio : TIP[v.arr||'dir'];
+  if(In===null || In<=0) return null;
+  if(k===null || k<=0) return {e:'ojo', t:'Relación Ia/In inválida',
+    d:'La relación entre la corriente de arranque y la nominal tiene que ser mayor que cero.', li:[]};
+  var U = sis==='tri' ? U_LIN : UN;
+  var Ib = 1.25*In, Ia = In*k;
+
+  var duReg=null, pcReg=null, duArr=null, pcArr=null, gr=null, ga=null;
+  if(L!==null && s!==null){
+    gr = GDC_COMUN[sis].cu;      duReg = gr*Ib*L/s; pcReg = duReg/U*100;
+    ga = GDC_ARRAN[sis].cu[s<=25?0:1]; duArr = ga*Ia*L/s; pcArr = duArr/U*100;
+  }
+
+  var Inp=null, i;
+  for(i=0;i<SERIE_IN.length;i++) if(SERIE_IN[i]>=Ib){ Inp=SERIE_IN[i]; break; }
+  var curva=null;
+  if(Inp!==null){ if(5*Inp>=Ia) curva='B'; else if(10*Inp>=Ia) curva='C'; else if(20*Inp>=Ia) curva='D'; }
+
+  var e = (pcReg===null) ? 'info' : 'ok';
+  if(pcReg!==null && pcReg>5) e='mal';
+  if(pcArr!==null && pcArr>15) e='mal';
+
+  var li=[];
+  li.push('IB = 1,25 × In = 1,25 × '+f(In,1)+' A = '+f(Ib,1)+' A. El conductor se dimensiona con este valor y no con la In de chapa (771.16.2.5).');
+  if(kW===null)
+    li.push('Cargá la potencia de chapa en kW: es la que decide, por el umbral de 0,75 kW de la 771.17.3.1, si la protección específica del motor es exigible o solamente recomendable.');
+  else if(kW<0.75)
+    li.push('Motor de '+f(kW,2)+' kW. Por debajo de 0,75 kW la protección específica es recomendable pero NO exigible: la 771.17.3.1 admite maniobrarlo con un pequeño interruptor automático, un interruptor-seccionador o un interruptor de efecto de corriente asignada y categoría de empleo adecuada, y advierte expresamente que así el motor queda SIN protección propia.');
+  else
+    li.push('Motor de '+f(kW,2)+' kW: la protección específica es EXIGIBLE. Guardamotor o relé térmico regulado a '+f(In,1)+' A, más contactor. Los fusibles y los interruptores automáticos no son aplicables a la protección contra sobrecarga del motor (771.17.3.2).');
+  if(sis==='tri')
+    li.push('Motor polifásico: hace falta además un dispositivo que detecte la falta de una fase e interrumpa el circuito de alimentación (770.13.3 y 771.17.3.2). Ver la ficha B3.');
+  if(propio===null)
+    li.push('Ia/In = '+f(k,1)+' es el valor TÍPICO del tipo de arranque elegido, no un dato de la Reglamentación. Si tenés el de la chapa o del catálogo, cargalo: la 771.17.3.1 pide estudiar en cada caso las perturbaciones que produce el método de arranque.');
+  if(pcReg!==null){
+    li.push('ΔU en régimen = GDC · IB · L / S = '+f(gr,3)+' × '+f(Ib,1)+' A × '+f(L,0)+' m / '+f(s,1)+' mm² = '+f(duReg,2)+' V = '+f(pcReg,2)+' % sobre '+f(U,0)+' V. Límite 5 % (770.15.6 · 771.13.b).');
+    li.push('ΔU durante el arranque = '+f(ga,4)+' × '+f(Ia,0)+' A × '+f(L,0)+' m / '+f(s,1)+' mm² = '+f(duArr,2)+' V = '+f(pcArr,2)+' %. Límite 15 %.');
+    if(pcArr>15)
+      li.push('La caída durante el arranque se pasa del 15 %: el motor puede no llegar a vencer el par resistente. Subir la sección, acortar el recorrido, o cambiar a un método de arranque de menor Ia/In.');
+    else if(pcReg!==null && pcReg>5)
+      li.push('En régimen se pasa del 5 %: subir la sección o acortar el recorrido.');
+  } else {
+    li.push('Cargá la longitud y la sección para verificar la caída de tensión en régimen y durante el arranque.');
+  }
+  if(Inp!==null)
+    li.push('El primer calibre de la serie IEC 60898-1 por encima de IB es '+Inp+' A'+(curva
+      ? ', y la curva más baja cuyo umbral magnético queda por encima de la corriente de arranque de '+f(Ia,0)+' A es la '+curva+'.'
+      : '. Con ese calibre ninguna curva B, C ni D cubre una corriente de arranque de '+f(Ia,0)+' A: hay que ir a un calibre mayor o a un interruptor específico para motores.'));
+  else
+    li.push('IB supera el mayor calibre de la serie cargada acá (125 A): corresponde ir a un interruptor en caja moldeada.');
+  li.push('Este cálculo cubre la POTENCIA del circuito, que es lo que reglamenta la AEA. La elección del contactor por categoría de empleo y su coordinación con el guardamotor son de IEC 60947, y el paro de emergencia y los enclavamientos de IEC 60204-1 e ISO 13849.');
+
+  var out = {
+    e:e,
+    t: (pcReg===null) ? ('IB = '+f(Ib,1)+' A · Ia = '+f(Ia,0)+' A')
+       : (e==='mal' ? 'No verifica la caída de tensión'
+                    : 'Verifica: '+f(pcReg,2)+' % en régimen y '+f(pcArr,2)+' % en el arranque'),
+    d:'Motor '+(sis==='tri'?'trifásico':'monofásico')+' de In = <span class="num">'+f(In,1)+' A</span> de chapa'+(kW!==null?', <span class="num">'+f(kW,2)+' kW</span>':'')+'.',
+    kpis:[{k:'IB (125 % In)', v:f(Ib,1), u:'A'},{k:'Ia de arranque', v:f(Ia,0), u:'A'}],
+    li:li
+  };
+  if(pcReg!==null){
+    out.kpis.push({k:'ΔU régimen', v:f(pcReg,2), u:'%', e:pcReg<=5?'ok':'mal'});
+    out.kpis.push({k:'ΔU arranque', v:f(pcArr,2), u:'%', e:pcArr<=15?'ok':'mal'});
+    out.svg = gBarras({barras:[
+        {lbl:'ΔU régimen', val:pcReg/5*100, color:pcReg<=5?GC.ok:GC.mal, txt:f(pcReg,2)+' % de 5 %'},
+        {lbl:'ΔU arranque', val:pcArr/15*100, color:pcArr<=15?GC.ok:GC.mal, txt:f(pcArr,2)+' % de 15 %'}],
+      lim:{v:100, lbl:'límite'}, iz:74, alto:26,
+      max:Math.max(120, pcReg/5*100, pcArr/15*100)*1.1});
+  } else {
+    out.kpis.push({k:'Calibre siguiente', v:Inp!==null?String(Inp):'—', u:Inp!==null?'A':''});
+    out.kpis.push({k:'Curva mínima', v:curva||'—', u:''});
+  }
+  return out;
+},
+cita:'AEA 90364-7-771: 771.16.2.5 (los conductores de alimentación a un motor se dimensionan para no menos del 125 % de su intensidad nominal), 771.17.3.1 (protección específica exigible desde 0,75 kW; por debajo es recomendable y se admite maniobrar con pequeños interruptores automáticos, interruptores-seccionadores o interruptores de efecto de categoría de empleo adecuada, quedando el motor sin protección propia) y 771.17.3.2 (protección dedicada contra sobrecargas, detección de falta de fase en polifásicos, y los fusibles e interruptores automáticos no son aplicables a la sobrecarga del motor). AEA 90364-7-770, 770.13.3, dice lo mismo. Caídas admisibles: 5 % en régimen y 15 % durante el arranque para los circuitos que alimentan sólo motores, 770.15.6 y 771.13.b; gradientes de la Tabla 771.19.IV, con cos φ = 0,30 para el arranque. Las relaciones Ia/In por tipo de arranque son valores típicos de catálogo, no de la Reglamentación.'
 }
 
 ];
