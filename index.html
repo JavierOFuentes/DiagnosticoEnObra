@@ -538,8 +538,19 @@ var EQ = {
   ut511:{n:'UT-511 — megóhmetro', cfg:'Tensiones: 100 / 250 / 500 / 1000 V cc\nFunción Lo para continuidad\nNO declara descarga automática ni bloqueo\npor tensión presente: verificar y descargar a mano'},
   ut582:{n:'UT-582+ — probador de diferenciales', cfg:'IΔn: 10 / 20 / 30 / 100 / 300 / 500 mA\nMultiplicadores: ×½ · ×1 · ×5\n×5 SÓLO hasta 30 mA\nFase de ensayo: 0° y 180°\nUL: fijar en 25 V (no 50 V)\nEnsaya senoidal 50 Hz = tipo AC solamente'},
   dt5301:{n:'CEM DT-5301 — impedancia de bucle', cfg:'Rangos 20 Ω (≈25 A) y 200 Ω (≈2,3 A)\nExactitud ±2 % del FONDO DE ESCALA ±5 díg.\n→ ±0,45 Ω en el rango de 20 Ω\nDispara cualquier diferencial: puentearlo o\nmedir aguas arriba del ID'},
-  telu:{n:'Telurímetro de 3 bornes', cfg:'Método de caída de potencial (Fig. 770.19.A)\nT = electrodo bajo ensayo, desconectado\nT1 = pica de corriente · T2 = pica de tensión\nT2 al 62 % de la distancia T–T1'},
-  ir:{n:'Termómetro infrarrojo', cfg:'Emisividad ε ≈ 0,95 para plásticos y pinturas mate\nSobre cobre desnudo o barra pulida la lectura es\nFALSA: pegar cinta mate y medir sobre la cinta\nMedir con la carga en régimen, no recién arrancada'}
+  telu:{n:'UT-572 — telurímetro', cfg:'Método de caída de potencial (Fig.\n770.19.A)\nBornes E · ES · S · H\n3 hilos (E, S, H) para la\nresistencia de PAT\n4 hilos (E, ES, S, H) para\nresistividad del suelo\nRangos 4 / 40 / 400 / 4k / 40k Ω\n±(3 % + 5 díg) y, en el rango de 4\nΩ, ±(3 % + 15 díg)\nFrecuencia de ensayo seleccionable:\n94 o 128 Hz\nCAT III 300 V — máximo 300 V entre\nbornes\nElectrodo bajo ensayo DESCONECTADO\nde la instalación\nPicas en línea recta, a 5 o 10 m del\nelectrodo\nLa pica de tensión (S) al 62 % de la\ndistancia E–H\nMedir primero Ust: si pasa de 10 V,\nno ensayar'},
+  ut251:{n:'UT-251A — pinza miliamperimétrica de fuga', cfg:'0,000 a 60,00 A con 1 µA de\nresolución\n±(1,5 % + 5 díg) · CAT III 600 V\nReconoce 50/60 Hz · unas 2 lecturas\npor segundo\nMordaza de 25 × 30 mm\nAbrazar FASE Y NEUTRO JUNTOS; en\ntrifásica, las tres\nfases y el neutro. El PE NO va\ndentro de la mordaza\nEs el instrumento de fuga: el\nUT-204+ no llega al mA'},
+  ut12d:{n:'UT-12D — detector de tensión sin contacto', cfg:'Modo alto 90 a 1000 V~ · modo bajo\n24 a 1000 V~\nCAT IV 1000 V\nProbarlo en una fuente conocida\nANTES y DESPUÉS\nNO verifica ausencia de tensión: no\ndetecta a través\nde blindaje ni con el operador\naislado de tierra, y\npuede haber tensión sin que suene la\nalarma\nLa ausencia de tensión se confirma\ncon el Fluke 117'},
+  glm:{n:'Bosch GLM 50-27 CG — distanciómetro láser', cfg:'0,05 a 50 m · ±1,5 mm en condiciones\nfavorables\nLáser clase 2 (515 nm) · IP65 ·\ninclinómetro ±0,2°\nPara la longitud del circuito: medir\nel RECORRIDO del\ncaño tramo por tramo y sumar. La\ndistancia en línea\nrecta da una caída de tensión menor\nque la real\nTambién para las alturas de las\nzonas del baño (7-701)'},
+  ir:{n:'Termómetro infrarrojo — todavía no está en el maletín', cfg:'PENDIENTE DE COMPRA: la parte\ntérmica de las fichas\nque lo piden queda sin hacer hasta\nque lo tengas\nQué exigirle: emisividad AJUSTABLE\n(no fija),\nrango de −30 a 400 °C como mínimo y\nrelación\ndistancia-punto de 12:1 o mejor.\nCriterio práctico\nCuando lo tengas: ε ≈ 0,95 en\nplásticos y pintura mate\nSobre cobre desnudo o barra pulida\nla lectura es\nFALSA: pegar cinta mate y medir\nsobre la cinta\nMedir con la carga en régimen, no\nrecién arrancada'}
+};
+
+var EPP = {
+  guantes:{n:'Guantes dieléctricos clase 00, con cobertor y guante interno', cfg:'Tensión máxima de empleo 500 V en\nalterna (750 V=)\nCubren la baja tensión domiciliaria\ny nada por encima\nAntes de cada uso: inspección visual\ny prueba de inflado\nEl cobertor de cuero va SIEMPRE\nencima: un corte o un\nraspón en el guante aislante lo\nanula\nGuardarlos sin doblar, fuera del sol\ny del calor\nTener a mano la fecha del último\nensayo del fabricante'},
+  gafas:{n:'Gafas de seguridad antivaho', cfg:'Protección ocular contra\nproyecciones e impacto\nNO tienen clasificación de arco\neléctrico: para maniobrar\nbajo carga o trabajar en tablero con\ntensión corresponde\nprotector facial, que es el punto b)\ndel 2.1.2'},
+  calzado:{n:'Calzado de seguridad dieléctrico', cfg:'Es la segunda barrera, no la\nprimera: aísla del piso,\nno de la parte activa\nCon el piso mojado no se puede\ncontar con él'},
+  herr:{n:'Destornilladores y pinzas dieléctricos', cfg:'Verificar el marcado de doble\ntriángulo y 1000 V\n(IEC 60900). Sin ese marcado son\nherramientas comunes\ncon mango de plástico, no\nherramientas aisladas\nDescartar la que tenga el aislante\ncortado o quemado'},
+  linterna:{n:'Linterna LED de vincha recargable', cfg:'Es la lámpara portátil del punto h)\ndel 2.1.2\nDeja las dos manos libres, que es lo\nque corresponde\ncuando se trabaja dentro de un\ntablero'}
 };
 
 /* ============================================================
@@ -711,7 +722,7 @@ F.push({
 id:'A5', fam:'alim', t:'Tensión fantasma — el tester marca pero no hay tensión real',
 sint:'El multímetro marca 40, 80 o 120 V en un conductor que debería estar sin tensión. La lámpara no enciende y el buscapolos titila.',
 causas:['Acople capacitivo entre conductores que comparten el mismo caño','Conductor abierto que queda "flotando" junto a otro con tensión','Retorno de llave de efecto abierto','Alta impedancia de entrada del multímetro (10 MΩ) que no drena el acople'],
-eq:[EQ.f117v, EQ.f117loz],
+eq:[EQ.f117v, EQ.f117loz, EQ.ut12d],
 pasos:[
  'Medir normalmente en V~ y anotar el valor.',
  'Sin mover las puntas, pulsar LoZ en el Fluke 117 y volver a leer.',
@@ -1098,16 +1109,16 @@ F.push({
 id:'D1', fam:'dif', t:'El diferencial dispara sin causa aparente',
 sint:'Salta en cualquier momento, a veces de noche, a veces al encender algo. Rearma sin problema y funciona bien un rato.',
 causas:['Suma de fugas repartidas de varios equipos electrónicos','Fuga en una resistencia de termotanque, plancha, secarropas o cafetera','Humedad en cajas de exterior o en la instalación del baño','Neutro de un circuito puenteado con el de otro aguas abajo del diferencial','Aislación degradada en un tramo de cable viejo','Diferencial envejecido que dispara por debajo de su IΔn'],
-eq:[EQ.ut204, EQ.ut582, EQ.ut511],
+eq:[EQ.ut251, EQ.ut582, EQ.ut511],
 pasos:[
- 'Con el diferencial cerrado y toda la instalación en uso normal, abrazar CON LA PINZA fase y neutro juntos a la salida del diferencial. La lectura es la corriente de fuga total.',
+ 'Con el diferencial cerrado y toda la instalación en uso normal, abrazar CON EL UT-251A fase y neutro juntos a la salida del diferencial, sin incluir el PE en la mordaza. La lectura es la corriente de fuga total.',
  'Anotar el IΔn nominal marcado en el frente del diferencial.',
  'Ir abriendo los circuitos de a uno y ver cómo baja la fuga. El circuito que produce el mayor salto es el principal aportante.',
  'Dentro de ese circuito, desenchufar aparatos de a uno y repetir.',
  'Si la fuga es baja pero igual dispara, ensayar el diferencial con el UT-582+ (ficha D2): puede estar disparando por debajo de su valor.'
 ],
 med:{campos:[
- {id:'ifug', lbl:'Corriente de fuga total medida con la pinza', ayuda:'Abrazando fase y neutro juntos', u:'mA'},
+ {id:'ifug', lbl:'Corriente de fuga total medida con la pinza', ayuda:'Con el UT-251A, abrazando fase y neutro juntos', u:'mA'},
  {id:'idn', lbl:'IΔn nominal del diferencial', tipo:'sel', opts:[['10','10 mA'],['30','30 mA'],['100','100 mA'],['300','300 mA'],['500','500 mA']]},
  {id:'mayor', lbl:'Fuga del circuito que más aporta', ayuda:'Medida en ese circuito solo', u:'mA'}
 ], ev:function(v){
@@ -1255,10 +1266,10 @@ F.push({
 id:'D5', fam:'dif', t:'El diferencial dispara al conectar un equipo determinado',
 sint:'Cada vez que se enchufa o se enciende el mismo aparato, salta. Con el aparato desconectado no pasa nada.',
 causas:['Resistencia de calefacción con aislación perforada (termotanque, plancha, secarropas, cafetera)','Motor con bobinado a masa por humedad o por antigüedad','Filtro de entrada del equipo con fuga capacitiva normal pero sumada a otras','Cable de alimentación del equipo dañado en la entrada a la carcasa'],
-eq:[EQ.ut204, EQ.ut511],
+eq:[EQ.ut251, EQ.ut511],
 pasos:[
  'Desenchufar el equipo del resto de la instalación.',
- 'Con el equipo conectado solo, medir la fuga con la pinza abrazando fase y neutro juntos del cable de alimentación.',
+ 'Con el equipo conectado solo, medir la fuga con el UT-251A abrazando fase y neutro juntos del cable de alimentación.',
  'Desconectar el equipo y, sin tensión, medir su aislación con el UT-511 a 500 V entre las patas de la ficha unidas y la carcasa metálica.',
  'Si el equipo tiene electrónica sensible, medir a 250 V en lugar de 500 V.',
  'Si es un equipo con resistencia, medir en frío y también después de un rato de funcionamiento: muchas fallas de resistencia sólo aparecen en caliente.'
@@ -1297,9 +1308,9 @@ F.push({
 id:'D6', fam:'dif', t:'Fuga permanente repartida entre muchos equipos',
 sint:'La instalación tiene una fuga de base alta, sin que ningún equipo en particular sea el culpable. Con todo encendido, el diferencial está al borde.',
 causas:['Muchas fuentes conmutadas: routers, TV, cargadores, LED con driver, PC','Iluminación LED de local comercial con muchos drivers en paralelo','Instalación grande con un único diferencial general','Aislación envejecida repartida en toda la instalación'],
-eq:[EQ.ut204],
+eq:[EQ.ut251],
 pasos:[
- 'Medir la fuga total a la salida del diferencial general, abrazando fase y neutro juntos, con todo en uso normal.',
+ 'Medir la fuga total a la salida del diferencial general con el UT-251A, abrazando fase y neutro juntos, con todo en uso normal.',
  'Medir la fuga de cada circuito por separado, en el mismo punto de salida de su protección.',
  'Anotar el reparto. La suma de los circuitos debe aproximarse a la total.',
  'Identificar si hay uno que se destaca o si está repartido de manera pareja.'
@@ -1466,7 +1477,7 @@ F.push({
 id:'I3', fam:'ais', t:'La aislación cumple pero la fuga medida es alta',
 sint:'El megóhmetro da bien pero la pinza mide una fuga apreciable con la instalación en servicio. Contradicción aparente.',
 causas:['Fugas capacitivas de fuentes conmutadas y filtros, que no se ven en corriente continua','Aparatos que quedaron conectados durante la medición de aislación en un caso y no en el otro','Falla que sólo se manifiesta con la tensión de servicio y no con la del ensayo','Circuito muy largo con capacidad distribuida importante'],
-eq:[EQ.ut511, EQ.ut204],
+eq:[EQ.ut511, EQ.ut251],
 pasos:[
  'Confirmar que la medición de aislación se hizo con TODOS los aparatos desconectados, y la de fuga con la instalación en servicio normal. Si es así, la contradicción es sólo aparente.',
  'Medir la fuga con la instalación en servicio pero desenchufando la electrónica: si la fuga cae mucho, era capacitiva y no hay falla de aislación.',
@@ -1701,9 +1712,9 @@ F.push({
 id:'T5', fam:'pat', t:'Hay corriente circulando por el conductor de protección',
 sint:'Al abrazar el PE con la pinza aparece corriente. El PE no debería llevar corriente en régimen normal.',
 causas:['Neutro y PE unidos en algún punto aguas abajo del tablero','Fuga real de un aparato o de la instalación','Filtros de equipos electrónicos que descargan al PE por diseño','PE usado como neutro en una conexión mal hecha'],
-eq:[EQ.ut204, EQ.f117cont],
+eq:[EQ.ut251, EQ.f117cont],
 pasos:[
- 'Con la instalación en uso normal, abrazar el conductor de PE de bajada al electrodo con el UT-204+ y anotar.',
+ 'Con la instalación en uso normal, abrazar el conductor de PE de bajada al electrodo con el UT-251A y anotar.',
  'Repetir en el PE de cada circuito para ver de dónde viene.',
  'Cortar la alimentación y medir la resistencia entre la barra de neutro y la de PE. En esquema TT deben estar aisladas.',
  'Si están aisladas en el tablero, buscar el puente aguas abajo: desconectar los circuitos de a uno y repetir la medición de resistencia.'
@@ -2478,9 +2489,9 @@ F.push({
 id:'G6', fam:'car', t:'Muchos equipos electrónicos que suman fuga',
 sint:'Local con muchas fuentes conmutadas, iluminación LED, cajas registradoras y equipos de audio. El diferencial trabaja al límite.',
 causas:['Fuga capacitiva de los filtros de entrada, normal en cada equipo pero acumulativa','Todos los equipos en el mismo diferencial','Drivers de LED de baja calidad con fuga superior a la declarada','Fuente de alimentación grande sin circuito propio'],
-eq:[EQ.ut204],
+eq:[EQ.ut251],
 pasos:[
- 'Medir la fuga total con la pinza abrazando fase y neutro juntos a la salida del diferencial.',
+ 'Medir la fuga total con el UT-251A abrazando fase y neutro juntos a la salida del diferencial.',
  'Medir la fuga de cada circuito por separado.',
  'Medir la fuga de los equipos grandes individualmente, en el cable de alimentación.',
  'Armar el reparto y planificar la división de circuitos en función de él.'
@@ -2742,12 +2753,12 @@ F.push({
 id:'L1', fam:'loc', t:'Cámara de frío, heladera exhibidora o freezer',
 sint:'El equipo dispara la protección, no llega a temperatura, o el compresor arranca y se corta a los segundos. En un local, cada hora sin frío es mercadería.',
 causas:['Caída de tensión excesiva durante el arranque del compresor','Compresor con el bobinado degradado o con fuga a masa','Protector térmico del compresor que corta por sobrecarga mecánica','Condensador sucio o ventilador parado: el compresor trabaja contra presión alta','Capacitor de arranque agotado en equipos monofásicos','Equipo compartiendo circuito con otras cargas'],
-eq:[EQ.f117v, EQ.ut204, EQ.ut511, EQ.ir],
+eq:[EQ.f117v, EQ.ut204, EQ.ut251, EQ.ut511, EQ.ir],
 pasos:[
  'Antes de tocar la parte eléctrica: mirar el condensador y el ventilador. Un condensador tapado de grasa o pelusa hace que el compresor trabaje contra presión alta, tome más corriente y corte por térmico. Es la causa más frecuente y la más barata.',
  'Medir la tensión en los bornes del equipo en reposo y durante el intento de arranque. La caída en el arranque es la que decide.',
  'Medir la corriente en régimen con el UT-204+ y compararla con la de chapa del compresor.',
- 'Medir la fuga abrazando fase y neutro juntos del cable de alimentación del equipo solo.',
+ 'Medir la fuga con el UT-251A, abrazando fase y neutro juntos del cable de alimentación del equipo solo.',
  'Con el equipo desconectado y sin tensión, medir la aislación entre las patas de la ficha unidas y la carcasa, con el UT-511 a 500 V.',
  'Con el IR, medir la temperatura de la bornera del equipo y del borne en el tablero: en un consumo permanente el borne flojo se delata rápido.',
  'El UT-204+ no tiene INRUSH, así que la corriente de arranque no se captura: el diagnóstico de la alimentación se hace por la caída de tensión.'
@@ -2799,12 +2810,12 @@ F.push({
 id:'L2', fam:'loc', t:'Cartel luminoso, marquesina o iluminación de vidriera',
 sint:'El cartel se apaga solo, dispara el diferencial cuando llueve, tiene sectores apagados, o los drivers se queman seguido.',
 causas:['Ingreso de agua por caja, prensacables o perfil, con grado IP inadecuado','Aislación degradada del tramo a la intemperie','Drivers de LED trabajando dentro del perfil sin ventilación','Alimentación tomada del circuito de iluminación del salón, sin circuito propio','Fuga capacitiva acumulada de muchos drivers','Conductor común para exterior en lugar del apto para intemperie'],
-eq:[EQ.ut511, EQ.ut204, EQ.ir],
+eq:[EQ.ut511, EQ.ut251, EQ.ir],
 pasos:[
  'Seccionar el circuito del cartel y verificar ausencia de tensión.',
  'Medir la aislación con el UT-511 a 500 V, con los drivers DESCONECTADOS. Si quedan conectados, la medición no vale y además se puede dañar la electrónica.',
  'Mojar la zona sospechosa —caja de conexión, entrada del perfil, prensacables— esperar unos minutos y repetir la medición.',
- 'Con tensión y en servicio, medir la fuga del cartel abrazando fase y neutro juntos.',
+ 'Con tensión y en servicio, medir la fuga del cartel con el UT-251A, abrazando fase y neutro juntos.',
  'Con el cartel encendido y en régimen, medir la temperatura de los drivers con el IR. Si están dentro del perfil sin ventilación, es donde mueren.',
  'Revisar el grado IP de cada elemento a la intemperie y el estado de las juntas.'
 ],
@@ -2894,10 +2905,10 @@ F.push({
 id:'L4', fam:'loc', t:'Cocina industrial y equipos de gastronomía',
 sint:'Dispara al encender el horno o la freidora. Los cables de la zona calientan. El diferencial salta cuando arranca el lavavajillas.',
 causas:['Resistencias de calefacción con la aislación perforada, sobre todo en caliente','Equipos de alta corriente compartiendo circuito de uso general','Vapor y grasa degradando la aislación y las cajas','Lavavajillas con fuga de la resistencia o de la bomba','Sección insuficiente para el consumo real de la zona','Falta de circuitos de uso especial dedicados'],
-eq:[EQ.ut204, EQ.ut511, EQ.ir, EQ.f117v],
+eq:[EQ.ut204, EQ.ut251, EQ.ut511, EQ.ir, EQ.f117v],
 pasos:[
  'Medir la corriente de cada equipo por separado con la pinza, en su condición de máximo consumo. Un horno con las dos resistencias y el grill juntos no consume lo que dice el folleto.',
- 'Medir la fuga de cada equipo abrazando fase y neutro juntos del cable de alimentación.',
+ 'Medir la fuga de cada equipo con el UT-251A, abrazando fase y neutro juntos del cable de alimentación.',
  'Repetir la medición de fuga con el equipo ya caliente, después de unos minutos de funcionamiento. Las resistencias perforadas fugan mucho más en caliente que en frío: medir sólo en frío hace perder el diagnóstico.',
  'Con el equipo desconectado y sin tensión, medir la aislación entre las patas de la ficha unidas y la carcasa, con el UT-511 a 500 V.',
  'Verificar el IΔn del diferencial que protege la zona: en cocina corresponde 30 mA o menos.',
@@ -2950,11 +2961,11 @@ F.push({
 id:'L5', fam:'loc', t:'Caja, servidor y equipos que no toleran el corte',
 sint:'Cada falla en el local apaga la caja registradora, el sistema de gestión, las cámaras o el router. Se pierde la venta y a veces datos.',
 causas:['Un único diferencial general para todo el local','Cargas críticas colgadas del mismo circuito que el salón','Sin UPS, o con la UPS con las baterías agotadas','Equipos críticos enchufados donde había lugar, sin criterio','Fuga acumulada alta que deja el diferencial al borde'],
-eq:[EQ.ut204, EQ.f117v],
+eq:[EQ.ut251, EQ.f117v],
 pasos:[
  'Relevar qué alimenta cada diferencial. Si el tablero no está identificado, hacer primero la ficha B5: sin eso no se puede planificar nada.',
  'Anotar cuáles son las cargas críticas del local: caja, sistema, cámaras, router, cámara de frío, iluminación de emergencia.',
- 'Medir la fuga de cada grupo de circuitos a la salida de su diferencial, con el local en actividad normal.',
+ 'Medir la fuga de cada grupo de circuitos con el UT-251A, a la salida de su diferencial, con el local en actividad normal.',
  'Verificar la autonomía real de la UPS: desconectarla de la red con la carga habitual conectada y cronometrar hasta que corta. Anotar el tiempo.',
  'Con esos datos, plantear el reparto: qué va con qué.'
 ],
@@ -4841,7 +4852,7 @@ campos:[
     ['com','Carga común — cos φ = 0,8'],['arr','Arranque de motor — cos φ = 0,3']]},
  {id:'i', lbl:'Corriente de proyecto IB', ayuda:'Si la dejás vacía se calcula desde la potencia', u:'A'},
  {id:'p', lbl:'Potencia (opcional, para sacar IB)', u:'W'},
- {id:'l', lbl:'Longitud del circuito', ayuda:'Distancia entre los dos puntos, no el largo total de conductor', u:'m'},
+ {id:'l', lbl:'Longitud del circuito', ayuda:'Distancia entre los dos puntos, no el largo total de conductor. Con el GLM 50-27 CG, medir el recorrido del caño tramo por tramo y sumar: la línea recta da una caída menor que la real', u:'m'},
  {id:'s', lbl:'Sección del conductor', tipo:'sel', opts:opcSecc(120)},
  {id:'lim', lbl:'Límite que le corresponde', tipo:'sel', opts:[
     ['3','3 % — iluminación (y tomacorrientes en 7-770)'],
@@ -5753,7 +5764,7 @@ function pintarResultados(){
     }
   }
 
-  h += '<div class="pie"><b>'+F.length+' fichas y '+CALC.length+' cálculos</b> atados a tu equipamiento: Fluke 117, UT-204+, UT-219p, UT-511, UT-582+, CEM DT-5301 y telurímetro. Los criterios de aceptación salen de la AEA 90364 partes 7-770, 7-771, 7-701 y 7-718; donde el criterio es práctico y no reglamentario, está dicho en la ficha.<br><br>'+
+  h += '<div class="pie"><b>'+F.length+' fichas y '+CALC.length+' cálculos</b> atados a tu equipamiento: Fluke 117, UT-204+, UT-251A, UT-219p, UT-511, UT-582+, UT-12D, CEM DT-5301, telurímetro UT-572 y distanciómetro GLM 50-27 CG. Los criterios de aceptación salen de la AEA 90364 partes 7-770, 7-771, 7-701 y 7-718; donde el criterio es práctico y no reglamentario, está dicho en la ficha.<br><br>'+
        (ALM.ok ? 'Funciona sin internet y guarda el informe en este teléfono: podés cerrar la app y seguir donde quedaste.'
                : '<b>Atención:</b> este teléfono no deja guardar datos (la app está abierta como archivo local o en modo privado). El informe se pierde al cerrar: copialo antes de salir.')+
        '</div>';
@@ -5790,7 +5801,7 @@ function vistaFicha(){
        '<button class="fav" data-fav="'+x.id+'" aria-pressed="'+esFav(x.id)+'" aria-label="Marcar como favorita">★</button></div>';
   h += '<h2>'+esc(x.t)+'</h2>';
   h += '<div class="sint">'+esc(x.sint)+'</div>';
-  h += '<div class="alerta"><b>Antes de medir.</b> Verificación de ausencia de tensión en tres pasos: probar el instrumento en una fuente conocida, medir el punto, volver a probar el instrumento. Usar guantes y calzado dieléctricos y protección ocular. Trabajar sin tensión siempre que el ensayo lo permita; si hay que medir con tensión, usar el instrumento de mayor categoría que corresponda al punto.</div>';
+  h += '<div class="alerta"><b>Antes de medir.</b> Verificación de ausencia de tensión en tres pasos: probar el instrumento en una fuente conocida, medir el punto, volver a probar el instrumento. Usar guantes clase 00, calzado dieléctrico y protección ocular; el detalle y lo que falta del material de seguridad está en Equipos. Trabajar sin tensión siempre que el ensayo lo permita; si hay que medir con tensión, usar el instrumento de mayor categoría que corresponda al punto.</div>';
 
   h += '<div class="bloque"><h3>Causas <small>ordenadas por frecuencia</small></h3><ul class="causas">';
   for(var i=0;i<x.causas.length;i++) h += '<li>'+esc(x.causas[i])+'</li>';
@@ -6292,11 +6303,11 @@ function aplicarRespaldo(n, modo){
 /* ---------- equipamiento ---------- */
 function vistaEquipos(){
   ST.vista='equipos'; btnVolver.hidden=false;
-  tituloBarra.innerHTML='Equipamiento<span>Configuración y límites de cada instrumento</span>';
+  tituloBarra.innerHTML='Equipamiento<span>Instrumentos, protección personal y sus límites</span>';
   var h='<div class="ficha"><h2>Los instrumentos y lo que no pueden hacer</h2>';
-  h+='<div class="sint">Los datos salen de los manuales de fabricante. Tres supuestos habituales resultaron falsos al verificarlos y quedaron corregidos acá.</div>';
+  h+='<div class="sint">Los datos salen de los manuales de fabricante. Lo que resultó falso al verificarlo quedó corregido acá, y lo que el equipamiento no alcanza a hacer está dicho abajo.</div>';
   h+='<div class="bloque"><h3>Fichas de configuración</h3>';
-  var ks=['f117v','f117loz','f117cont','ut204','ut219','ut511','ut582','dt5301','telu','ir'];
+  var ks=['f117v','f117loz','f117cont','ut204','ut251','ut219','ut511','ut582','dt5301','telu','ut12d','glm','ir'];
   for(var i=0;i<ks.length;i++){
     var e=EQ[ks[i]];
     h+='<div class="eq"><b>'+esc(e.n)+'</b><div class="cfg">'+esc(e.cfg)+'</div></div>';
@@ -6305,6 +6316,7 @@ function vistaEquipos(){
   h+='<div class="bloque"><h3>Correcciones que aparecieron al verificar los manuales</h3><ul class="sol">'+
      '<li>El UT-582+ no tiene 1000 mA: el máximo es 500 mA, y sí tiene 20 mA. El multiplicador ×5 sólo funciona hasta 30 mA, así que no se puede ensayar ×5 sobre un diferencial de 100, 300 o 500 mA. Los ensayos de 300 y 500 mA sólo se repiten cada 5 minutos.</li>'+
      '<li>El UT-511 también ofrece 100 V además de 250, 500 y 1000 V. No declara descarga automática ni bloqueo por tensión presente: la verificación previa y la descarga son responsabilidad del operador.</li>'+
+     '<li>Las fichas de fuga pedían la lectura en miliamperes apuntando al UT-204+, que es una pinza de 200 A y no resuelve mA. La medición de fuga corresponde al UT-251A, que llega a 1 µA. Quedaron corregidas las diez fichas afectadas.</li>'+
      '<li>El CEM DT-5301 tiene la exactitud referida al fondo de escala (±2 % F.E. ±5 díg.), o sea ±0,45 Ω en el rango de 20 Ω. No sirve para verificar una Zs contra el disparo de una termomagnética, no mide impedancia de línea L-N, y sus rangos de 20 Ω (25 A) y 200 Ω (2,3 A) disparan cualquier diferencial.</li>'+
      '</ul></div>';
   h+='<div class="bloque"><h3>Lo que este equipamiento no alcanza a verificar</h3><ul class="sol">'+
@@ -6312,8 +6324,34 @@ function vistaEquipos(){
      '<li>Diferenciales tipo A, F, B y selectivos: el UT-582+ ensaya senoidal a 50 Hz, o sea tipo AC. Uni-T no declara aptitud para los otros tipos.</li>'+
      '<li>Corriente de arranque de motores: el UT-204+ no tiene función INRUSH. El diagnóstico se hace por caída de tensión en el arranque y corriente en régimen.</li>'+
      '<li>Nivel de iluminación de emergencia: no hay luxómetro en el inventario. Se puede verificar el encendido y la autonomía, no el nivel alcanzado.</li>'+
-     '<li>Categorías de seguridad: el UT-204+ es el más bajo del maletín (CAT II 600 V / CAT III 300 V) y el UT-219p el más alto (CAT IV 600 V / CAT III 1000 V). En tablero principal y acometida corresponde el 219p.</li>'+
+     '<li>Categorías de seguridad: entre los que miden, el más bajo es el UT-204+ (CAT II 600 V / CAT III 300 V) y el más alto el UT-219p (CAT IV 600 V / CAT III 1000 V): en tablero principal y acometida corresponde el 219p. El UT-572 es CAT III 300 V y se usa con el electrodo desconectado, no con la instalación en servicio. El UT-12D es CAT IV 1000 V pero no mide: sólo detecta.</li>'+
+     '<li>Puntos calientes: el termómetro infrarrojo todavía no está en el maletín. Las fichas que lo piden se pueden hacer igual, pero sin la verificación térmica: el borne que se está abriendo o la conexión floja se detectan antes por temperatura que por cualquier otra medición.</li>'+
      '</ul></div>';
+  h+='<div class="bloque"><h3>Protección personal</h3>';
+  var ps=['guantes','gafas','calzado','herr','linterna'];
+  for(var q=0;q<ps.length;q++){
+    var e2=EPP[ps[q]];
+    h+='<div class="eq"><b>'+esc(e2.n)+'</b><div class="cfg">'+esc(e2.cfg)+'</div></div>';
+  }
+  h+='</div>';
+  h+='<div class="alerta"><b>Tensión de seguridad: 24 V.</b> En ambiente seco o húmedo, por encima de 24 V respecto de tierra la instalación se trata como peligrosa. Es el mismo número que fija UL en 25 V en el UT-582+ y el que sostiene el criterio de Ra × IΔn. Trabajando cerca de partes activas no aisladas en servicio, la separación mínima hasta 1 kV es de 0,80 m, medida desde el punto con tensión hasta el cuerpo o hasta la herramienta no aislada.</div>';
+  h+='<div class="bloque"><h3>Consignación <small>los cinco pasos antes de trabajar</small></h3><ol class="pasos">'+
+     '<li>Separar la instalación de toda fuente de tensión, con corte visible.</li>'+
+     '<li>Bloquear en posición de apertura los aparatos de corte, con el cartel de PROHIBIDO MANIOBRAR y el nombre del responsable del trabajo.</li>'+
+     '<li>Verificar la ausencia de tensión en cada parte seccionada. El UT-12D detecta, no verifica: la ausencia se confirma con el Fluke 117, probándolo en una fuente conocida antes y después.</li>'+
+     '<li>Descargar la instalación, y poner a tierra y en cortocircuito donde la tensión pueda volver por una maniobra o una falla.</li>'+
+     '<li>Señalizar y delimitar la zona de trabajo.</li>'+
+     '</ol><div class="nota">Bloquear no autoriza por sí solo a trabajar: recién con los cinco pasos la instalación está consignada. Al terminar, el mismo que consignó retira las puestas a tierra, comprueba que no quede nadie en la zona y recién ahí repone.</div></div>';
+  h+='<div class="bloque"><h3>Material de seguridad <small>del listado reglamentario</small></h3><ul class="sol">'+
+     '<li>ESTÁ · guantes aislantes, detectores y verificadores de tensión, herramientas aisladas y lámpara portátil.</li>'+
+     '<li>FALTA · protector facial. Es lo que corresponde para maniobrar un interruptor bajo carga o trabajar en un tablero con tensión; las gafas no lo reemplazan.</li>'+
+     '<li>FALTA · alfombra o taburete aislante, y pértiga de maniobra. Es lo que separa del piso cuando el tablero no se puede dejar sin tensión.</li>'+
+     '<li>FALTA · vainas y caperuzas aislantes para cubrir las partes activas vecinas al punto de trabajo.</li>'+
+     '<li>FALTA · material de señalización para delimitar la zona. Sin eso, el paso 5 de la consignación no se puede cumplir.</li>'+
+     '<li>FALTA · transformador de seguridad con salida de 24 V y transformador de relación 1:1. Para esto los autotransformadores están prohibidos.</li>'+
+     '<li>FALTA · diferencial de alta sensibilidad portátil, para alimentar la herramienta en obra desde una boca ajena.</li>'+
+     '</ul></div>';
+  h+='<div class="cita"><b>Referencia.</b> AEA 90364-7-771, Anexo 771-J.1: transcripción de los puntos 1 y 2 del Capítulo 14 del Anexo VI del Decreto Reglamentario 351/79 de la Ley 19587. Tensión de seguridad, 1.1.2 · bloqueo, 1.1.3 · consignación, 1.1.4 · distancias de seguridad, 1.1.5 · material de seguridad, 2.1.2 · ejecución de trabajos sin tensión, 2.1.3. La clase 00 de los guantes y el marcado de 1000 V de las herramientas salen de las normas de producto, no de la AEA.</div>';
   h+='</div>';
   app.innerHTML=h; pintarNav();
 }
