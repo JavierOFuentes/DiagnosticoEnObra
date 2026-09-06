@@ -525,7 +525,8 @@ var FAMILIAS = [
   {id:'tab',  n:'Tableros y locales comerciales'},
   {id:'loc',  n:'Rubros y equipos de local comercial'},
   {id:'eme',  n:'Emergencia y pública concurrencia (7-718)'},
-  {id:'ban',  n:'Baños, cocinas y lavaderos (7-701)'}
+  {id:'ban',  n:'Baños, cocinas y lavaderos (7-701)'},
+  {id:'rec',  n:'Verificación y recepción (771.23)'}
 ];
 
 /* Atajos de instrumento reutilizados en varias fichas */
@@ -1453,6 +1454,7 @@ pasos:[
  'La mitad que da baja contiene la falla. Repetir el procedimiento dentro de esa mitad.',
  'Cada iteración divide el problema a la mitad: en tres o cuatro mediciones se llega al tramo entre dos cajas.'
 ],
+dib:svgBiparticion,
 med:{campos:[
  {id:'r1', lbl:'Aislación de la mitad hacia el tablero', u:'MΩ'},
  {id:'r2', lbl:'Aislación de la mitad hacia las bocas', u:'MΩ'},
@@ -1564,6 +1566,7 @@ pasos:[
  'Repetir desplazando T2 un metro más lejos y un metro más cerca. Si las tres lecturas coinciden razonablemente, promediarlas. Si no, aumentar la distancia a T1 y volver a empezar.',
  'Reconectar el electrodo antes de energizar.'
 ],
+dib:svgCaidaPotencial,
 med:{campos:[
  {id:'r1', lbl:'Lectura con T2 en la posición central', u:'Ω'},
  {id:'r2', lbl:'Lectura con T2 un metro más lejos', u:'Ω'},
@@ -2520,6 +2523,209 @@ med:{campos:[
 sol:['Repartir los circuitos entre varios diferenciales de 30 mA en lugar de subir el IΔn.','Dar circuito y diferencial propios a los equipos con fuga alta y a los críticos.','Registrar la fuga de base por circuito, para las verificaciones periódicas.','Dejar el unifilar del tablero actualizado con el reparto.'],
 cita:'AEA 90364-7-771, 771.18 y 771.19: el diferencial de alta sensibilidad constituye protección adicional; reemplazarlo por uno de mayor IΔn para evitar disparos degrada esa protección.'
 });
+F.push({
+id:'G7', fam:'car', t:'El relé térmico dispara',
+sint:'El motor arranca y trabaja, pero al rato el relé térmico o el guardamotor abren el contactor. A veces vuelve a arrancar en frío y repite.',
+causas:['Relé regulado por debajo de la In de chapa del motor','Sobrecarga mecánica real: carga trabada, rodamiento agarrotado, correa muy tensa','Falta de fase o fase débil: las dos que quedan toman más corriente','Arranques muy frecuentes o arranque largo contra inercia','Temperatura del tablero por encima del rango de compensación del relé','Borne o contacto del contactor flojo en una fase'],
+eq:[EQ.ut204, EQ.f117v, EQ.ir],
+pasos:[
+ 'Anotar la In de chapa del motor y la regulación en la que está puesto el relé. Es la primera comparación y resuelve la mitad de los casos.',
+ 'Con el motor en régimen y en carga, medir la corriente de cada fase con el UT-204+, una por vez y sin cambiar la carga.',
+ 'Si es trifásico, comparar las tres: una diferencia apreciable entre fases ya indica falta de fase, fase débil o contacto flojo.',
+ 'Medir la temperatura dentro del tablero. La mayoría de los relés compensan entre −5 y +40 °C; por encima disparan antes de lo que dice su curva.',
+ 'Con la cámara termográfica, mirar los bornes del contactor y del relé con el motor en marcha: un contacto flojo aparece como punto caliente y explica un disparo que la corriente no justifica.',
+ 'Cargar la In de chapa, la regulación y las corrientes medidas.'
+],
+med:{campos:[
+ {id:'inch', lbl:'In de chapa del motor', ayuda:'La de la placa, para la tensión de conexión que estés usando', u:'A'},
+ {id:'reg', lbl:'Regulación en la que está el relé', u:'A'},
+ {id:'i1', lbl:'Corriente medida en R', u:'A'},
+ {id:'i2', lbl:'Corriente medida en S', ayuda:'Dejar vacío si es monofásico', u:'A'},
+ {id:'i3', lbl:'Corriente medida en T', ayuda:'Dejar vacío si es monofásico', u:'A'},
+ {id:'tamb', lbl:'Temperatura dentro del tablero', u:'°C'}
+], ev:function(v){
+ if(v.inch===null || v.inch<=0) return null;
+ var li=[], kpis=[{k:'In de chapa', v:f(v.inch,1), u:'A'}];
+ if(v.reg!==null) kpis.push({k:'Regulación', v:f(v.reg,1), u:'A', e:(v.reg<v.inch*0.95?'mal':(v.reg>v.inch*1.1?'ojo':'ok'))});
+ var fases=[v.i1,v.i2,v.i3].filter(function(x){return x!==null && x>0;});
+ var imax=null, imin=null, prom=null, des=null;
+ if(fases.length){
+   imax=Math.max.apply(null,fases); imin=Math.min.apply(null,fases);
+   prom=fases.reduce(function(a,b){return a+b;},0)/fases.length;
+   kpis.push({k:'I máxima', v:f(imax,1), u:'A', e:(imax>v.inch*1.15?'mal':'')});
+   if(fases.length===3 && prom>0){ des=(imax-imin)/prom*100; kpis.push({k:'Desequilibrio', v:f(des,1), u:'%', e:(des>10?'mal':(des>5?'ojo':'ok'))}); }
+ }
+ li.push('El relé térmico se regula en la In de chapa del motor, no en el calibre del cable ni en el de la termomagnética. Es criterio de norma de producto (IEC 60947-4-1), no de la AEA.');
+ /* 1. relé mal regulado por debajo */
+ if(v.reg!==null && v.reg < v.inch*0.95){
+   li.unshift('El relé está regulado en '+f(v.reg,1)+' A para un motor de '+f(v.inch,1)+' A: dispara por una corriente que el motor tiene derecho a tomar. Subir la regulación a la In de chapa.',
+     'Esto no es una falla del motor ni de la instalación: es un ajuste. Corregirlo antes de buscar otra cosa.');
+   return {e:'mal', t:'El relé está regulado por debajo de la In del motor', d:'Regulación <span class="num">'+f(v.reg,1)+' A</span> contra In de chapa <span class="num">'+f(v.inch,1)+' A</span>.', kpis:kpis, li:li};
+ }
+ /* 2. desequilibrio entre fases */
+ if(des!==null && des>10){
+   li.unshift('Desequilibrio de <span class="num">'+f(des,1)+' %</span> entre fases. Un motor trifásico sano en carga equilibrada no pasa del 5 %.',
+     'Con una fase abierta el motor sigue girando y las dos que quedan toman del orden del 173 % de su corriente normal: el relé dispara y hace bien. Ver la ficha B3.',
+     'Si las tres fases llegan pero una está débil, buscar el contacto flojo: borne del contactor, del relé o del seccionador. La cámara termográfica lo muestra en marcha.');
+   return {e:'mal', t:'Las fases están desequilibradas', d:'Máxima <span class="num">'+f(imax,1)+' A</span> · mínima <span class="num">'+f(imin,1)+' A</span> · desequilibrio <span class="num">'+f(des,1)+' %</span>.', kpis:kpis, li:li, pel:false};
+ }
+ /* 3. sobrecarga real */
+ if(imax!==null && imax > v.inch*1.15){
+   li.unshift('El motor está tomando <span class="num">'+f(imax/v.inch*100,0)+' %</span> de su In de chapa en régimen. El relé no está fallando: está protegiendo.',
+     'Buscar la causa mecánica antes de tocar la regulación: carga trabada, rodamiento agarrotado, correa sobretensada, transmisión desalineada, o una carga que creció respecto de la de diseño.',
+     'Subir la regulación del relé para que deje de disparar es lo único que no hay que hacer: el motor se quema igual, sólo que más lento y sin aviso.');
+   return {e:'mal', t:'Sobrecarga real, el relé está haciendo su trabajo', d:'I máxima <span class="num">'+f(imax,1)+' A</span> contra In de chapa <span class="num">'+f(v.inch,1)+' A</span>.', kpis:kpis, li:li};
+ }
+ /* 4. temperatura del tablero */
+ if(v.tamb!==null && v.tamb>40){
+   li.unshift('El tablero está a <span class="num">'+f(v.tamb,0)+' °C</span>. La mayoría de los relés térmicos compensan entre −5 y +40 °C; por encima de eso disparan antes que su curva nominal.',
+     'Verificar la disipación del gabinete con el cálculo K7, y la ventilación. Si el tablero recalienta, el relé es el síntoma, no la causa.');
+   return {e:'ojo', t:'La corriente está bien: el problema puede ser térmico del tablero', d:'Corriente dentro de lo esperado, pero el tablero está a <span class="num">'+f(v.tamb,0)+' °C</span>.', kpis:kpis, li:li};
+ }
+ if(imax===null) return {e:'ojo', t:'Falta medir la corriente en carga', d:'Con la In de chapa sola no se puede decidir.', kpis:kpis, li:['Medir con el motor en régimen y con la carga real, no en vacío: en vacío un motor toma del orden del 30 al 40 % de su In y no muestra nada.'].concat(li)};
+ li.unshift('La corriente en régimen está dentro de lo esperado y la regulación es correcta. Si igual dispara, mirar la frecuencia de arranques y la duración del arranque: cada arranque mete del orden de 6 a 8 veces la In durante segundos, y el relé integra ese calor.');
+ li.push('Ver el cálculo K11 para el circuito del motor: IB al 125 % de la In, protección exigible y caída de tensión en régimen y en arranque.');
+ return {e:'ok', t:'Corriente y regulación correctas', d:'I máxima <span class="num">'+f(imax,1)+' A</span> contra In de chapa <span class="num">'+f(v.inch,1)+' A</span>.', kpis:kpis, li:li};
+}},
+sol:['Regular el relé en la In de chapa del motor, para la tensión de conexión que se esté usando.','Antes de subir una regulación, descartar la causa mecánica: el relé que dispara casi siempre tiene razón.','Reapretar los bornes del contactor y del relé, y verificar con termografía en marcha.','Si el tablero pasa de 40 °C, resolver la disipación: verificarlo con el cálculo K7.'],
+cita:'La regulación del relé térmico en la In de chapa y las clases de disparo (10, 10A, 20, 30) salen de IEC 60947-4-1, norma de producto, no de la AEA. El dimensionamiento del circuito de motor está en el cálculo K11.'
+});
+
+F.push({
+id:'G8', fam:'car', t:'Guardamotor mal seleccionado o mal regulado',
+sint:'Verificación del guardamotor: que su rango cubra la In de chapa, que esté regulado en ella y que el disparo magnético no quede por debajo de la corriente de arranque.',
+causas:['Verificación de puesta en marcha','Guardamotor elegido por el calibre del cable en vez de por la In del motor','Regulación en el tope del rango en lugar de en la In','Disparo magnético que corta durante el arranque'],
+eq:[EQ.ut204, EQ.f117v],
+pasos:[
+ 'Anotar la In de chapa del motor para la tensión de conexión que se va a usar. Un motor 230/400 V tiene dos corrientes distintas según se conecte en triángulo o en estrella.',
+ 'Anotar el rango de regulación del guardamotor, que viene impreso en el frente, por ejemplo 6 a 10 A.',
+ 'La In de chapa tiene que caer dentro del rango, y no en un extremo: si queda en el tope, el guardamotor es chico.',
+ 'Regular exactamente en la In de chapa, no en el máximo del rango.',
+ 'Verificar el disparo magnético: en los guardamotores es fijo, del orden de 13 veces la corriente regulada. Compararlo con la corriente de arranque del motor.',
+ 'Cargar los datos abajo.'
+],
+med:{campos:[
+ {id:'inch', lbl:'In de chapa del motor', u:'A'},
+ {id:'rmin', lbl:'Mínimo del rango del guardamotor', u:'A'},
+ {id:'rmax', lbl:'Máximo del rango del guardamotor', u:'A'},
+ {id:'reg', lbl:'Regulación puesta', u:'A'},
+ {id:'iarr', lbl:'Corriente de arranque, si la conocés', ayuda:'Del dato de chapa Ia/In, o medida. Si no la tenés, se estima en 7 × In', u:'A'}
+], ev:function(v){
+ if(v.inch===null || v.inch<=0) return null;
+ var li=[], kpis=[{k:'In de chapa', v:f(v.inch,1), u:'A'}];
+ var iarr = (v.iarr!==null && v.iarr>0) ? v.iarr : v.inch*7;
+ var estimada = !(v.iarr!==null && v.iarr>0);
+ if(v.rmin!==null && v.rmax!==null) kpis.push({k:'Rango', v:f(v.rmin,1)+'–'+f(v.rmax,1), u:'A'});
+ if(v.reg!==null) kpis.push({k:'Regulación', v:f(v.reg,1), u:'A'});
+ /* rango */
+ if(v.rmin!==null && v.rmax!==null){
+   if(v.inch < v.rmin || v.inch > v.rmax){
+     li.push('La In de chapa de '+f(v.inch,1)+' A queda fuera del rango '+f(v.rmin,1)+' a '+f(v.rmax,1)+' A: el guardamotor no es el que corresponde a este motor.');
+     return {e:'mal', t:'El guardamotor no cubre la In del motor', d:'In de chapa <span class="num">'+f(v.inch,1)+' A</span> contra rango <span class="num">'+f(v.rmin,1)+'–'+f(v.rmax,1)+' A</span>.', kpis:kpis, li:li};
+   }
+   if(v.inch > v.rmax*0.95) li.push('La In queda en el tope del rango: no deja margen de ajuste hacia arriba y el guardamotor trabaja al límite. Conviene el escalón siguiente.');
+ }
+ /* regulación */
+ if(v.reg!==null){
+   if(v.reg < v.inch*0.95){
+     li.unshift('Regulado en '+f(v.reg,1)+' A para un motor de '+f(v.inch,1)+' A: va a disparar con el motor trabajando normalmente. Subir a la In de chapa.');
+     return {e:'mal', t:'Regulación por debajo de la In del motor', d:'Regulación <span class="num">'+f(v.reg,1)+' A</span> · In de chapa <span class="num">'+f(v.inch,1)+' A</span>.', kpis:kpis, li:li};
+   }
+   if(v.reg > v.inch*1.10){
+     li.unshift('Regulado en '+f(v.reg,1)+' A para un motor de '+f(v.inch,1)+' A: el motor puede tomar hasta un '+f((v.reg/v.inch-1)*100,0)+' % por encima de su In sin que el guardamotor abra. La protección térmica queda desvirtuada.',
+       'Es el error más común cuando el guardamotor se eligió por el cable y se dejó la perilla en el máximo.');
+     return {e:'mal', t:'Regulación por encima de la In del motor', d:'Regulación <span class="num">'+f(v.reg,1)+' A</span> · In de chapa <span class="num">'+f(v.inch,1)+' A</span>.', kpis:kpis, li:li};
+   }
+ }
+ /* magnético contra arranque */
+ var imag = (v.reg!==null?v.reg:v.inch)*13;
+ kpis.push({k:'Disparo magnético ≈', v:f(imag,0), u:'A'});
+ kpis.push({k:'Arranque'+(estimada?' (est.)':''), v:f(iarr,0), u:'A', e:(iarr>imag?'mal':(iarr>imag*0.8?'ojo':'ok'))});
+ li.push('El disparo magnético del guardamotor es fijo, del orden de 13 veces la corriente regulada: unos '+f(imag,0)+' A acá.');
+ if(estimada) li.push('La corriente de arranque se estimó en 7 × In porque no la cargaste. El dato real sale de la chapa como relación Ia/In y cambia mucho entre motores: conviene cargarlo.');
+ if(iarr > imag){
+   li.unshift('La corriente de arranque estimada en '+f(iarr,0)+' A supera el disparo magnético de '+f(imag,0)+' A: el guardamotor va a cortar en cada arranque, sin que haya ninguna falla.',
+     'Sale con arranque estrella-triángulo o arrancador suave, que bajan la corriente de arranque, o con un guardamotor de curva de arranque pesado si el fabricante lo ofrece.');
+   return {e:'mal', t:'El magnético corta durante el arranque', d:'Arranque <span class="num">'+f(iarr,0)+' A</span> contra disparo magnético <span class="num">'+f(imag,0)+' A</span>.', kpis:kpis, li:li};
+ }
+ if(iarr > imag*0.8){
+   li.unshift('El arranque queda cerca del disparo magnético: margen escaso. Si el motor arranca en carga o contra inercia alta, puede cortar en frío.');
+   return {e:'ojo', t:'Margen escaso entre el arranque y el disparo magnético', d:'Arranque <span class="num">'+f(iarr,0)+' A</span> contra disparo <span class="num">'+f(imag,0)+' A</span>.', kpis:kpis, li:li};
+ }
+ li.unshift('El guardamotor cubre la In, está regulado en ella y el arranque queda por debajo del disparo magnético.');
+ li.push('Ver el cálculo K11 para el resto del circuito: IB al 125 % de la In, sección y caída de tensión en arranque.');
+ return {e:'ok', t:'Guardamotor correcto', d:'Regulado en <span class="num">'+f(v.reg!==null?v.reg:v.inch,1)+' A</span> para un motor de <span class="num">'+f(v.inch,1)+' A</span>.', kpis:kpis, li:li};
+}},
+sol:['Elegir el guardamotor por la In de chapa del motor, no por la sección del cable.','Regular en la In de chapa, nunca en el máximo del rango.','Si el magnético corta en el arranque, bajar la corriente de arranque; no subir la regulación térmica.','Anotar en el tablero la regulación puesta: es un dato que se pierde y que después nadie sabe si alguien movió.'],
+cita:'Los rangos de regulación y el disparo magnético fijo de los guardamotores salen de IEC 60947-4-1, norma de producto. El dimensionamiento del circuito de motor, con IB al 125 % de la In, está en el cálculo K11.'
+});
+
+F.push({
+id:'G9', fam:'car', t:'El motor arranca en vacío pero no toma carga',
+sint:'Arranca y gira libre, pero al aplicarle la carga se frena, zumba, pierde vueltas o directamente se para. En monofásicos suele venir con un zumbido en el arranque.',
+causas:['Caída de tensión excesiva en la línea al entrar en carga','Condensador de arranque o de marcha agotado, en motores monofásicos','Una fase débil o abierta en trifásicos: gira pero sin par','Rotor con barras rotas o entrehierro dañado','Carga mecánica mayor que la de diseño','Conexión en estrella cuando corresponde triángulo, o al revés'],
+eq:[EQ.f117v, EQ.ut204, EQ.f117loz],
+pasos:[
+ 'Medir la tensión en los bornes del motor, no en el tablero: la diferencia entre los dos puntos es justamente lo que se está perdiendo en la línea.',
+ 'Medir primero con el motor en vacío y después con la carga aplicada, en el mismo punto y sin mover las puntas.',
+ 'Medir la corriente en cada fase con el motor en carga.',
+ 'Si es trifásico, comparar las tres tensiones entre fases y las tres corrientes: una asimetría marcada explica la falta de par.',
+ 'Si es monofásico y zumba sin arrancar en carga, sospechar del condensador antes que del motor.',
+ 'Verificar la conexión de la bornera contra la chapa: estrella o triángulo según la tensión de red.',
+ 'Cargar las tensiones y la corriente.'
+],
+med:{campos:[
+ {id:'uv', lbl:'Tensión en bornes del motor, en vacío', u:'V'},
+ {id:'uc', lbl:'Tensión en bornes del motor, con carga', u:'V'},
+ {id:'inch', lbl:'In de chapa del motor', u:'A'},
+ {id:'ic', lbl:'Corriente medida con carga', ayuda:'La mayor de las fases si es trifásico', u:'A'},
+ {id:'tipo', lbl:'Tipo de motor', tipo:'sel', opts:[['mono','Monofásico'],['tri','Trifásico']]}
+], ev:function(v){
+ if(v.uv===null || v.uc===null) return null;
+ if(v.uv<=0) return null;
+ var caida=(v.uv-v.uc)/v.uv*100;
+ var kpis=[{k:'U en vacío', v:f(v.uv,0), u:'V'},{k:'U en carga', v:f(v.uc,0), u:'V'},
+           {k:'Caída al entrar en carga', v:f(caida,1), u:'%', e:(caida>10?'mal':(caida>5?'ojo':'ok'))}];
+ var rel=null;
+ if(v.inch!==null && v.inch>0 && v.ic!==null){ rel=v.ic/v.inch*100; kpis.push({k:'I sobre In', v:f(rel,0), u:'%', e:(rel>115?'mal':(rel<50?'ojo':'ok'))}); }
+ var d='La tensión en bornes pasa de <span class="num">'+f(v.uv,0)+' V</span> en vacío a <span class="num">'+f(v.uc,0)+' V</span> en carga: una caída del <span class="num">'+f(caida,1)+' %</span>.';
+ var li=[];
+ li.push('El par de un motor de inducción cae con el cuadrado de la tensión: con un 10 % menos de tensión el par disponible baja alrededor de un 19 %. Por eso una caída que parece tolerable en una luminaria frena un motor.');
+ if(caida>10){
+   li.unshift('La caída al entrar en carga es excesiva. El problema está en la línea, no en el motor: sección insuficiente, longitud, un empalme de alta resistencia o un borne flojo.',
+     'Verificar la sección con el cálculo K1 y, sobre todo, con el K11, que contempla la caída durante el arranque y no sólo en régimen.',
+     'Medir la continuidad del conductor activo con la ficha R5: si la resistencia medida se despega de la teórica, hay una resistencia de contacto en el camino.');
+   return {e:'mal', t:'Caída de tensión excesiva al entrar en carga', d:d, kpis:kpis, li:li};
+ }
+ if(rel!==null && rel>115){
+   li.unshift('La tensión llega bien pero el motor toma <span class="num">'+f(rel,0)+' %</span> de su In: está sobrecargado mecánicamente o tiene una falla interna.',
+     'Descartar primero lo mecánico: carga trabada, rodamiento, transmisión desalineada, correa sobretensada.',
+     'Verificar la conexión de bornera contra la chapa: un motor conectado en triángulo donde corresponde estrella toma mucha más corriente y se calienta.');
+   return {e:'mal', t:'Tensión correcta pero corriente excesiva', d:d, kpis:kpis, li:li};
+ }
+ if(rel!==null && rel<50){
+   li.unshift('La tensión llega y la corriente es baja: el motor no está tomando la carga, no es que no pueda con ella.');
+   if(v.tipo==='mono') li.push('En monofásico esto apunta al condensador: el de arranque abierto deja el motor zumbando sin par, y el de marcha agotado le quita par en régimen. Se verifica midiéndolo o sustituyéndolo por uno de la misma capacidad y tensión.');
+   else li.push('En trifásico, una fase abierta deja al motor girando en monofásico: arranca si ya está en movimiento, pero sin par de arranque y con las dos fases restantes sobrecargadas. Ver la ficha B3.');
+   li.push('Si la tensión y las tres fases están bien, queda la falla interna: barras de rotor rotas o entrehierro dañado. Eso ya es rebobinado o reemplazo.');
+   return {e:'mal', t:'El motor no desarrolla par', d:d, kpis:kpis, li:li};
+ }
+ if(caida>5){
+   li.unshift('La caída está entre el 5 y el 10 %: tolerable en régimen pero conviene revisar el arranque, donde la corriente es varias veces mayor y la caída se multiplica. Verificarlo con el cálculo K11.');
+   return {e:'ojo', t:'Caída apreciable, revisar el arranque', d:d, kpis:kpis, li:li};
+ }
+ if(rel===null){
+   li.unshift('La tensión se sostiene en carga. Falta la corriente para saber si el motor está tomando la carga o no.');
+   return {e:'ojo', t:'La tensión se sostiene: falta medir la corriente', d:d, kpis:kpis, li:li};
+ }
+ li.unshift('La tensión se sostiene en carga y la corriente es consistente con la In de chapa: la alimentación no es el problema.');
+ li.push('Si el síntoma persiste, buscar del lado mecánico y de la transmisión, y verificar la conexión de bornera contra la chapa.');
+ return {e:'ok', t:'Alimentación correcta', d:d, kpis:kpis, li:li};
+}},
+sol:['Medir siempre en bornes del motor, no en el tablero: la caída de la línea es lo que se está buscando.','Dimensionar el circuito con el cálculo K11, que contempla la caída durante el arranque.','En monofásicos, el condensador es la causa más frecuente y la más barata de descartar.','Verificar la conexión estrella o triángulo contra la chapa antes de culpar al motor.'],
+cita:'La relación entre par y cuadrado de la tensión es propiedad del motor de inducción, no una exigencia reglamentaria. El dimensionamiento del circuito de motor y la verificación de caída en arranque están en el cálculo K11; las caídas máximas admisibles, en la Tabla 771.19.IV.'
+});
+
 
 /* ---------- 9. TABLEROS Y LOCALES COMERCIALES ---------- */
 F.push({
@@ -3670,6 +3876,88 @@ var Z_COL={0:'#ef8080',1:'#f6b96b',2:'#f2df72',3:'#a9d7b4'};
 
 function _zesc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
 
+/* ---------- diagramas de conexionado ---------- */
+function svgCaidaPotencial(){
+  var W=640, H=424, o=[], suelo=196, x0=90, xH=580, xS=x0+Math.round((xH-x0)*0.62);
+  var L=function(a,b,c,d,col,dash,gr){ o.push('<line x1="'+a+'" y1="'+b+'" x2="'+c+'" y2="'+d+'" stroke="'+col+'" stroke-width="'+(gr||1.5)+'"'+(dash?' stroke-dasharray="5 4"':'')+' stroke-linecap="round"/>'); };
+  var T=function(x,y,s,anc,sz,col,bold){ o.push('<text x="'+x+'" y="'+y+'" text-anchor="'+(anc||'middle')+'" font-size="'+(sz||11)+'" fill="'+(col||'var(--ink)')+'"'+(bold?' font-weight="700"':'')+'>'+esc(s)+'</text>'); };
+  var cota=function(xa,xb,y,col,et,tcol){
+    L(xa,y,xb,y,col,false,1.5); L(xa,y-5,xa,y+5,col,false,1.5); L(xb,y-5,xb,y+5,col,false,1.5);
+    T((xa+xb)/2, y+17, et,'middle',11,tcol||col,true);
+  };
+  /* terreno */
+  o.push('<rect x="24" y="'+suelo+'" width="'+(W-48)+'" height="4" rx="2" fill="var(--line)"/>');
+  o.push('<text x="28" y="'+(suelo-8)+'" font-size="10" fill="var(--ink)" opacity="0.55">terreno</text>');
+  /* picas */
+  var pica=function(x,et,det,col){
+    L(x,suelo,x,suelo+30,col,false,3.5);
+    o.push('<polygon points="'+(x-5)+','+(suelo+30)+' '+(x+5)+','+(suelo+30)+' '+x+','+(suelo+42)+'" fill="'+col+'"/>');
+    T(x,suelo+62,et,'middle',14,col,true);
+    T(x,suelo+79,det,'middle',10);
+  };
+  pica(x0,'E','electrodo bajo ensayo','var(--cel)');
+  pica(xS,'S','pica de tensión','var(--ojo)');
+  pica(xH,'H','pica de corriente','var(--ink)');
+  /* cotas, bien separadas de los rótulos */
+  cota(x0,xS,suelo+104,'var(--ojo)','62 % de la distancia E–H');
+  cota(x0,xH,suelo+146,'var(--line)','E–H: 5 a 10 m según el electrodo','var(--ink)');
+  /* instrumento */
+  o.push('<rect x="238" y="26" width="164" height="56" rx="8" fill="var(--sup)" stroke="var(--cel)" stroke-width="2"/>');
+  T(320,48,'UT-572','middle',14,'var(--cel)',true);
+  T(320,66,'telurímetro','middle',10);
+  var bx=[258,300,342,384], bn=['E','ES','S','H'];
+  for(var i=0;i<4;i++){ o.push('<circle cx="'+bx[i]+'" cy="82" r="4.5" fill="var(--cel)"/>'); T(bx[i],100,bn[i],'middle',11,'var(--cel)',true); }
+  /* cables: bajan por zona vacía hasta el terreno */
+  L(bx[0],106,x0,suelo-6,'var(--cel)');
+  L(bx[1],106,x0+14,suelo-6,'var(--cel)',true);
+  L(bx[2],106,xS,suelo-6,'var(--ojo)');
+  L(bx[3],106,xH,suelo-6,'var(--ink)');
+  /* leyenda al pie, sin cruzar nada */
+  T(320,suelo+180,'3 hilos (E, S, H): resistencia de puesta a tierra  ·  4 hilos (E, ES, S, H): resistividad del suelo','middle',10);
+  o.push('<rect x="116" y="'+(suelo+192)+'" width="408" height="26" rx="7" fill="var(--mal)" opacity="0.12"/>');
+  T(320,suelo+210,'El electrodo va DESCONECTADO de la instalación','middle',11,'var(--mal)',true);
+  return svgAbre(W,H)+o.join('')+'</svg>';
+}
+
+function svgBiparticion(){
+  var W=640, H=310, o=[], y=112;
+  var L=function(a,b,c,d,col,dash,gr){ o.push('<line x1="'+a+'" y1="'+b+'" x2="'+c+'" y2="'+d+'" stroke="'+col+'" stroke-width="'+(gr||2)+'"'+(dash?' stroke-dasharray="4 3"':'')+' stroke-linecap="round"/>'); };
+  var T=function(x,yy,s,anc,sz,col,bold){ o.push('<text x="'+x+'" y="'+yy+'" text-anchor="'+(anc||'middle')+'" font-size="'+(sz||11)+'" fill="'+(col||'var(--ink)')+'"'+(bold?' font-weight="700"':'')+'>'+esc(s)+'</text>'); };
+  var xs=[70,200,330,460,580], et=['Tablero','caja 1','caja 2','caja 3','boca'];
+  /* bandas */
+  o.push('<rect x="58" y="'+(y-16)+'" width="284" height="32" rx="8" fill="var(--ok)" opacity="0.15"/>');
+  o.push('<rect x="342" y="'+(y-16)+'" width="250" height="32" rx="8" fill="var(--mal)" opacity="0.15"/>');
+  /* llamada de la 1a medicion, arriba, con puntero */
+  T(330,42,'1ª medición: en el punto medio del tramo sospechoso','middle',11,'var(--ojo)',true);
+  L(330,50,330,y-22,'var(--ojo)',true,1.5);
+  o.push('<polygon points="325,'+(y-22)+' 335,'+(y-22)+' 330,'+(y-13)+'" fill="var(--ojo)"/>');
+  /* circuito */
+  L(xs[0],y,xs[4],y,'var(--line)',false,3);
+  for(var i=0;i<xs.length;i++){
+    if(i===0) o.push('<rect x="'+(xs[i]-18)+'" y="'+(y-15)+'" width="36" height="30" rx="4" fill="var(--sup)" stroke="var(--cel)" stroke-width="2"/>');
+    else o.push('<circle cx="'+xs[i]+'" cy="'+y+'" r="8" fill="var(--sup)" stroke="var(--ink)" stroke-width="2"/>');
+    T(xs[i],y+32,et[i],'middle',10);
+  }
+  o.push('<circle cx="'+xs[2]+'" cy="'+y+'" r="13" fill="none" stroke="var(--ojo)" stroke-width="2.5"/>');
+  /* rotulos de banda, debajo de los nombres */
+  T(200,y+56,'mide bien → el tramo está sano','middle',11,'var(--ok)',true);
+  T(466,y+56,'mide mal → la falla está de este lado','middle',11,'var(--mal)',true);
+  /* pasos */
+  var y2=y+92;
+  T(30,y2,'Cada medición parte en dos el tramo sospechoso:','start',11,'var(--ink)',true);
+  var pasos=['medir en caja 2 → la falla quedó entre caja 2 y la boca',
+             'medir en caja 3 → se acota a la mitad que dé mal',
+             'repetir hasta aislar el tramo entre dos cajas contiguas'];
+  for(var k=0;k<pasos.length;k++){
+    var yy=y2+24+k*22;
+    o.push('<circle cx="40" cy="'+(yy-4)+'" r="9.5" fill="var(--cel)"/>');
+    T(40,yy,String(k+1),'middle',11,'var(--sup)',true);
+    T(58,yy,pasos[k],'start',11);
+  }
+  o.push('<text x="30" y="'+(y2+96)+'" font-size="10" fill="var(--ink)" opacity="0.65">'+esc('Con n cajas se llega al tramo fallado en unas log2(n) mediciones, no en n')+'</text>');
+  return svgAbre(W,H)+o.join('')+'</svg>';
+}
+
 function svgZonasBano(p){
   /* p: {x1,x2,hz1,hc,hf,prof,L,hs,art,tab,htab,recorte} en metros */
   var W=p.x2+0.80, H=Math.max(p.hc,p.hz1)+0.35;
@@ -4389,6 +4677,308 @@ med:{campos:[
 sol:['Sacar cualquier tablero que esté dentro del cuarto de baño.','Verificar que el tablero principal sea efectivamente de doble aislación, no sólo de cubierta aislante.','Poner diferencial de 30 mA en los circuitos terminales y dejar el 300 mA selectivo como respaldo aguas arriba.','Dar diferencial propio a la bañera de hidromasaje.','Equipotencializar las canalizaciones metálicas que quedan como masa extraña.'],
 cita:'AEA 90364-7-701 (2012), Anexo 701.A, figuras 701.A.1, 701.A.2 y 701.A.3: tablero principal de doble aislación obligatorio; variantes de simple y doble aislación en el seccional general y en los derivados; diferencial de 300 mA selectivo para el contacto indirecto, cuya sensibilidad y temporización intrínsecas otorgan la selectividad diferencial; protección de la bañera de hidromasaje por diferencial de 30 mA de cabecera o dedicado; nota sobre la salida de servicio del tablero seccional derivado ante una descarga a tierra; notas 1 a 5 sobre canalizaciones de simple y doble aislación y sobre los requisitos de la Clase II. 701.512.4, zona 3: prohibición de tableros en los cuartos de baño.'
 });
+/* ---------- 13. VERIFICACIÓN Y RECEPCIÓN (771.23) ---------- */
+F.push({
+id:'R1', fam:'rec', t:'Inspecciones previas durante la obra',
+sint:'Lo que hay que mirar mientras la instalación todavía está a la vista. Una vez hormigonada o tapada, ninguna de estas cuatro verificaciones se puede recuperar sin romper.',
+causas:['Obra en curso, antes de tapar','Recepción de una obra que se inspeccionó poco','Instalación de la que no hay registro de lo que quedó adentro'],
+eq:[EQ.glm],
+pasos:[
+ 'La autoridad de aplicación es la que fija cuántas inspecciones previas se hacen y cuándo. Las cuatro de abajo son el mínimo que la Reglamentación recomienda.',
+ 'Cañerías en losa: mirar antes del hormigonado. Lo mismo en techos de cobertura liviana, en cielorrasos y en cualquier zona que después quede cubierta.',
+ 'Cañerías de bajadas, montantes y tableros en muros, antes de revocar.',
+ 'Canalizaciones subterráneas, antes de rellenar la zanja.',
+ 'Ejecución del sistema de puesta a tierra: jabalina, conductor de puesta a tierra y la conexión a la barra, antes de cerrar la cámara de inspección.',
+ 'Dejar registro fotográfico fechado de cada una. Es lo único que después sostiene lo que se declara en la memoria técnica.'
+],
+med:{campos:[
+ {id:'losa', lbl:'Cañerías en losa, cielorraso o techo liviano', ayuda:'Verificadas antes de que quedaran cubiertas', tipo:'bool'},
+ {id:'muro', lbl:'Bajadas, montantes y cajas de tablero en muro', ayuda:'Verificadas antes del revoque', tipo:'bool'},
+ {id:'sub', lbl:'Canalizaciones subterráneas', ayuda:'Verificadas antes de rellenar; marcar sí también si no hay', tipo:'bool'},
+ {id:'pat', lbl:'Ejecución del sistema de puesta a tierra', ayuda:'Jabalina, conductor y conexión a la barra, antes de cerrar la cámara', tipo:'bool'},
+ {id:'reg', lbl:'Quedó registro fotográfico fechado', tipo:'bool'}
+], ev:function(v){
+ var items=[['losa','cañerías en losa, cielorraso o techo liviano'],['muro','bajadas, montantes y tableros en muro'],['sub','canalizaciones subterráneas'],['pat','ejecución del sistema de puesta a tierra']];
+ var faltan=[], sin=0, i;
+ for(i=0;i<items.length;i++){
+   if(v[items[i][0]]===false) faltan.push(items[i][1]);
+   else if(v[items[i][0]]===null) sin++;
+ }
+ if(sin===items.length) return null;
+ var d='Inspecciones previas verificadas: <span class="num">'+(items.length-faltan.length-sin)+'</span> de <span class="num">'+items.length+'</span>.';
+ if(faltan.length){
+   var li=['Sin inspeccionar quedaron: '+faltan.join(', ')+'.',
+     'Ninguna de estas se puede reconstruir después: una vez hormigonada la losa o rellenada la zanja, lo que hay adentro solo se conoce rompiendo.',
+     'Lo que sí se puede hacer sobre lo ya tapado: continuidad de los conductores activos con la ficha R5, continuidad del conductor de protección con la ficha T3, aislación con la ficha I1 y localización por bipartición con la ficha I2. Son indirectas, pero acotan.',
+     'Dejar asentado en la memoria técnica qué tramos no se inspeccionaron y por qué. Declarar como verificado lo que no se vio es lo que después no se sostiene.'];
+   if(v.pat===false) li.splice(1,0,'La que más pesa de las cuatro es la puesta a tierra: la resistencia se mide después con el telurímetro (ficha T1), pero la ejecución del electrodo y de sus conexiones no se ve desde afuera.');
+   return {e:'mal', t:'Faltan inspecciones previas que ya no se pueden repetir', d:d, li:li};
+ }
+ if(sin) return {e:'ojo', t:'Inspecciones previas incompletas de cargar', d:d, li:['Quedan '+sin+' sin marcar. Completarlas antes de dar la recepción por cerrada.']};
+ var li2=['Las cuatro inspecciones recomendadas están hechas.'];
+ if(v.reg===false) li2.push('Falta el registro fotográfico fechado. Sin él, la inspección se hizo pero no se puede demostrar.');
+ else if(v.reg===true) li2.push('Con registro fotográfico fechado, que es lo que sostiene la declaración en la memoria técnica.');
+ li2.push('Sigue la inspección inicial antes de la puesta en servicio: ficha R2 la parte visual, ficha R3 la conformidad con el proyecto y las cinco mediciones.');
+ return {e:'ok', t:'Inspecciones previas cubiertas', d:d, li:li2};
+}},
+sol:['Programar las inspecciones previas con la obra, no al final: son las únicas que tienen fecha de vencimiento física.','Fotografiar cada tramo antes de taparlo, con fecha y con alguna referencia de ubicación en la foto.','Si se recibe una obra sin inspecciones previas, declararlo: la verificación indirecta acota pero no reemplaza.'],
+cita:'AEA 90364-7-771, 771.23.2 y AEA 90364-7-770, 770.19.2: la autoridad de aplicación determina la cantidad y oportunidad de las inspecciones previas. Las cuatro listadas son las que la Reglamentación sugiere como mínimo, en carácter de recomendación. El registro fotográfico no es exigencia reglamentaria, es criterio práctico.'
+});
+
+F.push({
+id:'R2', fam:'rec', t:'Inspección visual inicial, antes de la puesta en servicio',
+sint:'Los once controles visuales que la Reglamentación enumera antes de energizar. No llevan instrumento: se miran, se accionan y se cotejan.',
+causas:['Recepción de obra nueva','Recepción de una modificación o ampliación','Relevamiento de una instalación existente'],
+eq:[EQ.ut582, EQ.f117v],
+pasos:[
+ 'Se hace antes de la puesta en servicio. Es la primera de las tres partes de la inspección inicial: visual, conformidad con el proyecto (ficha R3) y mediciones.',
+ 'Recorrer los once puntos en orden. Los que dan no conforme se corrigen antes de energizar, no después.',
+ 'Los puntos f) y g) son los dos ensayos del diferencial: el pulsador de prueba primero, y después el ensayo con corriente real, que en el maletín se hace con el UT-582+ (ficha D2).',
+ 'El punto d) es el que la ficha A7 diagnostica cuando aparece mal: fase, neutro y protección en los bornes que corresponden, en todos los tomacorrientes.',
+ 'Marcar cada punto abajo y cargar el resultado en el informe.'
+],
+med:{campos:[
+ {id:'a', lbl:'a) Materiales y componentes conformes a IRAM o IEC', ayuda:'Con certificación de conformidad y marca de seguridad donde las resoluciones oficiales la exijan', tipo:'bool'},
+ {id:'b', lbl:'b) Correcto conexionado del sistema de puesta a tierra', ayuda:'Electrodo o jabalina, conductor de puesta a tierra y barra principal de tierra o equipotencial', tipo:'bool'},
+ {id:'c', lbl:'c) PE conectado a su borne en todos los tomacorrientes', tipo:'bool'},
+ {id:'d', lbl:'d) Fase, neutro y PE en los bornes que corresponden', ayuda:'En todos los tomacorrientes. Si aparece mal, ver la ficha A7', tipo:'bool'},
+ {id:'e', lbl:'e) Operación mecánica correcta de maniobra y protección', tipo:'bool'},
+ {id:'ff', lbl:'f) Diferenciales: funcionamiento del pulsador de prueba', tipo:'bool'},
+ {id:'g', lbl:'g) Diferenciales: funcionamiento en la instalación con corriente real', ayuda:'Ensayo a la IΔn asignada. Ver la ficha D2', tipo:'bool'},
+ {id:'h', lbl:'h) Acción eficaz de los enclavamientos', ayuda:'Marcar sí también si no hay enclavamientos previstos', tipo:'bool'},
+ {id:'i', lbl:'i) Correcta ejecución de las uniones eléctricas', tipo:'bool'},
+ {id:'j', lbl:'j) Código de colores o identificación alfanumérica', ayuda:'Correspondencia de línea, neutro y protección', tipo:'bool'},
+ {id:'k', lbl:'k) Tablero principal y seccionales: ubicación, construcción e inscripciones', tipo:'bool'}
+], ev:function(v){
+ var items=[['a','a) materiales conformes a IRAM o IEC'],['b','b) conexionado del sistema de puesta a tierra'],['c','c) PE en el borne de todos los tomacorrientes'],['d','d) ubicación de fase, neutro y PE en los bornes'],['e','e) operación mecánica de maniobra y protección'],['ff','f) pulsador de prueba de los diferenciales'],['g','g) ensayo de los diferenciales con corriente real'],['h','h) enclavamientos'],['i','i) uniones eléctricas'],['j','j) código de colores'],['k','k) tablero principal y seccionales']];
+ var mal=[], sin=0, i;
+ for(i=0;i<items.length;i++){
+   if(v[items[i][0]]===false) mal.push(items[i][1]);
+   else if(v[items[i][0]]===null) sin++;
+ }
+ if(sin===items.length) return null;
+ var ok=items.length-mal.length-sin;
+ var d='Conformes <span class="num">'+ok+'</span> de <span class="num">'+items.length+'</span>'+(sin?', <span class="num">'+sin+'</span> sin cargar':'')+'.';
+ var kpis=[{k:'Conformes', v:String(ok)},{k:'No conformes', v:String(mal.length), e:mal.length?'mal':''},{k:'Sin cargar', v:String(sin), e:sin?'ojo':''}];
+ if(mal.length){
+   var li=['No conformes: '+mal.join('; ')+'.'];
+   var pel=false;
+   if(v.b===false||v.c===false){ li.push('Un defecto en el sistema de puesta a tierra o en la conexión del PE de los tomacorrientes deja sin protección por desconexión automática a todo lo que cuelgue de ahí. No energizar hasta corregirlo.'); pel=true; }
+   if(v.d===false){ li.push('Con fase y neutro permutados el artefacto queda con la fase en el punto que se toca al cambiar una lámpara. Con neutro y PE permutados, la corriente de retorno circula por el conductor de protección y hace disparar el diferencial. Ver la ficha A7.'); pel=true; }
+   if(v.ff===false||v.g===false) li.push('Un diferencial que no responde al pulsador o que no dispara a su IΔn no protege. Ver la ficha D3 si no dispara con el botón y la ficha D2 para el ensayo con corriente.');
+   if(v.a===false) li.push('Material sin certificación no se puede declarar conforme en la memoria técnica, aunque funcione.');
+   if(v.j===false) li.push('El código de colores no es estético: es lo que hace que el que venga después identifique el neutro sin medir. Celeste el neutro, verde y amarillo el de protección.');
+   if(v.k===false) li.push('Las inscripciones del tablero son parte de la recepción: sin identificación de circuitos, la instalación no se puede operar ni consignar con seguridad.');
+   li.push('Corregir antes de la puesta en servicio y volver a cargar la ficha. La inspección visual es previa a energizar.');
+   return {e:'mal', t:'La inspección visual no conforma', d:d, kpis:kpis, li:li, pel:pel};
+ }
+ if(sin) return {e:'ojo', t:'Inspección visual incompleta', d:d, kpis:kpis, li:['Quedan '+sin+' puntos sin cargar. La inspección inicial es taxativa: se completa entera.']};
+ return {e:'ok', t:'La inspección visual conforma', d:d, kpis:kpis, li:['Los once puntos de 771.23.3.1 dan conforme.','Sigue la conformidad con el proyecto: ficha R3.','Y después las cinco mediciones: fichas R4 y R5 de continuidad, ficha T3 el PE, ficha I1 la aislación y ficha T1 la puesta a tierra.']};
+}},
+sol:['Recorrer los once puntos con el tablero abierto y sin tensión, salvo los dos ensayos de diferencial.','Los no conformes se corrigen antes de energizar, no se anotan como observación.','Dejar el resultado punto por punto en el informe: es la parte de la recepción que no tiene número y por eso es la que más se discute después.'],
+cita:'AEA 90364-7-771, 771.23.3.1, incisos a) a k). Equivalente en AEA 90364-7-770, 770.19.3.1. La 770 remite además a las condiciones de AEA 90364-6 en la medida en que sean aplicables.'
+});
+
+F.push({
+id:'R3', fam:'rec', t:'Conformidad con el proyecto elaborado',
+sint:'Cotejar lo que se construyó contra lo que se proyectó y contra la memoria técnica. Es la segunda parte de la inspección inicial y la que engancha la obra con la planilla de cargas.',
+causas:['Recepción de obra','Cambios hechos en obra que no volvieron al plano','Ampliación sobre una instalación existente'],
+eq:[EQ.glm],
+pasos:[
+ 'Tener a mano el proyecto, el plano y la memoria técnica. Sin eso esta verificación no se puede hacer.',
+ 'Cantidad y destino de los circuitos: contra el esquema unifilar, uno por uno.',
+ 'Canalizaciones: diámetro y tipo de caño contra lo proyectado, y de paso la ocupación real (ficha C6 y cálculo K3).',
+ 'Sección de los conductores de línea y del neutro, y sección del conductor de protección, contra la planilla.',
+ 'Características asignadas de los aparatos de maniobra, seccionamiento y protección: corriente nominal, curva, poder de corte, IΔn de los diferenciales.',
+ 'Lo que difiera se corrige en la obra o se corrige en el plano y la memoria. Lo que no puede quedar es la diferencia sin registrar.'
+],
+med:{campos:[
+ {id:'a', lbl:'a) Cantidad y destino de los circuitos', tipo:'bool'},
+ {id:'b', lbl:'b) Dimensiones y características de las canalizaciones', tipo:'bool'},
+ {id:'c', lbl:'c) Sección de los conductores de línea y del neutro', tipo:'bool'},
+ {id:'d', lbl:'d) Sección del conductor de protección', tipo:'bool'},
+ {id:'e', lbl:'e) Características asignadas de maniobra, seccionamiento y protección', tipo:'bool'},
+ {id:'doc', lbl:'Hay proyecto y memoria técnica contra los cuales cotejar', tipo:'bool'}
+], ev:function(v){
+ if(v.doc===false) return {e:'ojo', t:'Sin proyecto no hay conformidad que verificar',
+   d:'Esta verificación coteja la obra contra el proyecto elaborado y la memoria técnica.',
+   li:['Sin esa documentación, 771.23.3.2 no se puede cumplir: no es que dé no conforme, es que no hay contra qué comparar.',
+       'En una instalación existente sin proyecto, lo que corresponde es relevarla y documentarla primero. Las mediciones (fichas R4, R5, T3, I1 y T1) sí se pueden hacer igual.',
+       'Dejar asentado que la instalación se recibió sin documentación de origen.']};
+ var items=[['a','a) cantidad y destino de los circuitos'],['b','b) canalizaciones'],['c','c) sección de línea y neutro'],['d','d) sección del conductor de protección'],['e','e) características de los aparatos']];
+ var mal=[], sin=0, i;
+ for(i=0;i<items.length;i++){
+   if(v[items[i][0]]===false) mal.push(items[i][1]);
+   else if(v[items[i][0]]===null) sin++;
+ }
+ if(sin===items.length) return null;
+ var d='Conformes <span class="num">'+(items.length-mal.length-sin)+'</span> de <span class="num">'+items.length+'</span>.';
+ if(mal.length){
+   var li=['No conforman: '+mal.join('; ')+'.'];
+   if(v.c===false||v.d===false) li.push('Una sección distinta de la proyectada invalida la verificación de caída de tensión y la de corriente admisible: recalcular con la sección real (cálculos K1 y K2) antes de aceptarla.');
+   if(v.e===false) li.push('Un calibre distinto del proyectado cambia la coordinación IB menor o igual a In menor o igual a Iz. Si el interruptor quedó por encima de la Iz del conductor, es la condición de la ficha P5.');
+   if(v.b===false) li.push('Un caño de diámetro menor al proyectado cambia la ocupación y el factor de agrupamiento: rehacer el cálculo K3 y revisar el K2 con el nuevo factor.');
+   if(v.a===false) li.push('Circuitos de más o de menos respecto del proyecto mueven el grado de electrificación y la cantidad mínima de circuitos: rehacer el cálculo K4.');
+   li.push('Dos salidas posibles y las dos válidas: se corrige la obra, o se corrigen el plano y la memoria técnica y se recalcula. Lo que no es válido es firmar una memoria que describe otra instalación.');
+   return {e:'mal', t:'La obra no coincide con el proyecto', d:d, li:li};
+ }
+ if(sin) return {e:'ojo', t:'Cotejo incompleto', d:d, li:['Quedan '+sin+' puntos sin cargar.']};
+ return {e:'ok', t:'La obra responde al proyecto', d:d, li:['Los cinco puntos de 771.23.3.2 coinciden con el proyecto y la memoria técnica.','Siguen las mediciones: fichas R4 y R5 de continuidad, ficha T3 el PE, ficha I1 la aislación y ficha T1 la puesta a tierra.']};
+}},
+sol:['Cotejar circuito por circuito contra el esquema unifilar, no de memoria.','Cuando en obra se cambia una sección o un calibre, recalcular antes de aceptarlo: la planilla lo resuelve en minutos.','Actualizar plano y memoria con lo que quedó realmente construido, y archivar esa versión como la de obra.'],
+cita:'AEA 90364-7-771, 771.23.3.2, incisos a) a e). Equivalente en AEA 90364-7-770, 770.19.3.2.'
+});
+
+F.push({
+id:'R4', fam:'rec', t:'Continuidad de cañerías y canalizaciones metálicas',
+sint:'Medición de recepción: que los caños, conductos y demás canalizaciones metálicas tengan continuidad entre sí y con la barra de tierra del tablero principal, y que esa barra esté conectada a tierra.',
+causas:['Medición de recepción','Tramos de caño unidos con cupla sin puente de continuidad','Corte de la cañería por una caja de paso plástica intercalada','Caño metálico pintado o galvanizado con la rosca sin limpiar'],
+eq:[EQ.f117cont, EQ.ut511],
+pasos:[
+ 'Sin tensión y con la instalación consignada.',
+ 'Medir primero la resistencia de las puntas: juntarlas y anotar. Ese valor se resta después.',
+ 'Una punta en la barra de tierra del tablero principal, la otra en el extremo más alejado de la cañería metálica.',
+ 'Repetir cambiando el punto lejano: cada rama de la cañería, cada bandeja, cada gabinete metálico, y las uniones entre tramos que se puedan alcanzar.',
+ 'Si un tramo da alto, ir acortando: medir contra la caja intermedia para ver en qué unión se pierde.',
+ 'Cargar la resistencia de puntas y la medida.'
+],
+med:{campos:[
+ {id:'hay', lbl:'La instalación tiene canalizaciones metálicas', ayuda:'Caño metálico, bandeja, gabinete metálico o conducto', tipo:'bool'},
+ {id:'rp', lbl:'Resistencia de las puntas del instrumento', ayuda:'Puntas juntas', u:'Ω'},
+ {id:'rm', lbl:'Resistencia medida barra de tierra – punto ensayado', u:'Ω'},
+ {id:'pto', lbl:'Qué se ensayó', tipo:'sel', opts:[['cano','Tramo de cañería metálica'],['band','Bandeja portacables'],['gab','Gabinete metálico'],['union','Unión entre dos tramos']]}
+], ev:function(v){
+ if(v.hay===false) return {e:'ok', t:'No corresponde: la instalación no tiene canalizaciones metálicas',
+   d:'En canalización de PVC no hay masa extraña que poner a tierra por este concepto.',
+   li:['La medición a) de 771.23.3.3 se declara no aplicable, y se deja asentado por qué.','Las otras cuatro mediciones sí corresponden igual: continuidad de los conductores activos (ficha R5), continuidad del PE (ficha T3), aislación (ficha I1) y resistencia de puesta a tierra (ficha T1).']};
+ if(v.rm===null) return null;
+ var r=v.rm-(v.rp||0);
+ var d='Medido <span class="num">'+f(v.rm,2)+' Ω</span>'+(v.rp?' menos <span class="num">'+f(v.rp,2)+' Ω</span> de puntas':'')+' = <span class="num">'+f(r,2)+' Ω</span>. Criterio práctico: menor o igual a 1 Ω.';
+ var li=['El ensayo debe hacerse con ohmetro de tensión menor a 12 V, y eso los dos instrumentos lo cumplen. Lo que no cumplen es la corriente mínima de 0,2 A que recomienda 770.19.5.1: el Fluke 117 ensaya con menos de 350 µA y la función Lo del UT-511 no declara corriente. Sirve para diagnosticar; para certificar contra esa recomendación hace falta un instrumento de continuidad con corriente de ensayo declarada.'];
+ if(r>1){
+   li.unshift('La continuidad no verifica. Buscar la unión que la interrumpe: acortar el tramo medido hasta dar con ella.',
+     'Causas habituales por orden: cupla roscada sin puente de continuidad, caja de paso de PVC intercalada entre dos tramos metálicos, rosca pintada o con galvanizado intacto sin limpiar, tuerca floja en la entrada al gabinete.',
+     'La cañería metálica sin continuidad es una masa extraña que puede quedar a potencial de falla y no dispara nada. Es peor que no tenerla: aparenta estar puesta a tierra.');
+   if(v.pto==='union') li.splice(1,0,'La unión ensayada es justamente el punto débil: en cañería metálica la continuidad se pierde en las uniones, no en el caño.');
+   return {e:'mal', t:'Continuidad insuficiente en la canalización metálica', d:d, li:li, pel:true};
+ }
+ if(r>0.5) li.unshift('Cumple el criterio práctico pero con poco margen. En una unión metálica cualquier valor apreciable indica un contacto que se va a degradar con la humedad y la temperatura: reapretar y volver a medir.');
+ else li.unshift('La continuidad verifica.');
+ li.push('Anotar el valor por tramo en el protocolo, con la resistencia de puntas ya descontada.');
+ return {e:'ok', t:'Continuidad correcta', d:d, li:li};
+}},
+sol:['Puentear las uniones roscadas con conductor de protección y borne, no confiar en la rosca sola.','Limpiar la superficie de contacto antes de apretar: la pintura y el galvanizado aíslan.','Cuando hay una caja de PVC entre dos tramos metálicos, puentear la continuidad por dentro con conductor.','Dejar el valor de cada tramo registrado en el protocolo de recepción.'],
+cita:'AEA 90364-7-771, 771.23.3.3 a): continuidad eléctrica de las cañerías, conductos y demás canalizaciones metálicas entre sí y con la barra de tierra del tablero principal y de su conexión a tierra, con ohmetro de tensión menor a 12 V. Equivalente en 770.19.3.3 j). El criterio de 1 Ω es práctico, no reglamentario; la Reglamentación no fija valor.'
+});
+
+F.push({
+id:'R5', fam:'rec', t:'Continuidad de los conductores activos',
+sint:'Medición de recepción: que todos los conductores activos —fases y neutro— tengan continuidad de punta a punta. Es la medición b) de la inspección inicial, y la que detecta el empalme flojo que todavía no se manifestó.',
+causas:['Medición de recepción','Empalme retorcido sin borne, dentro de una caja','Conductor dañado al pasarlo por el caño','Borne de tablero apretado sobre la aislación'],
+eq:[EQ.f117cont, EQ.ut511],
+pasos:[
+ 'Sin tensión y con la instalación consignada. Desconectar el conductor en los dos extremos del tramo a medir.',
+ 'Medir la resistencia de las puntas y anotarla.',
+ 'Puentear el conductor con otro conocido en el extremo lejano, o medir contra el retorno del mismo circuito, y leer la resistencia del lazo.',
+ 'Repetir para cada fase y para el neutro de cada circuito.',
+ 'Cargar abajo la longitud y la sección: la app calcula la resistencia teórica del conductor y la compara con la medida. La diferencia es lo que aportan los empalmes y los bornes.'
+],
+med:{campos:[
+ {id:'rp', lbl:'Resistencia de las puntas del instrumento', ayuda:'Puntas juntas', u:'Ω'},
+ {id:'rm', lbl:'Resistencia medida del conductor', ayuda:'De punta a punta del tramo ensayado', u:'Ω'},
+ {id:'l', lbl:'Longitud del conductor ensayado', ayuda:'Recorrido real del caño, no distancia en línea recta', u:'m'},
+ {id:'s', lbl:'Sección del conductor', u:'mm²'},
+ {id:'cond', lbl:'Qué conductor se ensayó', tipo:'sel', opts:[['fase','Fase'],['neutro','Neutro'],['ambos','Lazo fase y neutro']]}
+], ev:function(v){
+ if(v.rm===null) return null;
+ var r=v.rm-(v.rp||0);
+ var d='Medido <span class="num">'+f(v.rm,3)+' Ω</span>'+(v.rp?' menos <span class="num">'+f(v.rp,3)+' Ω</span> de puntas':'')+' = <span class="num">'+f(r,3)+' Ω</span>.';
+ var kpis=[{k:'Resistencia neta', v:f(r,3), u:'Ω'}];
+ var li=[], teo=null;
+ if(v.l!==null && v.s!==null && v.l>0 && v.s>0){
+   teo=0.0175*v.l/v.s;
+   if(v.cond==='ambos') teo=teo*2;
+   kpis.push({k:'Teórica del conductor', v:f(teo,3), u:'Ω'});
+   d+=' Para <span class="num">'+f(v.l,1)+' m</span> de <span class="num">'+f(v.s,1)+' mm²</span> de cobre'+(v.cond==='ambos'?' ida y vuelta':'')+', la resistencia teórica es <span class="num">'+f(teo,3)+' Ω</span>.';
+ }
+ li.push('La resistividad usada es 0,0175 Ω·mm²/m, el valor del cobre a 20 °C. Es criterio práctico: la Reglamentación exige la continuidad, no fija un valor de resistencia para el conductor activo.');
+ li.push('El ensayo debe hacerse con ohmetro de tensión menor a 12 V. El Fluke 117 y el UT-511 lo cumplen, pero no llegan a la corriente mínima de 0,2 A que recomienda 770.19.5.1: un empalme flojo u oxidado puede dar continuidad con 350 µA y fallar bajo corriente de falla.');
+ if(teo!==null && teo>0){
+   var exc=r/teo;
+   kpis.push({k:'Medida sobre teórica', v:f(exc,2), u:'×', e:(exc>1.5?'mal':(exc>1.2?'ojo':''))});
+   if(exc>1.5){
+     li.unshift('La medida supera en más del 50 % a la teórica. Ese exceso no está en el cobre: está en los empalmes, en los bornes o en un tramo de sección menor que la declarada.',
+       'Buscarlo por bipartición, igual que en la ficha I2: medir hasta la caja intermedia y ver en qué mitad aparece.',
+       'Revisar también que la sección real sea la que dice el proyecto: un conductor de sección menor da exactamente esta lectura. Es el punto c) de la ficha R3.');
+     return {e:'mal', t:'Hay continuidad, pero con resistencia excesiva', d:d, kpis:kpis, li:li};
+   }
+   if(exc>1.2){
+     li.unshift('La medida está entre un 20 % y un 50 % por encima de la teórica. Es tolerable si el circuito tiene varios empalmes en borne, pero conviene reapretarlos y volver a medir antes de cerrar la recepción.');
+     return {e:'ojo', t:'Continuidad correcta, con resistencia algo alta', d:d, kpis:kpis, li:li};
+   }
+   li.unshift('La medida es consistente con la resistencia teórica del conductor: no hay resistencia de contacto apreciable.');
+   return {e:'ok', t:'Continuidad correcta', d:d, kpis:kpis, li:li};
+ }
+ li.unshift('Cargá longitud y sección para que la app compare contra la resistencia teórica del conductor. Sin eso, la lectura confirma que hay continuidad pero no dice si es buena.');
+ return {e:'ojo', t:'Hay continuidad', d:d, kpis:kpis, li:li};
+}},
+sol:['Empalmar en borne dentro de caja, no retorcido: el empalme retorcido pasa la prueba de continuidad y falla al año.','Verificar que la sección real sea la proyectada cuando la resistencia medida se despega de la teórica.','Reapretar bornes de tablero y volver a medir antes de cerrar la recepción.','Registrar el valor por circuito y por conductor en el protocolo.'],
+cita:'AEA 90364-7-771, 771.23.3.3 b): continuidad eléctrica de todos los conductores activos, con ohmetro de tensión menor a 12 V. En AEA 90364-7-770 la exigencia está en 770.19.3.3 a), que remite a AEA 90364-6, y el método de referencia en 770.19.5.1. La comparación contra la resistencia teórica es criterio práctico.'
+});
+
+F.push({
+id:'R6', fam:'rec', t:'Inspección periódica y su vencimiento',
+sint:'Qué comprende la inspección periódica, cada cuánto corresponde y de quién es la responsabilidad. Es más corta que la inicial: cuatro controles visuales y tres mediciones.',
+causas:['Vencimiento del plazo de cinco años','Cambio de propietario o de destino del inmueble','Instalación de la que no hay registro de inspección previa'],
+eq:[EQ.ut511, EQ.telu, EQ.f117cont],
+pasos:[
+ 'La responsabilidad de la inspección periódica es del propietario del inmueble, y la tiene que hacer personal con incumbencias o competencias específicas.',
+ 'Parte visual, cuatro puntos: conexionado de la puesta a tierra, PE conectado en todos los tomacorrientes, operación mecánica de maniobra y protección, y ensayo del diferencial por el pulsador de prueba.',
+ 'Parte de medición, tres: continuidad del PE entre cada tomacorriente y la barra, con ohmetro de menos de 12 V (ficha T3); resistencia de aislación (ficha I1); resistencia del sistema de puesta a tierra (ficha T1).',
+ 'Cargar el año de la última inspección o de la puesta en servicio para saber si el plazo está vencido.'
+],
+med:{campos:[
+ {id:'anio', lbl:'Año de la última inspección o de la puesta en servicio', u:''},
+ {id:'v1', lbl:'Visual: correcto conexionado de la puesta a tierra', tipo:'bool'},
+ {id:'v2', lbl:'Visual: PE conectado en todos los tomacorrientes', tipo:'bool'},
+ {id:'v3', lbl:'Visual: operación mecánica de maniobra y protección', tipo:'bool'},
+ {id:'v4', lbl:'Visual: diferencial responde al pulsador de prueba', tipo:'bool'},
+ {id:'m1', lbl:'Medición: continuidad del PE, hecha', ayuda:'Ficha T3', tipo:'bool'},
+ {id:'m2', lbl:'Medición: resistencia de aislación, hecha', ayuda:'Ficha I1', tipo:'bool'},
+ {id:'m3', lbl:'Medición: resistencia de puesta a tierra, hecha', ayuda:'Ficha T1', tipo:'bool'}
+], ev:function(v){
+ var hoy=new Date().getFullYear(), kpis=[], li=[], venc=null;
+ if(v.anio!==null && v.anio>1900 && v.anio<=hoy+1){
+   venc=v.anio+5;
+   kpis.push({k:'Última', v:String(Math.round(v.anio))},{k:'Vence', v:String(Math.round(venc)), e:(hoy>venc?'mal':(hoy>=venc-1?'ojo':''))});
+ }
+ var mal=[], sin=0, i;
+ var items=[['v1','conexionado de la puesta a tierra'],['v2','PE en todos los tomacorrientes'],['v3','operación mecánica de maniobra y protección'],['v4','pulsador de prueba del diferencial'],['m1','continuidad del PE'],['m2','resistencia de aislación'],['m3','resistencia de puesta a tierra']];
+ for(i=0;i<items.length;i++){
+   if(v[items[i][0]]===false) mal.push(items[i][1]);
+   else if(v[items[i][0]]===null) sin++;
+ }
+ if(sin===items.length && venc===null) return null;
+ var d='La inspección periódica comprende cuatro controles visuales y tres mediciones. El plazo máximo para viviendas, oficinas y locales unitarios es de cinco años.';
+ if(venc!==null && hoy>venc){
+   li.push('El plazo está vencido: la última fue en '+Math.round(v.anio)+' y el máximo es de cinco años, o sea '+Math.round(venc)+'.');
+   li.push('La responsabilidad de la inspección periódica es del propietario del inmueble. Corresponde avisarlo por escrito.');
+ } else if(venc!==null){
+   li.push('Dentro de plazo: vence en '+Math.round(venc)+'.');
+ }
+ if(mal.length) li.push('No conformes o pendientes: '+mal.join('; ')+'.');
+ if(sin) li.push('Quedan '+sin+' puntos sin cargar.');
+ li.push('Ojo con el alcance: la periódica es más corta que la inicial, pero no reemplaza a la inspección inicial de la ficha R2 cuando hubo una modificación. Toda modificación exige inspección inicial antes de la puesta en servicio, sin importar cuándo fue la última periódica.');
+ li.push('Las tres mediciones se cargan en sus fichas y quedan en el mismo informe: ficha T3 la continuidad del PE, ficha I1 la aislación y ficha T1 la puesta a tierra.');
+ if(venc!==null && hoy>venc) return {e:'mal', t:'Inspección periódica vencida', d:d, kpis:kpis, li:li};
+ if(mal.length) return {e:'mal', t:'La inspección periódica no conforma', d:d, kpis:kpis, li:li};
+ if(sin) return {e:'ojo', t:'Inspección periódica incompleta', d:d, kpis:kpis, li:li};
+ return {e:'ok', t:'Inspección periódica conforme y en plazo', d:d, kpis:kpis, li:li};
+}},
+sol:['Avisar al propietario por escrito cuando el plazo esté por vencer: la responsabilidad es suya, la advertencia es del profesional.','Toda modificación dispara una inspección inicial completa, no una periódica.','Archivar el informe de cada periódica: es lo que después demuestra la continuidad del mantenimiento.'],
+cita:'AEA 90364-7-771, 771.23.4: la inspección periódica comprende 771.23.4.1 visual, 771.23.4.2 medición y 771.23.4.3 frecuencia, con plazo máximo de cinco años para viviendas, oficinas y locales unitarios. Equivalente en AEA 90364-7-770, 770.19.4. La responsabilidad del propietario y la exigencia de personal con incumbencias están en 771.23.1.'
+});
+
 
 /* ============================================================
    MOTOR DE LA APLICACIÓN
@@ -4510,7 +5100,7 @@ function filasAparatos(l){
   for(i=0;i<l.length;i++){
     a=l[i]; r=pdAparato(a);
     h+='<li><span class="d">'+((a.n||1)>1?(a.n+' u. '):'')+(a.p||1)+'×'+f(a.in,0)+' A · '+
-       (a.rol==='cab'?'cabecera':'salida')+
+       (a.rol==='cab'?'cabecera':(a.rol==='n2'?'salida nivel 2':'salida'))+
        (r ? ' · '+f(r.w,1)+' W/polo'+(r.propio?' (fabricante)':'')
           : ' · <b>fuera de la Tabla 770-B.XI</b>')+
        '</span><span class="w">'+(r?f(r.pd,1)+' W':'—')+'</span>'+
@@ -4529,7 +5119,7 @@ function textoAparatos(l){
   l = Array.isArray(l)?l:[];
   if(!l.length) return '—';
   var p=[], i, a;
-  for(i=0;i<l.length;i++){ a=l[i]; p.push(((a.n||1)>1?(a.n+' u. '):'')+(a.p||1)+'×'+f(a.in,0)+' A'+(a.rol==='cab'?' cab.':'')); }
+  for(i=0;i<l.length;i++){ a=l[i]; p.push(((a.n||1)>1?(a.n+' u. '):'')+(a.p||1)+'×'+f(a.in,0)+' A'+(a.rol==='cab'?' cab.':(a.rol==='n2'?' n2':''))); }
   return p.join(' · ')+' → '+sumaAparatos(l).replace('Σ Pd = ','Σ Pd ');
 }
 
@@ -4807,8 +5397,9 @@ var TRIAGE = [
   {t:'Da corriente', s:'Cosquilleo al tocar un artefacto', ids:['G5','A8','T3'], c:'rojo'},
   {t:'Calienta o huele a quemado', s:'Tablero, boca, cable o sin punto visible', ids:['C5','C2','C3','C4'], c:'rojo'},
   {t:'Luces raras', s:'Titilan, bajan, se queman o quedan tenues', ids:['G3','G4','A3','A6'], c:''},
-  {t:'Motor que no anda', s:'No arranca, gira al revés o calienta', ids:['G1','G2','B3'], c:''},
-  {t:'Verificación completa', s:'Recepción, periódica o post-reparación', ids:['I1','T1','D2','T3'], c:''},
+  {t:'Motor que no anda', s:'No arranca, gira al revés, calienta o no toma carga', ids:['G1','G9','G7','G8','G2','B3'], c:''},
+  {t:'Recepción de obra', s:'El recorrido completo de la 771.23, en orden', ids:['R1','R2','D2','R3','R4','R5','T3','I1','T1'], c:''},
+  {t:'Inspección periódica', s:'Cada 5 años: 4 controles visuales y 3 mediciones', ids:['R6','T3','I1','T1'], c:''},
   {t:'Relevar un local', s:'Habilitación: circuitos, bocas, cables', ids:['N8','N7','L6','B5'], c:''},
   {t:'Baño, cocina o lavadero', s:'Zonas, grado IP, equipotencial, hidromasaje', ids:['Z1','Z3','Z2','Z4','Z5'], c:'ambar'},
   {t:'Emergencia y público', s:'Pública concurrencia, evacuación, 7-718', ids:['E1','E2','E3','E4','E5','E9'], c:'ambar'},
@@ -5208,22 +5799,25 @@ campos:[
  {id:'sal', lbl:'Cantidad de salidas del tablero', ayuda:'Si cargaste la lista, se cuentan solas', u:''},
  {id:'incab', lbl:'In del interruptor de cabecera', ayuda:'Sólo para el criterio Inq/Inu; sale de la lista si la cargaste', u:'A'},
  {id:'insal', lbl:'Σ In de las salidas', ayuda:'Sólo para el criterio Inq/Inu; sale de la lista si la cargaste', u:'A'},
+ {id:'alim2', lbl:'In del interruptor de nivel 1 que alimenta el nivel 2', ayuda:'Sólo si cargaste aparatos como «salida nivel 2»: es el interruptor de este tablero del que cuelga el subtablero', u:'A'},
  {id:'pau', lbl:'Pau — disipación de los aparatos que no son protecciones', ayuda:'Transformadores de campanilla, fuentes, ojos de buey', u:'W'},
  {id:'pde', lbl:'Pde declarada del gabinete', ayuda:'Dato de chapa del fabricante, IEC 60670-24', u:'W'}
 ],
 ev:function(v){
-  var pd=num(v.pd), sal=num(v.sal), inc=num(v.incab), ins=num(v.insal), pau=num(v.pau)||0, pde=num(v.pde);
+  var pd=num(v.pd), sal=num(v.sal), inc=num(v.incab), ins=num(v.insal), pau=num(v.pau)||0, pde=num(v.pde), alim2=num(v.alim2);
   var ap = Array.isArray(v.ap) ? v.ap : [];
   /* La lista de aparatos manda; si está vacía, vale la Σ Pd cargada a mano. */
   var usaLista=false, pdCab=0, pdSal=0, nSal=0, inSal=0, inCab=null, fuera=0, tetra=false, i, a, r;
+  var pdN2=0, inN2=0, nN2=0;
   for(i=0;i<ap.length;i++){
     a=ap[i]; r=pdAparato(a);
     if(!r){ fuera++; continue; }
     if((a.p||1)===4) tetra=true;
     if(a.rol==='cab'){ pdCab+=r.pd; if(inCab===null) inCab=a.in; }
+    else if(a.rol==='n2'){ pdN2+=r.pd; nN2+=(a.n||1); inN2+=(a.in||0)*(a.n||1); }
     else { pdSal+=r.pd; nSal+=(a.n||1); inSal+=(a.in||0)*(a.n||1); }
   }
-  usaLista = (pdCab+pdSal)>0;
+  usaLista = (pdCab+pdSal+pdN2)>0;
   if(!usaLista && fuera && pd===null){
     return {e:'ojo', t:'Falta el dato del fabricante',
       d:'Cargaste '+fuera+' aparato'+(fuera===1?'':'s')+' que la Tabla 770-B.XI no cubre: la tabla llega hasta 125 A.',
@@ -5250,8 +5844,18 @@ ev:function(v){
   }
   var pdp, veinte, ptot, pdTot;
   if(usaLista){
-    pdTot = pdCab+pdSal;
+    pdTot = pdCab+pdSal+pdN2;
     pdp = pdCab*KE_ENTRADA*KE_ENTRADA + pdSal*K*K;
+    if(pdN2>0){
+      if(alim2!==null && alim2>0 && inN2>0){
+        var K2 = Math.min(1, alim2*K/inN2);
+        pdp += pdN2*K2*K2;
+        li.push('Nivel 2: K2 = '+f(alim2,0)+' A × '+f(K,3)+' / '+f(inN2,0)+' A = '+f(K2,3)+'. Es la regla del Anexo 771-H: para los circuitos de nivel 2 toma la In del interruptor de nivel 1 que los alimenta, ya afectada por el K de nivel 1, sobre la suma de las In de nivel 2. En el ejemplo del Anexo da 20 × 0,653 / 30 = 0,433.');
+      } else {
+        pdp += pdN2*K*K;
+        li.push('Cargaste '+f(pdN2,1)+' W como salidas de nivel 2 pero falta la In del interruptor de nivel 1 que las alimenta, así que se les aplicó el mismo K que a las de nivel 1. Es conservador, porque el K de nivel 2 siempre da menor. Cargá ese dato y el cálculo pasa a ser el del Anexo.');
+      }
+    }
     li.unshift('Σ Pd = '+f(pdTot,1)+' W, armada con la Tabla 770-B.XI'+
       (pdCab>0 ? ': '+f(pdCab,1)+' W en la cabecera y '+f(pdSal,1)+' W en las salidas.'
                : ', toda en las salidas: no marcaste ningún aparato como cabecera.'));
@@ -5571,7 +6175,7 @@ function pintarCampos(campos, valores, prefijo){
                '<option value="3">3 polos</option><option value="4">4 polos</option></select></div>'+
              '<div><label for="'+prefijo+c.id+'_rol">Dónde está</label>'+
                '<select class="entrada" data-apf="rol" id="'+prefijo+c.id+'_rol">'+
-               '<option value="sal" selected>Salida</option><option value="cab">Cabecera</option></select></div>'+
+               '<option value="sal" selected>Salida</option><option value="cab">Cabecera</option><option value="n2">Salida nivel 2</option></select></div>'+
              '<div><label for="'+prefijo+c.id+'_n">Cantidad</label>'+
                '<input class="entrada" data-apf="n" id="'+prefijo+c.id+'_n" type="text" inputmode="numeric" value="1"></div>'+
              '<div class="full"><label for="'+prefijo+c.id+'_w">W por polo del fabricante <span style="font-weight:400">(opcional: si lo dejás vacío usa la tabla)</span></label>'+
@@ -5817,6 +6421,8 @@ function vistaFicha(){
   h += '<div class="bloque"><h3>Procedimiento</h3><ol class="pasos">';
   for(var k=0;k<x.pasos.length;k++) h += '<li>'+esc(x.pasos[k])+'</li>';
   h += '</ol></div>';
+
+  if(x.dib) h += '<div class="bloque"><h3>Diagrama <small>cómo se conecta</small></h3>'+x.dib()+'</div>';
 
   if(x.med){
     h += '<div class="bloque"><h3>Valores medidos <small>completá lo que tengas</small></h3><div class="medir">';
