@@ -2,7 +2,7 @@
    Guarda la app en el teléfono y la sirve sin conexión.
    Al publicar una versión nueva, cambiá VERSION: el navegador borra la caché
    vieja y baja la nueva la primera vez que se abra la app con señal. */
-var VERSION  = 'diag-aea-2026-09-06';
+var VERSION  = 'diag-aea-2026-09-06-2';
 var ARCHIVOS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', function(e){
