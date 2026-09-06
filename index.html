@@ -542,7 +542,7 @@ var EQ = {
   ut251:{n:'UT-251A — pinza miliamperimétrica de fuga', cfg:'0,000 a 60,00 A con 1 µA de\nresolución\n±(1,5 % + 5 díg) · CAT III 600 V\nReconoce 50/60 Hz · unas 2 lecturas\npor segundo\nMordaza de 25 × 30 mm\nAbrazar FASE Y NEUTRO JUNTOS; en\ntrifásica, las tres\nfases y el neutro. El PE NO va\ndentro de la mordaza\nEs el instrumento de fuga: el\nUT-204+ no llega al mA'},
   ut12d:{n:'UT-12D — detector de tensión sin contacto', cfg:'Modo alto 90 a 1000 V~ · modo bajo\n24 a 1000 V~\nCAT IV 1000 V\nProbarlo en una fuente conocida\nANTES y DESPUÉS\nNO verifica ausencia de tensión: no\ndetecta a través\nde blindaje ni con el operador\naislado de tierra, y\npuede haber tensión sin que suene la\nalarma\nLa ausencia de tensión se confirma\ncon el Fluke 117'},
   glm:{n:'Bosch GLM 50-27 CG — distanciómetro láser', cfg:'0,05 a 50 m · ±1,5 mm en condiciones\nfavorables\nLáser clase 2 (515 nm) · IP65 ·\ninclinómetro ±0,2°\nPara la longitud del circuito: medir\nel RECORRIDO del\ncaño tramo por tramo y sumar. La\ndistancia en línea\nrecta da una caída de tensión menor\nque la real\nTambién para las alturas de las\nzonas del baño (7-701)'},
-  ir:{n:'Termómetro infrarrojo — todavía no está en el maletín', cfg:'PENDIENTE DE COMPRA: la parte\ntérmica de las fichas\nque lo piden queda sin hacer hasta\nque lo tengas\nQué exigirle: emisividad AJUSTABLE\n(no fija),\nrango de −30 a 400 °C como mínimo y\nrelación\ndistancia-punto de 12:1 o mejor.\nCriterio práctico\nCuando lo tengas: ε ≈ 0,95 en\nplásticos y pintura mate\nSobre cobre desnudo o barra pulida\nla lectura es\nFALSA: pegar cinta mate y medir\nsobre la cinta\nMedir con la carga en régimen, no\nrecién arrancada'}
+  ir:{n:'UNI-T UTi260B — cámara termográfica', cfg:'Microbolómetro VOx no refrigerado\n256 × 192 px (49.152) · 8 a 14 µm\nNETD ≤ 60 mK · 25 imágenes/segundo\nFOV 56° × 42° · IFOV 3,8 mrad\nFoco fijo: no hay anillo de enfoque\n−20 a 550 °C · ±2 °C o ±2 % de la\nlectura, la mayor de las dos\nEmisividad 0,01 a 1,00 (0,95 de\nfábrica)\nPunto central + 3 zonas máx/mín +\nalarma alta y baja\nVisible 640 × 480 · modos térmico,\nvisual, fusión y PiP · 7 paletas\nMicro SD hasta 32 GB · BMP con\nmatriz radiométrica + software de PC\nPantalla 2,8" 320 × 240 · IP65 ·\ncaída 2 m · ≈ 490 g · 5000 mAh, 6 h\n\nDISTANCIA. El blanco necesita 3 × 3\npíxeles para que el número valga:\n3,4 mm a 30 cm · 5,7 mm a 50 cm ·\n11,4 mm a 1 m. Un borne de\ntermomagnética mide unos 6 mm, así\nque más lejos de 50 cm el valor sale\nSUBESTIMADO. Detectar sí: un solo\npíxel tibio ya aparece en la imagen\n\nε 0,95 en plástico, goma, pintura\nmate y vaina de conductor. Sobre\ncobre desnudo o barra pulida (ε 0,03\na 0,07) la lectura es FALSA: cinta\nmate encima, o comparar entre fases\n\nSe usa con el tablero ABIERTO Y CON\nTENSIÓN: exige protector facial con\nATPV, que hoy falta del listado\nProcedimiento paso a paso completo\nen la pantalla de Equipamiento'}
 };
 
 var EPP = {
@@ -602,7 +602,7 @@ med:{campos:[
    d:'L–N mide <span class="num">'+f(v.uln)+' V</span>, un valor que no es ni tensión plena ni ausencia de tensión.',
    li:['Repetir la medición con LoZ activado en el Fluke. Si cae a casi cero era tensión fantasma y el conductor en realidad está abierto.','Si con LoZ se mantiene, hay una carga en serie o un conductor con contacto parcial: buscar el borne flojo o el empalme oxidado.','Medir la caída con el circuito cargado: un contacto parcial se delata porque la tensión se hunde al conectar carga.']};
 }},
-sol:['Reapretar todo borne intervenido con el circuito sin tensión y verificar después con termómetro IR bajo carga.','Reemplazar módulos de tomacorriente cuyos contactos ya no sujeten la ficha, no repararlos.','Todo empalme queda dentro de caja y accesible, con borne o conector, nunca retorcido y cintado dentro del caño.','Antes de restablecer, verificar continuidad de PE en la boca reparada.'],
+sol:['Reapretar todo borne intervenido con el circuito sin tensión y verificar después con la cámara bajo carga.','Reemplazar módulos de tomacorriente cuyos contactos ya no sujeten la ficha, no repararlos.','Todo empalme queda dentro de caja y accesible, con borne o conector, nunca retorcido y cintado dentro del caño.','Antes de restablecer, verificar continuidad de PE en la boca reparada.'],
 cita:'AEA 90364-7-771, 771.23.6 y 7-770, 770.19.6: la actuación sin causa conocida de los dispositivos de protección obliga a una revisión detallada de la instalación antes de restablecer el servicio. 771.23.3.1 d) exige que línea, neutro y protección estén cada uno en el borne destinado a tal fin.'
 });
 
@@ -677,7 +677,7 @@ med:{campos:[
  if(p <= lim) return {e:'ok', t:'La caída de tensión verifica', d:base,
    li:['Si el usuario igual percibe parpadeo, mirar la fluctuación durante el arranque, no el régimen.','Comparar contra la caída calculada en la planilla de cargas: si la medida es bastante mayor, hay resistencia de contacto acumulada aunque el total verifique.']};
  return {e:'mal', t:'La caída de tensión supera el límite', d:base,
-   li:['Primero descartar lo barato: reapretar todos los bornes del circuito, del tablero a la boca. Una caída que baja mucho al reapretar era resistencia de contacto, no sección.','Con <span class="num">'+(v.ic!==null?f(v.ic)+' A':'la corriente medida')+'</span> circulando, calcular la resistencia aparente del tramo: R = ΔU / I'+(v.ic? ' = '+f(d/v.ic,3)+' Ω':'')+'. Compararla con la resistencia teórica del conductor por su longitud y sección.','Si la resistencia medida es mucho mayor que la teórica, hay un punto caliente: recorrer con el termómetro IR bajo carga.','Si coincide con la teórica, el conductor está subdimensionado para la longitud: aumentar sección o dividir el circuito.','Verificar también la caída en el seccional: la del circuito terminal se suma a la del alimentador.']};
+   li:['Primero descartar lo barato: reapretar todos los bornes del circuito, del tablero a la boca. Una caída que baja mucho al reapretar era resistencia de contacto, no sección.','Con <span class="num">'+(v.ic!==null?f(v.ic)+' A':'la corriente medida')+'</span> circulando, calcular la resistencia aparente del tramo: R = ΔU / I'+(v.ic? ' = '+f(d/v.ic,3)+' Ω':'')+'. Compararla con la resistencia teórica del conductor por su longitud y sección.','Si la resistencia medida es mucho mayor que la teórica, hay un punto caliente: recorrer con la cámara bajo carga.','Si coincide con la teórica, el conductor está subdimensionado para la longitud: aumentar sección o dividir el circuito.','Verificar también la caída en el seccional: la del circuito terminal se suma a la del alimentador.']};
 }},
 sol:['Reapretar y, si hay borne quemado, reemplazar el aparato completo, no sólo el tornillo.','Aumentar la sección del tramo o desdoblar el circuito para repartir la carga.','Si el motor arranca mal, verificar por separado la caída durante el arranque: el límite ahí es 15 %.','Recalcular en la planilla de cargas con la longitud real medida, no con la de proyecto.'],
 cita:'AEA 90364-7-771 y 7-770: caída de tensión total admisible 3 % desde el origen. Para motores se admite 5 % en régimen y 15 % durante el arranque.'
@@ -755,7 +755,7 @@ pasos:[
  'Medir N–PE en el tablero y en la boca afectada, con la instalación cargada normalmente.',
  'Encender una carga apreciable en el circuito y volver a medir N–PE. Si la tensión sube claramente, el neutro tiene resistencia.',
  'Medir la corriente de neutro con la pinza en la barra o en el conductor de neutro del circuito.',
- 'Recorrer los bornes de neutro con el termómetro IR bajo carga: el borne flojo es el punto caliente.'
+ 'Recorrer los bornes de neutro con la cámara bajo carga: el borne flojo es el punto caliente.'
 ],
 med:{campos:[
  {id:'npe0', lbl:'Tensión N–PE sin carga', u:'V'},
@@ -766,7 +766,7 @@ med:{campos:[
  var salto = (v.npe0!==null) ? v.npe1-v.npe0 : null;
  var txt='N–PE con carga: <span class="num">'+f(v.npe1)+' V</span>'+(salto!==null?' (subió <span class="num">'+f(salto)+' V</span> al cargar)':'')+'.';
  if(v.npe1 > 15) return {e:'mal', t:'Neutro con alta resistencia o abierto', d:txt+' Un neutro sano no debería levantar más de unos pocos volts contra PE.',
-   li:['Cortar la alimentación y recorrer todos los aprietes de neutro: barra del tablero, bornes de la protección, cajas de derivación, medidor.','Si la corriente medida por el neutro era '+(v.inp!==null?f(v.inp)+' A':'apreciable')+', la resistencia aparente del tramo es R = U/I'+(v.inp&&v.inp>0?' ≈ '+f(v.npe1/v.inp,3)+' Ω':'')+'. Cualquier valor por encima de décimas de ohm en un neutro es anormal.','Usar el termómetro IR bajo carga: el punto flojo aparece como el más caliente de la línea.','Riesgo: si el neutro se abre del todo, las cargas monofásicas quedan en serie entre fases y reciben tensiones muy distintas de la nominal. Es lo que quema los equipos.'], pel:true};
+   li:['Cortar la alimentación y recorrer todos los aprietes de neutro: barra del tablero, bornes de la protección, cajas de derivación, medidor.','Si la corriente medida por el neutro era '+(v.inp!==null?f(v.inp)+' A':'apreciable')+', la resistencia aparente del tramo es R = U/I'+(v.inp&&v.inp>0?' ≈ '+f(v.npe1/v.inp,3)+' Ω':'')+'. Cualquier valor por encima de décimas de ohm en un neutro es anormal.','Usar la cámara bajo carga: el punto flojo aparece como el más caliente de la línea.','Riesgo: si el neutro se abre del todo, las cargas monofásicas quedan en serie entre fases y reciben tensiones muy distintas de la nominal. Es lo que quema los equipos.'], pel:true};
  if(v.npe1 > 5) return {e:'ojo', t:'Neutro con resistencia apreciable', d:txt,
    li:['Todavía no es crítico, pero está degradándose. Reapretar y volver a medir.','Verificar el neutro de acometida y del medidor, que suele ser el que nadie revisa.','Si el valor no baja al reapretar, buscar un empalme oculto oxidado.']};
  return {e:'ok', t:'El neutro está en condiciones', d:txt,
@@ -854,7 +854,7 @@ pasos:[
  'Rearmar y reproducir la condición de uso que hace saltar la protección.',
  'Con el UT-204+ en A~, abrazar sólo el conductor de fase del circuito y medir la corriente en régimen.',
  'Anotar el calibre nominal del interruptor y la sección del conductor.',
- 'Medir la temperatura dentro del tablero con el IR: por encima de 40 °C el bimetálico dispara antes de lo nominal.',
+ 'Medir la temperatura dentro del tablero con la cámara: por encima de 40 °C el bimetálico dispara antes de lo nominal.',
  'Si la corriente medida no llega al calibre, el problema no es sobrecarga sino el propio interruptor o la temperatura.'
 ],
 med:{campos:[
@@ -928,7 +928,7 @@ sint:'Salta con muy poco conectado, o directamente en vacío. A veces sólo cuan
 causas:['Interruptor fatigado por disparos repetidos o por un cortocircuito anterior','Borne flojo dentro del propio interruptor, que lo calienta','Tablero sobrecalentado: la característica térmica se corre','Interruptores muy juntos que se calientan entre sí (falta de factor de simultaneidad en el cálculo térmico)','Falla intermitente a tierra que aparece con la vibración o la humedad'],
 eq:[EQ.ir, EQ.ut204, EQ.ut511],
 pasos:[
- 'Medir con el IR la temperatura del cuerpo del interruptor, la de sus bornes y la del interior del tablero, con la carga habitual conectada.',
+ 'Medir con la cámara la temperatura del cuerpo del interruptor, la de sus bornes y la del interior del tablero, con la carga habitual conectada.',
  'Comparar con la temperatura de los interruptores vecinos que llevan carga parecida. El que está claramente más caliente es el problema.',
  'Medir la corriente real del circuito para descartar sobrecarga.',
  'Si no hay diferencia térmica ni sobrecarga, seccionar y medir aislación con el UT-511 en 500 V.'
@@ -958,7 +958,7 @@ med:{campos:[
  }
  return {e:e, t:t, d:d, li:li};
 }},
-sol:['Reemplazar el interruptor fatigado. Un aparato que soportó un cortocircuito franco ya no tiene la característica original.','Corregir la disipación del tablero: menos densidad de aparatos, gabinete más grande o ventilación.','Reapretar todos los bornes de cabecera y de salida y verificar después con IR bajo carga.'],
+sol:['Reemplazar el interruptor fatigado. Un aparato que soportó un cortocircuito franco ya no tiene la característica original.','Corregir la disipación del tablero: menos densidad de aparatos, gabinete más grande o ventilación.','Reapretar todos los bornes de cabecera y de salida y verificar después con la cámara bajo carga.'],
 cita:'AEA 90364-7-771, Anexo 771-H y Tabla 771.20.II: la potencia disipada por el equipamiento del tablero debe ser menor o igual a la disipación admisible del gabinete, con el factor de simultaneidad que corresponda.'
 });
 
@@ -1083,7 +1083,7 @@ pasos:[
  'Verificar visualmente que lo instalado sea un interruptor automático y no un seccionador o un interruptor de maniobra.',
  'Medir la corriente real del circuito con la pinza, en la condición que produce el calentamiento.',
  'Comparar con el calibre marcado y con la Iz del conductor.',
- 'Medir con el IR la temperatura del conductor en el tramo más caliente y en la caja de derivación.'
+ 'Medir con la cámara la temperatura del conductor en el tramo más caliente y en la caja de derivación.'
 ],
 med:{campos:[
  {id:'ib', lbl:'Corriente medida del circuito', u:'A'},
@@ -1096,12 +1096,12 @@ med:{campos:[
  if(v.tc!==null && v.tc >= 70){ e='mal'; li.push('El conductor está a '+f(v.tc)+' °C o más. La aislación de PVC tiene 70 °C como temperatura máxima en servicio permanente: por encima de eso la aislación se degrada de forma acumulativa e irreversible.'); }
  if(v.iz!==null && v.ib > v.iz){ e='mal'; li.push('La corriente supera la Iz del conductor: el cable está sobrecargado aunque el interruptor no dispare.'); }
  if(v.inp!==null && v.iz!==null && v.inp > v.iz) li.push('Además el calibre supera la Iz: la protección nunca va a actuar antes del daño del cable. Ver ficha P5.');
- if(v.inp!==null && v.ib < v.inp*0.9 && (v.iz===null || v.ib <= v.iz)) li.push('La corriente está por debajo del calibre: es coherente que no dispare. Si igual calienta, el calor viene de una resistencia de contacto localizada, no de la corriente. Buscar el borne o el empalme con el IR.');
+ if(v.inp!==null && v.ib < v.inp*0.9 && (v.iz===null || v.ib <= v.iz)) li.push('La corriente está por debajo del calibre: es coherente que no dispare. Si igual calienta, el calor viene de una resistencia de contacto localizada, no de la corriente. Buscar el borne o el empalme con la cámara.');
  li.push('Probar el interruptor: cortar la alimentación, retirarlo y verificar que el mecanismo abre y cierra con firmeza. Si queda blando o no engancha, está fallado.','Si hay dudas, sustituirlo por uno nuevo del calibre correcto. Un interruptor que no dispara no se repara.');
  t = (e==='mal') ? 'Circuito en condición de daño' : 'Revisar el aparato y el punto caliente';
  return {e:e, t:t, d:d, li:li, pel:(e==='mal')};
 }},
-sol:['Reemplazar el interruptor fallado por uno del calibre que corresponde a la Iz del conductor.','Sustituir el tramo de conductor que estuvo por encima de 70 °C: la aislación no se recupera.','Reparar el punto de contacto que genera el calor y verificar con IR bajo carga después de la reparación.'],
+sol:['Reemplazar el interruptor fallado por uno del calibre que corresponde a la Iz del conductor.','Sustituir el tramo de conductor que estuvo por encima de 70 °C: la aislación no se recupera.','Reparar el punto de contacto que genera el calor y verificar con la cámara bajo carga después de la reparación.'],
 cita:'AEA 90364-7-771, 771.16: la protección contra sobrecargas debe actuar antes de que el conductor supere su temperatura máxima admisible en servicio permanente.'
 });
 /* ---------- 3. DIFERENCIALES ---------- */
@@ -1522,7 +1522,7 @@ pasos:[
  'Medición de aislación completa por circuito con el UT-511 a 500 V, con todo desconectado.',
  'Anotar el valor de cada circuito por separado. En instalación vieja los valores dispersos son el dato: un circuito muy por debajo de los otros indica dónde intervenir primero.',
  'Inspección visual: mover suavemente el conductor en las cajas. Si la aislación se quiebra o se desprende, el cable está terminado.',
- 'Con la instalación en carga, recorrer con el IR: los empalmes retorcidos y los bornes viejos aparecen como puntos calientes.',
+ 'Con la instalación en carga, recorrer con la cámara: los empalmes retorcidos y los bornes viejos aparecen como puntos calientes.',
  'Verificar si hay conductor de protección. En instalaciones muy viejas simplemente no existe.'
 ],
 med:{campos:[
@@ -1758,7 +1758,7 @@ pasos:[
  'Calcular la resistencia aparente del tramo: R = ΔU medida dividida por la corriente medida.',
  'Calcular la resistencia teórica: R = ρ × L × 2 / S, con ρ del cobre ≈ 0,0178 Ω·mm²/m, L la longitud de ida y S la sección. El factor 2 es por ida y vuelta en monofásico.',
  'Comparar las dos resistencias. La diferencia es lo que no está en el cálculo.',
- 'Si la resistencia medida supera claramente la teórica, recorrer el circuito con el IR bajo carga.'
+ 'Si la resistencia medida supera claramente la teórica, recorrer el circuito con la cámara bajo carga.'
 ],
 med:{campos:[
  {id:'du', lbl:'Caída de tensión medida (origen menos extremo)', u:'V'},
@@ -1775,7 +1775,7 @@ med:{campos:[
    var exc = rm-rt;
    d+=' Resistencia teórica del conductor: <span class="num">'+f(rt,3)+' Ω</span> (ρ 0,0178 Ω·mm²/m, '+f(v.lg,0)+' m ida y vuelta, '+f(v.sec,1)+' mm²). Diferencia: <span class="num">'+f(exc,3)+' Ω</span>.';
    if(exc > rt*0.5 && exc > 0.05){
-     li.push('La resistencia medida supera claramente la del conductor: hay resistencia de contacto acumulada en bornes o empalmes.','Recorrer el circuito con el termómetro IR bajo carga. Un contacto con '+f(exc,3)+' Ω disipa '+f(exc*v.ic*v.ic,1)+' W con la corriente actual: eso se ve como punto caliente.','Reapretar todos los bornes del recorrido y volver a medir la caída. Si baja, el problema eran los contactos.','Los puntos habituales: bornes del interruptor, empalmes retorcidos en caja, bornes de módulos de tomacorriente donde se derivó en cadena.');
+     li.push('La resistencia medida supera claramente la del conductor: hay resistencia de contacto acumulada en bornes o empalmes.','Recorrer el circuito con la cámara bajo carga. Un contacto con '+f(exc,3)+' Ω disipa '+f(exc*v.ic*v.ic,1)+' W con la corriente actual: eso se ve como punto caliente.','Reapretar todos los bornes del recorrido y volver a medir la caída. Si baja, el problema eran los contactos.','Los puntos habituales: bornes del interruptor, empalmes retorcidos en caja, bornes de módulos de tomacorriente donde se derivó en cadena.');
      return {e:'mal', t:'Hay resistencia de contacto además del conductor', d:d, li:li};
    }
    if(exc < -rt*0.3){
@@ -1798,10 +1798,10 @@ sint:'El gabinete calienta al tacto, o los interruptores trabajan a temperatura 
 causas:['Bornes flojos que disipan por resistencia de contacto','Demasiados aparatos en un gabinete de disipación insuficiente','Tablero en ubicación con mala ventilación o expuesto al sol','Sobrecarga real de varios circuitos a la vez','Aparatos auxiliares dentro del tablero que suman disipación'],
 eq:[EQ.ir, EQ.ut204],
 pasos:[
- 'Medir con el IR, con la instalación en carga normal y después de al menos media hora de régimen.',
+ 'Medir con la cámara, con la instalación en carga normal y después de al menos media hora de régimen.',
  'Barrer todos los bornes de entrada y salida de cada aparato, más las barras de neutro y PE.',
  'Anotar la temperatura del punto más caliente, la del aparato vecino comparable y la del ambiente fuera del gabinete.',
- 'Sobre cobre desnudo o barra pulida la lectura del IR es falsa por baja emisividad: pegar cinta mate y medir sobre la cinta.',
+ 'Sobre cobre desnudo o barra pulida la lectura de la cámara es falsa por baja emisividad: pegar cinta mate y medir sobre la cinta.',
  'Medir la corriente total del tablero para saber si la disipación es proporcional a la carga o desproporcionada.'
 ],
 med:{campos:[
@@ -1838,7 +1838,7 @@ sint:'La ficha se calienta al enchufarla. La tapa del tomacorriente está deform
 causas:['Contactos del módulo vencidos, que ya no sujetan la ficha','Borne flojo del conductor en el módulo','Carga superior a la que el tomacorriente admite','Ficha o alargue de mala calidad','Derivación en cadena por los bornes del módulo, que hace pasar la corriente de otras bocas por ese punto'],
 eq:[EQ.ir, EQ.ut204],
 pasos:[
- 'Con la carga habitual conectada y en régimen, medir la temperatura de la tapa, de la ficha y del cuerpo del módulo con el IR.',
+ 'Con la carga habitual conectada y en régimen, medir la temperatura de la tapa, de la ficha y del cuerpo del módulo con la cámara.',
  'Medir la corriente que está pasando por esa boca con la pinza, en el cable del artefacto.',
  'Comparar contra la corriente nominal del tomacorriente instalado.',
  'Cortar tensión, abrir y revisar: bornes, color del conductor, estado de los contactos del módulo.'
@@ -1862,7 +1862,7 @@ med:{campos:[
  t = (e==='mal') ? 'Sobrecalentamiento en el punto de conexión' : 'Revisar el punto de conexión';
  return {e:e, t:t, d:d, li:li, pel:(e==='mal')};
 }},
-sol:['Reemplazar el módulo y la ficha, no repararlos.','Rehacer la derivación con borne independiente en caja si estaba en cadena por el módulo.','Si la carga excede el nominal de la boca, darle circuito, boca y protección propios.','Verificar con IR bajo carga después de la reparación.'],
+sol:['Reemplazar el módulo y la ficha, no repararlos.','Rehacer la derivación con borne independiente en caja si estaba en cadena por el módulo.','Si la carga excede el nominal de la boca, darle circuito, boca y protección propios.','Verificar con la cámara bajo carga después de la reparación.'],
 cita:'AEA 90364-7-771, 771.23.6: las anormalidades detectables en el material eléctrico y sus accesorios deben corregirse mediante reemplazo o reparación; en el reemplazo sólo se utilizan elementos normalizados IRAM o IEC.'
 });
 
@@ -1875,7 +1875,7 @@ pasos:[
  'Medir la corriente real del circuito con la pinza, en régimen.',
  'Identificar la sección real del conductor.',
  'Contar cuántos circuitos comparten el caño y aplicar el factor de reducción por agrupamiento.',
- 'Medir la temperatura superficial del conductor o del caño con el IR en el tramo más caliente.',
+ 'Medir la temperatura superficial del conductor o del caño con la cámara en el tramo más caliente.',
  'Comparar la corriente contra la Iz corregida.'
 ],
 med:{campos:[
@@ -1914,9 +1914,9 @@ sint:'Hay olor a plástico o a aislación quemada pero no se ve dónde. Puede se
 causas:['Borne flojo dentro de una caja cerrada o del tablero','Empalme retorcido calentando dentro de una caja','Motor con bobinado en degradación','Balasto, driver o transformador en falla','Conductor calentando dentro del caño'],
 eq:[EQ.ir, EQ.ut204, EQ.f117v],
 pasos:[
- 'Con la instalación en carga, recorrer el tablero completo con el IR: bornes, aparatos, barras.',
+ 'Con la instalación en carga, recorrer el tablero completo con la cámara: bornes, aparatos, barras.',
  'Medir la corriente de cada circuito y compararla con lo esperable. El circuito que lleva más corriente de lo previsto es el candidato.',
- 'Abrir las cajas de derivación accesibles del circuito sospechoso y medir con el IR apenas se abren, antes de que se enfríen.',
+ 'Abrir las cajas de derivación accesibles del circuito sospechoso y medir con la cámara apenas se abren, antes de que se enfríen.',
  'Palpar el caño en el recorrido accesible.',
  'Si el olor viene de un artefacto, desconectarlo y probar por separado.',
  'Si no se encuentra el punto y el olor persiste, cortar la alimentación del sector y no dejarlo energizado.'
@@ -1934,15 +1934,15 @@ med:{campos:[
    d:d+'El olor continúa con el circuito desconectado.',
    li:['Ampliar la búsqueda: desconectar por sectores hasta que el olor deje de aparecer.','Revisar los artefactos con electrónica: drivers de LED, balastos, fuentes, cargadores. Un componente en degradación huele antes de fallar.','Revisar equipos con motor: extractores, bombas, heladeras.','Si no se identifica el origen, dejar el sector sin alimentación. Un olor a quemado sin causa encontrada es motivo suficiente para no energizar.'], pel:true};
  if(v.tmax!==null && v.tamb!==null && (v.tmax-v.tamb)>=25) return {e:'mal', t:'Punto caliente localizado',
-   d:d, li:['Ese es el punto. Cortar tensión e intervenir: reapretar o reemplazar según el estado.','Revisar el extremo del conductor: si está oscurecido o quebradizo, cortarlo y volver a conectar sobre cobre sano.','Reemplazar el aparato si tiene marca de calentamiento en el cuerpo.','Volver a medir con IR bajo carga después de la reparación.'], pel:true};
+   d:d, li:['Ese es el punto. Cortar tensión e intervenir: reapretar o reemplazar según el estado.','Revisar el extremo del conductor: si está oscurecido o quebradizo, cortarlo y volver a conectar sobre cobre sano.','Reemplazar el aparato si tiene marca de calentamiento en el cuerpo.','Volver a medir con la cámara bajo carga después de la reparación.'], pel:true};
  if(v.circ===true) return {e:'ojo', t:'Circuito identificado, falta el punto',
-   d:d+'El circuito de origen está identificado pero el punto no aparece con el IR.',
-   li:['Abrir todas las cajas de ese circuito y medir apenas se abren.','Si el punto está dentro del caño, no se va a ver con el IR: medir aislación con el UT-511 a 500 V, que sí detecta la degradación.','Verificar la corriente contra la Iz corregida (ficha C4).','Mientras no se encuentre, dejar ese circuito fuera de servicio.'], pel:true};
+   d:d+'El circuito de origen está identificado pero el punto no aparece con la cámara.',
+   li:['Abrir todas las cajas de ese circuito y medir apenas se abren.','Si el punto está dentro del caño, no se va a ver con la cámara: medir aislación con el UT-511 a 500 V, que sí detecta la degradación.','Verificar la corriente contra la Iz corregida (ficha C4).','Mientras no se encuentre, dejar ese circuito fuera de servicio.'], pel:true};
  return {e:'ojo', t:'Búsqueda en curso',
    d:d+'Todavía no hay punto ni circuito identificado.',
-   li:['Recorrer el tablero completo con el IR bajo carga: es donde aparece la mayoría de estos casos.','Medir la corriente de cada circuito y comparar con lo esperable.','Ir desconectando por sectores para acotar.','Si el olor persiste y no se identifica, cortar la alimentación del sector afectado y no restablecer hasta encontrarlo.'], pel:true};
+   li:['Recorrer el tablero completo con la cámara bajo carga: es donde aparece la mayoría de estos casos.','Medir la corriente de cada circuito y comparar con lo esperable.','Ir desconectando por sectores para acotar.','Si el olor persiste y no se identifica, cortar la alimentación del sector afectado y no restablecer hasta encontrarlo.'], pel:true};
 }},
-sol:['No dejar energizado un sector con olor a quemado y causa no identificada.','Reparar el punto encontrado, reemplazando el material dañado y el extremo de conductor comprometido.','Verificar con IR bajo carga después de la reparación y dejar constancia.'],
+sol:['No dejar energizado un sector con olor a quemado y causa no identificada.','Reparar el punto encontrado, reemplazando el material dañado y el extremo de conductor comprometido.','Verificar con la cámara bajo carga después de la reparación y dejar constancia.'],
 cita:'AEA 90364-7-771, 771.23.6: todas las anormalidades constatadas o potenciales deben corregirse mediante reemplazo o reparación por personal competente, asegurando el restablecimiento total de las características originales.'
 });
 /* ---------- 7. CANALIZACIONES Y CABLEADO ---------- */
@@ -1954,7 +1954,7 @@ eq:[EQ.f117v, EQ.ir, EQ.ut204],
 pasos:[
  'Con el circuito energizado y una carga conectada, medir la tensión en la boca mientras se golpea suavemente la pared o se mueve el módulo. Un falso contacto se delata por el salto de tensión.',
  'Dejar una carga apreciable conectada (una lámpara incandescente o un secador en mínimo funcionan bien como carga de prueba) y medir la caída bajo carga.',
- 'Recorrer con el IR las cajas del circuito bajo carga: un falso contacto disipa y calienta.',
+ 'Recorrer con la cámara las cajas del circuito bajo carga: un falso contacto disipa y calienta.',
  'Cortar tensión, abrir las cajas y revisar cada empalme. Tirar suavemente de cada conductor: el que se sale del borne es el que falla.'
 ],
 med:{campos:[
@@ -1975,15 +1975,15 @@ med:{campos:[
      txt+=' Resistencia aparente del defecto y del cable: <span class="num">'+f(r,3)+' Ω</span>, disipando <span class="num">'+f(r*v.ic*v.ic,1)+' W</span>.';
    }
    if(d > 10) return {e:'mal', t:'Caída excesiva bajo carga', d:txt,
-     li:['Una caída de esta magnitud con tan poca carga es resistencia de contacto, no sección de conductor.','Recorrer con el IR bajo carga: la potencia que se disipa en el defecto lo hace visible.','Abrir las cajas del recorrido y rehacer los empalmes.','Después de reparar, repetir la medición: la caída debe quedar en pocos volts.']};
+     li:['Una caída de esta magnitud con tan poca carga es resistencia de contacto, no sección de conductor.','Recorrer con la cámara bajo carga: la potencia que se disipa en el defecto lo hace visible.','Abrir las cajas del recorrido y rehacer los empalmes.','Después de reparar, repetir la medición: la caída debe quedar en pocos volts.']};
    if(d > 4) return {e:'ojo', t:'Caída apreciable', d:txt,
-     li:['Está alto para una carga de prueba pequeña. Reapretar los bornes del recorrido y volver a medir.','Si no baja, buscar el punto con el IR.']};
+     li:['Está alto para una carga de prueba pequeña. Reapretar los bornes del recorrido y volver a medir.','Si no baja, buscar el punto con la cámara.']};
    return {e:'ok', t:'La caída bajo carga es normal', d:txt,
      li:['No se detecta resistencia de contacto en la medición estática.','Si el síntoma es intermitente, repetir la medición en el momento en que ocurre, o dejar una carga conectada y observar.','Revisar de todos modos el módulo y la llave: los contactos gastados a veces sólo fallan con la ficha puesta de determinada manera.']};
  }
  return null;
 }},
-sol:['Rehacer los empalmes con borne o conector dentro de caja accesible. No retorcer y cintar.','Reemplazar módulos y llaves con contactos gastados.','Cortar el extremo del conductor si está oscurecido y volver a conectar sobre cobre sano.','Verificar con IR bajo carga después de la reparación.'],
+sol:['Rehacer los empalmes con borne o conector dentro de caja accesible. No retorcer y cintar.','Reemplazar módulos y llaves con contactos gastados.','Cortar el extremo del conductor si está oscurecido y volver a conectar sobre cobre sano.','Verificar con la cámara bajo carga después de la reparación.'],
 cita:'AEA 90364-7-771, 771.13: las conexiones y empalmes se realizan en cajas accesibles, con elementos adecuados. 771.22 exige accesibilidad para operación, prueba, inspección, mantenimiento y reparación.'
 });
 
@@ -1994,7 +1994,7 @@ causas:['Ampliación hecha sin sacar caja nueva','Reparación de un conductor co
 eq:[EQ.ir, EQ.ut511],
 pasos:[
  'Relevar todos los empalmes fuera de caja que se encuentren. Documentarlos con foto.',
- 'Con el circuito en carga, medir la temperatura de cada uno con el IR: un empalme cintado que calienta es una falla en curso.',
+ 'Con el circuito en carga, medir la temperatura de cada uno con la cámara: un empalme cintado que calienta es una falla en curso.',
  'Medir la aislación del circuito con el UT-511 a 500 V: un empalme mal hecho baja la aislación cuando la cinta se degrada.',
  'Verificar si el empalme quedó dentro del caño: eso además impide pasar un conductor nuevo, lo que convierte cualquier reparación futura en rotura de pared.'
 ],
@@ -2426,7 +2426,7 @@ causas:['Sobretensión permanente en la instalación','Falso contacto en el port
 eq:[EQ.f117v, EQ.ir],
 pasos:[
  'Medir la tensión en la boca, en varios momentos del día. La sobretensión de barrio suele aparecer de madrugada.',
- 'Con la lámpara encendida, medir la temperatura del cuerpo del artefacto y del portalámparas con el IR.',
+ 'Con la lámpara encendida, medir la temperatura del cuerpo del artefacto y del portalámparas con la cámara.',
  'Revisar el portalámparas: contacto central hundido, rosca floja u oxidada.',
  'Verificar si el artefacto es cerrado y si la lámpara instalada admite ese tipo de artefacto. Muchos LED no admiten luminaria cerrada.'
 ],
@@ -2572,7 +2572,7 @@ eq:[EQ.ut219, EQ.ir],
 pasos:[
  'Medir la corriente de cada fase y la del neutro con la pinza, en actividad normal.',
  'Comparar la corriente de neutro con la que resultaría sólo del desbalance. Si es mucho mayor, hay armónicos.',
- 'Medir la temperatura del conductor de neutro con el IR y compararla con la de las fases.',
+ 'Medir la temperatura del conductor de neutro con la cámara y compararla con la de las fases.',
  'Verificar la sección del neutro: en instalaciones con mucha electrónica puede necesitar la misma sección que las fases o más.'
 ],
 med:{campos:[
@@ -2600,7 +2600,7 @@ med:{campos:[
  li.push('La corriente de neutro es coherente con el desbalance y está en un nivel razonable.','Anotar el valor como línea de base para las verificaciones siguientes.');
  return {e:'ok', t:'Corriente de neutro normal', d:d, li:li};
 }},
-sol:['Aumentar la sección del neutro donde el contenido armónico lo justifique.','Repartir las cargas electrónicas entre las tres fases.','Verificar la temperatura del neutro con IR bajo carga.','Registrar las corrientes medidas para poder comparar.'],
+sol:['Aumentar la sección del neutro donde el contenido armónico lo justifique.','Repartir las cargas electrónicas entre las tres fases.','Verificar la temperatura del neutro con la cámara bajo carga.','Registrar las corrientes medidas para poder comparar.'],
 cita:'AEA 90364-7-771: dimensionamiento del conductor neutro considerando las corrientes armónicas. El conductor neutro no está protegido por las protecciones de fase, de modo que su sección debe verificarse por separado.'
 });
 
@@ -2631,11 +2631,11 @@ med:{campos:[
    if(v.arriba===true) li.push('Las tres tensiones están correctas aguas arriba: la interrupción está en el interruptor principal o en su borne. Cortar la alimentación, revisar el apriete y el estado del borne, y probar el interruptor.');
    else if(v.arriba===false) li.push('Ya falta aguas arriba del principal: el problema está en la acometida o en la distribuidora. Verificar el fusible de acometida si es accesible y está dentro de la incumbencia; si no, reclamar.');
    else li.push('Medir aguas arriba del interruptor principal para saber si la interrupción está antes o después.');
-   li.push('Revisar con el IR el borne de esa fase: una fase que se está abriendo suele calentar antes de cortarse del todo.','Después de restablecer, verificar las tres corrientes y el balanceo.');
+   li.push('Revisar con la cámara el borne de esa fase: una fase que se está abriendo suele calentar antes de cortarse del todo.','Después de restablecer, verificar las tres corrientes y el balanceo.');
    return {e:'mal', t:'Falta una fase', d:d, li:li, pel:true};
  }
  if(mx-mn > 15){
-   li.push('Hay dispersión apreciable entre las tensiones de línea: una fase está debilitada, con un borne en mal estado, o hay desbalance de carga fuerte.','Revisar los bornes con el IR bajo carga.','Verificar las tres corrientes (ficha B1).');
+   li.push('Hay dispersión apreciable entre las tensiones de línea: una fase está debilitada, con un borne en mal estado, o hay desbalance de carga fuerte.','Revisar los bornes con la cámara bajo carga.','Verificar las tres corrientes (ficha B1).');
    return {e:'ojo', t:'Tensiones de línea dispares', d:d, li:li};
  }
  li.push('Las tres tensiones de línea son coherentes: no falta ninguna fase.','Si el síntoma persiste, ver la ficha G1 para el motor y la B1 para el reparto de cargas.');
@@ -2760,7 +2760,7 @@ pasos:[
  'Medir la corriente en régimen con el UT-204+ y compararla con la de chapa del compresor.',
  'Medir la fuga con el UT-251A, abrazando fase y neutro juntos del cable de alimentación del equipo solo.',
  'Con el equipo desconectado y sin tensión, medir la aislación entre las patas de la ficha unidas y la carcasa, con el UT-511 a 500 V.',
- 'Con el IR, medir la temperatura de la bornera del equipo y del borne en el tablero: en un consumo permanente el borne flojo se delata rápido.',
+ 'Con la cámara, medir la temperatura de la bornera del equipo y del borne en el tablero: en un consumo permanente el borne flojo se delata rápido.',
  'El UT-204+ no tiene INRUSH, así que la corriente de arranque no se captura: el diagnóstico de la alimentación se hace por la caída de tensión.'
 ],
 med:{campos:[
@@ -2816,7 +2816,7 @@ pasos:[
  'Medir la aislación con el UT-511 a 500 V, con los drivers DESCONECTADOS. Si quedan conectados, la medición no vale y además se puede dañar la electrónica.',
  'Mojar la zona sospechosa —caja de conexión, entrada del perfil, prensacables— esperar unos minutos y repetir la medición.',
  'Con tensión y en servicio, medir la fuga del cartel con el UT-251A, abrazando fase y neutro juntos.',
- 'Con el cartel encendido y en régimen, medir la temperatura de los drivers con el IR. Si están dentro del perfil sin ventilación, es donde mueren.',
+ 'Con el cartel encendido y en régimen, medir la temperatura de los drivers con la cámara. Si están dentro del perfil sin ventilación, es donde mueren.',
  'Revisar el grado IP de cada elemento a la intemperie y el estado de las juntas.'
 ],
 med:{campos:[
@@ -2912,7 +2912,7 @@ pasos:[
  'Repetir la medición de fuga con el equipo ya caliente, después de unos minutos de funcionamiento. Las resistencias perforadas fugan mucho más en caliente que en frío: medir sólo en frío hace perder el diagnóstico.',
  'Con el equipo desconectado y sin tensión, medir la aislación entre las patas de la ficha unidas y la carcasa, con el UT-511 a 500 V.',
  'Verificar el IΔn del diferencial que protege la zona: en cocina corresponde 30 mA o menos.',
- 'Con el IR, recorrer bornes y conductores de la zona en horario de servicio, no con la cocina apagada.'
+ 'Con la cámara, recorrer bornes y conductores de la zona en horario de servicio, no con la cocina apagada.'
 ],
 med:{campos:[
  {id:'ieq', lbl:'Corriente del equipo en su máximo consumo', u:'A'},
@@ -2949,7 +2949,7 @@ med:{campos:[
  if(!d && !li.length) return null;
  if(e==='mal') t='Hay que intervenir antes de seguir usando la zona';
  else if(e==='ojo') t='Funciona, pero sin margen';
- else { t='La zona está en condiciones'; li.push('Recorrer bornes y conductores con el IR en horario de servicio y dejar el registro.'); }
+ else { t='La zona está en condiciones'; li.push('Recorrer bornes y conductores con la cámara en horario de servicio y dejar el registro.'); }
  li.push('En cocina, vapor y grasa degradan cajas, juntas y aislación más rápido que en cualquier otro ambiente: acortar el intervalo entre verificaciones.');
  return {e:e, t:t, d:d, li:li};
 }},
@@ -4286,7 +4286,7 @@ pasos:[
  'Leer la corriente asignada del interruptor automático del circuito: el máximo es 32 A por fase y circuito, con corte multipolar.',
  'Verificar el diferencial de 30 mA y la potencia total de calefacción aguas abajo de él.',
  'Verificar que la malla, cubierta o envoltura metálica esté conectada al conductor de protección del circuito.',
- 'Con el equipo en régimen, medir la temperatura de la superficie del solado con el termómetro infrarrojo en la zona donde se pisa descalzo.',
+ 'Con el equipo en régimen, medir la temperatura de la superficie del solado con la cámara termográfica en la zona donde se pisa descalzo.',
  'Verificar la ubicación y el ajuste del termostato.'
 ],
 med:{campos:[
@@ -6317,6 +6317,8 @@ function vistaEquipos(){
      '<li>El UT-582+ no tiene 1000 mA: el máximo es 500 mA, y sí tiene 20 mA. El multiplicador ×5 sólo funciona hasta 30 mA, así que no se puede ensayar ×5 sobre un diferencial de 100, 300 o 500 mA. Los ensayos de 300 y 500 mA sólo se repiten cada 5 minutos.</li>'+
      '<li>El UT-511 también ofrece 100 V además de 250, 500 y 1000 V. No declara descarga automática ni bloqueo por tensión presente: la verificación previa y la descarga son responsabilidad del operador.</li>'+
      '<li>Las fichas de fuga pedían la lectura en miliamperes apuntando al UT-204+, que es una pinza de 200 A y no resuelve mA. La medición de fuga corresponde al UT-251A, que llega a 1 µA. Quedaron corregidas las diez fichas afectadas.</li>'+
+     '<li>La cámara termográfica UNI-T UTi260B entró al maletín y reemplaza al termómetro infrarrojo de punto, que quedó sin comprar. De las 21 fichas que piden lectura térmica, 13 piden recorrer o comparar varios puntos —eso con un instrumento de un punto por vez no se hace, y en la C5 las cajas se enfrían antes de terminar el barrido—, 5 piden un valor puntual sobre plástico, pintura o solado, donde los dos dan lo mismo, y 3 lo nombran sin tener paso térmico propio.</li>'+
+     '<li>El criterio de compra que traía la app pedía −30 a 400 °C como mínimo. La UTi260B va de −20 a 550 °C: sobra por arriba y queda 10 °C corta por abajo. Sólo importaría midiendo el evaporador de una cámara de frío, y el paso térmico de la ficha L1 es sobre la bornera del equipo y el borne del tablero, no sobre el evaporador. Criterio corregido.</li>'+
      '<li>El CEM DT-5301 tiene la exactitud referida al fondo de escala (±2 % F.E. ±5 díg.), o sea ±0,45 Ω en el rango de 20 Ω. No sirve para verificar una Zs contra el disparo de una termomagnética, no mide impedancia de línea L-N, y sus rangos de 20 Ω (25 A) y 200 Ω (2,3 A) disparan cualquier diferencial.</li>'+
      '</ul></div>';
   h+='<div class="bloque"><h3>Lo que este equipamiento no alcanza a verificar</h3><ul class="sol">'+
@@ -6325,7 +6327,8 @@ function vistaEquipos(){
      '<li>Corriente de arranque de motores: el UT-204+ no tiene función INRUSH. El diagnóstico se hace por caída de tensión en el arranque y corriente en régimen.</li>'+
      '<li>Nivel de iluminación de emergencia: no hay luxómetro en el inventario. Se puede verificar el encendido y la autonomía, no el nivel alcanzado.</li>'+
      '<li>Categorías de seguridad: entre los que miden, el más bajo es el UT-204+ (CAT II 600 V / CAT III 300 V) y el más alto el UT-219p (CAT IV 600 V / CAT III 1000 V): en tablero principal y acometida corresponde el 219p. El UT-572 es CAT III 300 V y se usa con el electrodo desconectado, no con la instalación en servicio. El UT-12D es CAT IV 1000 V pero no mide: sólo detecta.</li>'+
-     '<li>Puntos calientes: el termómetro infrarrojo todavía no está en el maletín. Las fichas que lo piden se pueden hacer igual, pero sin la verificación térmica: el borne que se está abriendo o la conexión floja se detectan antes por temperatura que por cualquier otra medición.</li>'+
+     '<li>Termografía: la UTi260B mide temperatura de SUPERFICIE. Un borne flojo dentro de un aparato cerrado aparece atenuado sobre la carcasa, y un punto caliente dentro de un caño embutido no aparece: eso se busca con aislación al UT-511. Con el frente del tablero puesto tampoco se ve nada, porque el infrarrojo de 8 a 14 µm no atraviesa el policarbonato ni el vidrio. La cámara localiza el punto; el apriete y la medición eléctrica lo confirman.</li>'+
+     '<li>Termografía de recepción: la AEA no la enumera. Las verificaciones iniciales taxativas son las de 771.23.3.3 y 770.19.3, y ninguna es térmica. La inspección termográfica es diagnóstico y mantenimiento, y sus escalones de ΔT son criterio práctico.</li>'+
      '</ul></div>';
   h+='<div class="bloque"><h3>Protección personal</h3>';
   var ps=['guantes','gafas','calzado','herr','linterna'];
@@ -6342,9 +6345,41 @@ function vistaEquipos(){
      '<li>Descargar la instalación, y poner a tierra y en cortocircuito donde la tensión pueda volver por una maniobra o una falla.</li>'+
      '<li>Señalizar y delimitar la zona de trabajo.</li>'+
      '</ol><div class="nota">Bloquear no autoriza por sí solo a trabajar: recién con los cinco pasos la instalación está consignada. Al terminar, el mismo que consignó retira las puestas a tierra, comprueba que no quede nadie en la zona y recién ahí repone.</div></div>';
+  h+='<div class="bloque"><h3>Inspección termográfica <small>UTi260B · paso a paso</small></h3>';
+  h+='<div class="sint">El instrumento no decide nada por sí solo: en termografía el resultado depende casi por completo de la carga que había, de la distancia, del ángulo y de la emisividad cargada. Estos pasos son los que hacen que el número sirva.</div>';
+  h+='<div class="alerta"><b>Se hace con el tablero abierto y con tensión.</b> Es exactamente la maniobra para la que corresponde protector facial con ATPV en cal/cm² marcado según ASTM F2178 o IEC 61482-1-1, sobre casco sin ventilación clase E. Las gafas antivaho protegen del impacto y no tienen clasificación de arco: no lo reemplazan. Además, guantes clase 00 con cobertor, calzado dieléctrico, herramienta aislada y nadie más dentro de la zona de trabajo.</div>';
+  h+='<ol class="pasos">'+
+     '<li><b>Antes de salir.</b> Batería cargada —de 0 a 100 % son unas 5 horas—, micro SD colocada y con lugar, y la fecha y la hora del equipo puestas en hora: cada imagen se guarda fechada y eso es lo que después sostiene el informe.</li>'+
+     '<li><b>Poner la instalación en carga y esperar el régimen.</b> Como criterio práctico, al menos el 40 % de la corriente nominal del circuito y entre 20 y 30 minutos encendida. Una instalación recién arrancada no muestra el punto caliente: el calor tarda en llegar a la superficie.</li>'+
+     '<li><b>Medir la corriente y anotar la temperatura ambiente</b> en el mismo momento de la toma térmica: UT-204+ en los circuitos terminales y UT-219p en tablero principal y acometida. Sin corriente no hay disipación, y una termografía sin el dato de carga no se puede interpretar después.</li>'+
+     '<li><b>Encender la cámara y dejarla estabilizar.</b> Arranca en unos 30 segundos. Cada tanto cierra el obturador para autocalibrarse: se oye un clic y la imagen se congela un instante. No disparar justo ahí.</li>'+
+     '<li><b>Cargar la emisividad.</b> 0,95 sobre plástico, goma, pintura mate y vaina de conductor, que es la mayor parte de lo que hay en un tablero. Sobre cobre desnudo o barra pulida, ε real de 0,03 a 0,07: la lectura sale muy por debajo de la temperatura verdadera. Ahí, o se pega cinta aisladora mate y se mide sobre la cinta, o se abandona el valor absoluto y se compara entre fases, donde el error se cancela.</li>'+
+     '<li><b>Elegir paleta y modo de imagen.</b> Ironbow para recorrer, Rainbow HC para separar diferencias chicas, blanco caliente para la foto del informe. Para documentar, fusión o PiP: a 256 × 192 una imagen puramente térmica de un tablero es un manchón de rectángulos, y sin la imagen visual superpuesta después no se sabe cuál era el borne.</li>'+
+     '<li><b>Fijar la alarma alta</b> en el umbral del caso antes de empezar el barrido, para que el equipo avise sin tener que ir leyendo el número.</li>'+
+     '<li><b>Abrir el frente y medir dentro de los primeros minutos.</b> Apenas se destapa, las piezas empiezan a enfriarse por convección. Y no tocar ni reapretar nada antes de medir: un borne apretado borra la evidencia y la ficha se queda sin diagnóstico.</li>'+
+     '<li><b>Trabajar entre 30 y 50 cm, lo más perpendicular posible.</b> El blanco necesita unos 3 × 3 píxeles para que el valor sea confiable: 3,4 mm a 30 cm y 5,7 mm a 50 cm. Un borne de termomagnética mide unos 6 mm, así que a 50 cm entra justo y más lejos el número sale por debajo del real. Pasados unos 45° de inclinación, la emisividad efectiva cae y la lectura también. La lente es de foco fijo: el encuadre se corrige caminando, no con un anillo.</li>'+
+     '<li><b>Barrer siempre en el mismo orden:</b> acometida, interruptor general, barras y borneras, diferenciales, termomagnéticas, bornes de salida y conductores en la canaleta. El orden fijo es lo que evita saltearse un tercio del tablero.</li>'+
+     '<li><b>Comparar entre iguales.</b> Fase contra fase, polo contra polo, termomagnética contra su vecina de carga parecida. La comparación cancela a la vez el error de emisividad y el de reflejo, que es el error grande de este método.</li>'+
+     '<li><b>Descartar el reflejo antes de dar por bueno un hallazgo.</b> Si el punto caliente se corre al cambiar de ángulo, es un reflejo y no calor. Una barra pulida devuelve la imagen térmica del operador.</li>'+
+     '<li><b>Anotar los tres números de cada hallazgo:</b> la temperatura del punto, la del componente vecino comparable y la del ambiente. Son los tres que piden las fichas C2 y P3, y sin el tercero el ΔT sobre ambiente no se puede calcular.</li>'+
+     '<li><b>Corregir por carga si no se llegó al 40 %.</b> La disipación va con el cuadrado de la corriente: ΔT a plena carga ≈ ΔT medido × (In / I medida)². Un ΔT de 5 °C tomado con el 30 % de la carga son del orden de 55 °C a corriente nominal, que ya es reparación inmediata.</li>'+
+     '<li><b>Capturar imagen térmica y visual del hallazgo</b> con el punto o la zona de análisis puestos encima. El BMP guarda la matriz radiométrica: con el software de PC se puede recalcular después con otra emisividad, cosa que con un número anotado en un papel no se puede.</li>'+
+     '<li><b>Cerrar el tablero antes de reparar.</b> La reparación es trabajo sin tensión y va con los cinco pasos de la consignación. Terminada, repetir la termografía con la misma carga y a la misma distancia: es la verificación que piden las fichas A6, P3, C1, C5, N1 y N2.</li>'+
+     '</ol>';
+  h+='</div>';
+  h+='<div class="bloque"><h3>Criterio de veredicto <small>ΔT · criterio práctico, no reglamentario</small></h3><ul class="sol">'+
+     '<li><b>ΔT de 1 a 3 °C</b> contra un componente comparable con carga parecida, o de <b>1 a 10 °C</b> sobre el ambiente: posible deficiencia, corresponde investigar.</li>'+
+     '<li><b>ΔT de 4 a 15 °C</b> contra el comparable, o de <b>11 a 20 °C</b> sobre el ambiente: deficiencia probable, reparar en la próxima intervención programada.</li>'+
+     '<li><b>ΔT de 21 a 40 °C</b> sobre el ambiente: vigilar hasta poder corregir.</li>'+
+     '<li><b>ΔT mayor a 15 °C</b> contra el comparable, o mayor a <b>40 °C</b> sobre el ambiente: discrepancia mayor, reparar de inmediato.</li>'+
+     '<li><b>Límite del conductor:</b> 70 °C en aislación de PVC y 90 °C en XLPE, medidos sobre la vaina. Es el número contra el que evalúa la ficha C4.</li>'+
+     '<li><b>Dentro del tablero:</b> 40 °C es la temperatura ambiente de referencia de la Tabla 771.16.I. Por encima, la Iz de tabla ya no vale y hay que aplicar el factor de la Tabla 771.16.II.a —45 °C → 0,91 y 50 °C → 0,82—, y además el bimetálico de la termomagnética dispara antes de su corriente nominal.</li>'+
+     '</ul>';
+  h+='<div class="nota">Los escalones de ΔT no salen de la AEA: son el criterio de mantenimiento de uso corriente en termografía eléctrica. La Reglamentación no fija umbrales termográficos ni incluye la termografía entre las verificaciones de recepción. Lo que sí es reglamentario son los 70 y 90 °C del conductor y los 40 °C de referencia de la Tabla 771.16.I.</div>';
+  h+='</div>';
   h+='<div class="bloque"><h3>Material de seguridad <small>del listado reglamentario</small></h3><ul class="sol">'+
      '<li>ESTÁ · guantes aislantes, detectores y verificadores de tensión, herramientas aisladas y lámpara portátil.</li>'+
-     '<li>FALTA · protector facial. Es lo que corresponde para maniobrar un interruptor bajo carga o trabajar en un tablero con tensión; las gafas no lo reemplazan.</li>'+
+     '<li>FALTA · protector facial. Con la cámara termográfica en el maletín dejó de ser un faltante genérico y pasó a ser <b>prerrequisito</b>: la inspección térmica se hace con el tablero abierto y con tensión, que es exactamente la maniobra para la que corresponde. Exigirle ATPV en cal/cm² marcado según ASTM F2178 o IEC 61482-1-1, sobre casco sin ventilación clase E. Las gafas antivaho no lo reemplazan: no tienen clasificación de arco.</li>'+
      '<li>FALTA · alfombra o taburete aislante, y pértiga de maniobra. Es lo que separa del piso cuando el tablero no se puede dejar sin tensión.</li>'+
      '<li>FALTA · vainas y caperuzas aislantes para cubrir las partes activas vecinas al punto de trabajo.</li>'+
      '<li>FALTA · material de señalización para delimitar la zona. Sin eso, el paso 5 de la consignación no se puede cumplir.</li>'+
@@ -6378,6 +6413,7 @@ var CRITERIOS=[
  ['Circuitos mínimos','Vivienda y local comercial: 2 / 3 / 5 / 6 circuitos según el grado. Locales de otras características: 3 / 4 / 6 / 8, y en todos los grados al menos dos circuitos de iluminación en diferenciales distintos.','Tablas 770.7.II, 771.8.II, 771.8.V y 771.8.X'],
  ['Continuidad de PE','Ensayo con fuente de menos de 12 V; se recomienda corriente mínima de 0,2 A. El criterio de 1 Ω es práctico, no reglamentario.','771.23.3.3 y 770.19.5.1'],
  ['Corriente de fuga','El límite de 50 % de IΔn es práctico, no reglamentario. Por encima de ese valor cualquier transitorio completa el disparo.','Criterio de campo'],
+ ['Termografía','Contra un componente igual y de carga parecida: ΔT de 1 a 3 °C investigar · de 4 a 15 °C reparar programado · más de 15 °C reparar de inmediato. Contra la temperatura ambiente: de 1 a 10 °C investigar · de 11 a 20 °C reparar programado · de 21 a 40 °C vigilar hasta poder corregir · más de 40 °C reparar de inmediato. La medición sólo vale con el circuito al 40 % de su corriente nominal o más; con menos carga, ΔT a plena carga ≈ ΔT medido × (In / I medida)². Límite del conductor: 70 °C en PVC y 90 °C en XLPE sobre la vaina.','Criterio práctico de mantenimiento. La AEA no fija umbrales termográficos ni incluye la termografía entre las verificaciones de 771.23.3.3 y 770.19.3. Los 70 y 90 °C del conductor sí son reglamentarios, Tabla 771.16.I'],
  ['Protección por circuito','Cada circuito derivado lleva su propio interruptor automático con apertura por sobrecarga y cortocircuito.','771.20.5.2 b)'],
  ['Antes de restablecer','La actuación sin causa conocida de las protecciones obliga a una revisión detallada de la instalación antes de reponer el servicio.','771.23.6 y 770.19.6'],
  ['Bornes','Línea, neutro y protección deben estar conectados cada uno al borne destinado a tal fin.','771.23.3.1 d)'],
