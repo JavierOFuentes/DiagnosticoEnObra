@@ -2955,6 +2955,123 @@ med:{campos:[
 sol:['Reemplazar baterías y artefactos que no respondan.','Corregir la alimentación permanente de los que no cargan.','Verificar cantidad, ubicación y autonomía contra la 7-718 y la reglamentación de habilitación del local.','Dejar el registro del ensayo con fecha, para la inspección.'],
 cita:'AEA 90364-7-718: instalaciones eléctricas en lugares de pública concurrencia, incluida la iluminación de emergencia. Los requisitos de autonomía y nivel de iluminación deben verificarse contra esa Parte y contra la reglamentación local de habilitación.'
 });
+F.push({
+id:'B7', fam:'tab', t:'Ubicación y condiciones de instalación del tablero',
+sint:'Dónde puede ir un tablero y dónde no, y qué tiene que haber alrededor. Es lo que se observa en una habilitación y lo que en obra se suele resolver por donde quedaba cómodo.',
+causas:['Tablero dentro del cuarto de baño','Tablero adentro de una alacena o debajo de la mesada de la cocina','Tablero metido en un hueco, detrás de una puerta o arriba de un mueble','Tablero pegado a la bajada de agua, al caño de gas o a la cloaca','Llaves a 2,40 m de altura, o a 20 cm del piso','Tablero principal a diez metros de la caja del medidor','Gabinete sin el símbolo de riesgo eléctrico ni la leyenda de la función'],
+eq:_eq('glm','f117v'),
+pasos:[
+ 'Anotar en qué local está y si es seco, húmedo, mojado, polvoriento o a la intemperie.',
+ 'Ver si quedó dentro de un mueble, debajo de una mesada, en un hueco o en un lugar de difícil acceso, y si está alejado de las instalaciones de agua, gas y cloacas.',
+ 'Medir con el GLM el espacio libre delante del frente, y el de atrás si el tablero necesita acceso posterior.',
+ 'Medir la altura de las palancas de comando y la altura de la parte inferior de las borneras, desde el piso terminado.',
+ 'Si es el tablero principal, medir la distancia a la caja del medidor individual o al gabinete colectivo.',
+ 'Mirar el frente: símbolo de riesgo eléctrico y leyenda indicativa de la función.',
+ 'Contar los módulos de 18 mm ocupados y los totales del gabinete, para verificar la reserva.'
+],
+med:{campos:[
+ {id:'local', lbl:'Dónde está instalado', tipo:'sel', opts:[
+   ['bano','Dentro de un cuarto de baño'],
+   ['mueble','Dentro de un mueble, alacena o armario'],
+   ['mesada','Debajo de una mesada'],
+   ['hueco','En un hueco de la construcción o en un lugar de difícil acceso'],
+   ['humedo','Lugar húmedo, mojado o polvoriento'],
+   ['intemp','A la intemperie'],
+   ['salaesp','En un local específico de tableros'],
+   ['normal','Lugar seco, ambiente normal y de fácil acceso']]},
+ {id:'cerca', lbl:'¿Está alejado de las instalaciones de agua, gas y cloacas?', tipo:'bool'},
+ {id:'tipo', lbl:'Tipo de tablero', tipo:'sel', opts:[['tp','Tablero principal'],['tsg','Tablero seccional general'],['ts','Tablero seccional']]},
+ {id:'dmed', lbl:'Si es el principal, distancia a la caja del medidor o al gabinete colectivo', u:'m'},
+ {id:'personal', lbl:'Quién lo opera', tipo:'sel', opts:[['ba1','Personal común — BA1, BA2 o BA3'],['ba4','Personal advertido o calificado — BA4 o BA5']]},
+ {id:'frente', lbl:'Espacio libre delante del frente', u:'m'},
+ {id:'post', lbl:'Si necesita acceso posterior, espacio libre detrás', u:'m'},
+ {id:'lux', lbl:'Iluminación medida a 1 m del piso, sobre el frente', u:'lx'},
+ {id:'hcom', lbl:'Altura de las palancas de comando sobre el piso', u:'m'},
+ {id:'hbor', lbl:'Altura de la parte inferior de las borneras sobre el piso terminado', u:'m'},
+ {id:'ip', lbl:'Grado IP del gabinete', tipo:'sel', opts:[
+   ['41','IP41'],['31d','IP31D'],['3xd','IP3XD'],['54','IP54 o superior'],
+   ['menor','Menor que IP41 y que IP31D'],['nd','No está marcado o no se puede leer']]},
+ {id:'simb', lbl:'¿Tiene en el frente el símbolo de riesgo eléctrico de 40 mm como mínimo?', tipo:'bool'},
+ {id:'leyenda', lbl:'¿Tiene debajo la leyenda de la función, en letras negras de 10 mm sobre fondo amarillo?', tipo:'bool'},
+ {id:'mod', lbl:'Módulos de 18 mm ocupados', u:''},
+ {id:'modtot', lbl:'Módulos de 18 mm totales del gabinete', u:''},
+ {id:'veh', lbl:'¿Está en un acceso o zona de maniobra y estacionamiento de vehículos?', tipo:'bool'},
+ {id:'hveh', lbl:'Si es así, altura del borde inferior sobre la superficie de tránsito', u:'m'}
+], ev:function(v){
+ var li=[], e='ok', hay=false;
+ var mal=function(m){ e='mal'; li.push(m); };
+ var ojo=function(m){ if(e!=='mal') e='ojo'; li.push(m); };
+ if(v.local){ hay=true;
+   if(v.local==='bano') mal('Los tableros no se deben instalar en los cuartos de baño. Vale para el tablero principal, para el seccional general y para los seccionales, y no depende de la zona en que quede dentro del baño: la prohibición es del local entero. Está escrita en 770.16.2.1, en 771.20.3.1 y 771.20.3.2, y otra vez en la Sección 701, en 701.512.4.');
+   else if(v.local==='mueble') mal('No se permite la instalación de tableros en el interior de muebles: alacenas, armarios y similares.');
+   else if(v.local==='mesada') mal('No se permite la instalación de tableros debajo de mesadas. Es el error clásico de la cocina, y además la deja cerca de la pileta.');
+   else if(v.local==='hueco') mal('No se permite la instalación de tableros dentro de huecos de la construcción ni en lugares de difícil acceso.');
+   else if(v.local==='humedo') ojo('En lugares húmedos, mojados o polvorientos el gabinete debe construirse con el grado de protección IP adecuado al ambiente. La regla general pide lugar seco y ambiente normal: antes de resolverlo con IP, buscar otra ubicación.');
+   else if(v.local==='intemp') li.push('A la intemperie el grado de protección no debe ser inferior a IP54.');
+   else if(v.local==='salaesp') li.push('En un local específico de tableros: no puede usarse para almacenar material de ningún tipo, salvo herramientas y repuestos del propio tablero; piso sin desniveles y altura mínima de 2,4 m desde el punto de vista eléctrico; 200 lx a 1 m del piso sobre el frente y sistema de iluminación de emergencia autónomo; puerta que abra hacia afuera sin impedimento desde adentro, identificada, con resistencia al fuego similar a la de las paredes, doble contacto y cierre automático.');
+   else li.push('Lugar seco, ambiente normal y de fácil acceso es lo que pide la Reglamentación.');
+ }
+ if(v.cerca===false){ hay=true; mal('Los tableros se instalan alejados de otras instalaciones, tales como las de agua, gas y cloacas. Lo único que se permite llevar al tablero son instalaciones de telefonía y datos que hagan a la funcionalidad de la instalación.'); }
+ if(v.tipo==='tp'){ hay=true;
+   li.push('Los gabinetes de los tableros principales deben ser de aislación Clase II, normalizados y certificados, montados y armados respetando los criterios de la doble aislación. La línea principal y su canalización, lo mismo.');
+   if(v.dmed!==null){
+     if(v.dmed>2) ojo('El tablero principal está a '+f(v.dmed,2)+' m de la caja del medidor individual o del gabinete colectivo, y el máximo es 2 m. De no poder respetarse, la ubicación resulta del acuerdo entre proyectista, usuario o propietario y la empresa distribuidora o la autoridad de aplicación: dejarlo asentado por escrito.');
+     else li.push('Los '+f(v.dmed,2)+' m a la caja del medidor están dentro de los 2 m. El principal va siempre dentro de la propiedad.');
+   }
+ }
+ else if(v.tipo==='tsg'||v.tipo==='ts'){ hay=true;
+   li.push('El tablero seccional general y los tableros seccionales se instalan en lugares de fácil localización dentro de la vivienda, oficina o local. En inmuebles de más de una planta corresponde por lo menos un tablero seccional por planta prevista para ser habitada: la 7-771 lo exige y la 7-770 lo sugiere.');
+ }
+ if(v.frente!==null){ hay=true;
+   var minf=(v.personal==='ba4')?1:0.9;
+   if(v.frente<minf) mal('El espacio libre delante del frente es de '+f(v.frente,2)+' m y el mínimo es <span class="num">'+f(minf,2)+' m</span>'+(v.personal==='ba4'?', para un tablero operado sólo por personal BA4 o BA5, que además debe cumplir IEC 60439-1':', para un tablero operado por personal BA1, que además debe cumplir IEC 60439-3 hasta 250 A de alimentación')+'.');
+   else li.push('Los '+f(v.frente,2)+' m de espacio libre al frente cumplen el mínimo de '+f(minf,2)+' m.');
+ }
+ if(v.post!==null){ hay=true;
+   if(v.post<0.7) mal('El espacio libre detrás es de '+f(v.post,2)+' m. Cuando el tablero necesita acceso posterior el mínimo es 0,7 m, y si tiene puerta posterior deben quedar 0,5 m con la puerta abierta. Se respeta la condición más desfavorable.');
+   else li.push('Los '+f(v.post,2)+' m detrás cumplen el mínimo de 0,7 m. Con puerta posterior, verificar además los 0,5 m con la puerta abierta.');
+ }
+ if(v.lux!==null){ hay=true;
+   if(v.lux<200) mal('La iluminación es de '+f(v.lux,0)+' lx y el mínimo es <span class="num">200 lx</span>, medidos a un metro del nivel del piso sobre el frente del tablero. Es recomendable además un sistema de iluminación de emergencia autónomo, fijo o portátil.');
+   else li.push('Los '+f(v.lux,0)+' lx superan el mínimo de 200 lx medidos a un metro del piso sobre el frente.');
+ }
+ if(v.hcom!==null){ hay=true;
+   if(v.hcom<0.40||v.hcom>2) mal('Las palancas están a '+f(v.hcom,2)+' m. Los elementos de comando de los dispositivos de maniobra y protección deben ser fácilmente accionables y quedar entre <span class="num">0,40 m</span> y <span class="num">2 m</span> respecto del piso del local donde está instalado el tablero.');
+   else li.push('Los '+f(v.hcom,2)+' m de las palancas están dentro de la franja de 0,40 m a 2 m.');
+ }
+ if(v.hbor!==null){ hay=true;
+   if(v.hbor<0.2) mal('Las borneras están a '+f(v.hbor,2)+' m y el mínimo es 0,2 m, medido desde su parte inferior respecto del nivel de piso terminado.');
+   else li.push('Los '+f(v.hbor,2)+' m de las borneras superan el mínimo de 0,2 m.');
+ }
+ if(v.ip){ hay=true;
+   if(v.ip==='menor') mal('El grado de protección debe ser como mínimo IP41 o IP31D. Sólo en locales unitarios con personal BA4 o BA5 se admite IP3XD, o el que resulte adecuado a las condiciones ambientales.');
+   else if(v.ip==='nd') ojo('El gabinete no tiene el grado IP marcado o no se puede leer. Sin ese dato no se puede dar por cumplido el punto: el mínimo es IP41 o IP31D.');
+   else if(v.local==='intemp' && v.ip!=='54') mal('A la intemperie el grado de protección no debe ser inferior a IP54.');
+   else if(v.ip==='3xd' && v.personal!=='ba4') mal('El IP3XD se admite sólo en locales unitarios con personal BA4 o BA5. Para personas BA1, BA2 o BA3 el mínimo es IP41 o IP31D.');
+   else li.push('El grado de protección declarado cumple el mínimo que corresponde a este tablero.');
+   li.push('En ningún caso puede haber partes con tensión accesibles desde el exterior, ni siquiera con la puerta abierta: el acceso a las partes con tensión sólo después de remover tapas o cubiertas con herramienta, y todo borne o elemento bajo tensión protegido por una barrera.');
+ }
+ if(v.simb===false){ hay=true; mal('Falta el símbolo de riesgo eléctrico IRAM 10005-1, de 40 mm de altura como mínimo, en la parte frontal exterior del marco, de la puerta o, si no las tiene, de la barrera de protección contra el contacto directo. Los tableros son considerados elementos de seguridad de la instalación y tienen que ser fácilmente identificables.'); }
+ if(v.leyenda===false){ hay=true; mal('Falta la leyenda indicativa de la función debajo del símbolo: «Tablero principal», «Tablero Seccional» o «Tablero Seccional General», en letras negras de 10 mm de altura como mínimo sobre fondo amarillo.'); }
+ if(v.simb===true||v.leyenda===true){ hay=true; li.push('Con el tablero en su ubicación definitiva, el símbolo, las leyendas de función y las marcaciones de la norma de producto deben quedar fácilmente visibles: no se pueden cubrir ni tapar.'); }
+ if(v.mod!==null && v.modtot!==null && v.modtot>0){ hay=true;
+   var libres=v.modtot-v.mod, res=100*libres/v.modtot;
+   if(res<20) mal('La reserva es del <span class="num">'+f(res,0)+' %</span> y el mínimo es 20 % de la capacidad total del tablero en módulos de 18 mm. Faltan '+f(Math.ceil(0.2*v.modtot-libres),0)+' módulos libres.');
+   else li.push('La reserva es del '+f(res,0)+' %, por encima del 20 % exigido.');
+ }
+ if(v.veh===true){ hay=true;
+   if(v.hveh!==null && v.hveh<1.5) mal('En los accesos y zonas de maniobra y estacionamiento de vehículos, el borde inferior de la caja o gabinete debe quedar a no menos de 1,5 m sobre la superficie por donde transitan. Acá está a '+f(v.hveh,2)+' m. Si por razones constructivas o edilicias no se puede, hay que protegerlo de las colisiones con obstáculos de resistencia mecánica y al impacto adecuadas.');
+   else if(v.hveh!==null) li.push('El borde inferior a '+f(v.hveh,2)+' m cumple el mínimo de 1,5 m para zonas de tránsito de vehículos.');
+   else ojo('Falta la altura del borde inferior. En zonas de tránsito de vehículos el mínimo es 1,5 m sobre la superficie de circulación.');
+ }
+ if(!hay) return null;
+ li.push('La ubicación de los tableros y la elección de los aparatos de maniobra y protección son responsabilidad exclusiva del proyectista, pero dentro de las prescripciones de la Reglamentación: la lista de lugares prohibidos no se negocia con el comitente.');
+ li.push('Si el local es un baño, una cocina o un lavadero, verificar además las zonas con la ficha Z1 y qué admite cada zona con la ficha Z3.');
+ return {e:e, t: e==='mal'?'La instalación del tablero no cumple':(e==='ojo'?'Cumple con observaciones':'Lo cargado cumple'), d:'', li:li};
+}},
+sol:['Sacar el tablero del cuarto de baño, de la alacena, de debajo de la mesada o del hueco donde quedó: no hay grado IP que lo arregle.','Reubicarlo en lugar seco, de ambiente normal y fácil acceso, alejado de las bajadas de agua, gas y cloacas.','Dejar 0,9 m libres al frente, 1 m si lo opera personal BA4 o BA5, y 0,7 m atrás si necesita acceso posterior.','Llevar las palancas de comando a la franja de 0,40 m a 2 m y las borneras por encima de 0,2 m.','Pegar el símbolo de riesgo eléctrico de 40 mm y la leyenda de función en negro sobre amarillo.','Dejar el 20 % de módulos de reserva antes de dar por terminado el tablero.'],
+cita:'AEA 90364-7-770 (2017), 770.16.2.1 (tableros en lugares secos, ambiente normal, de fácil acceso y alejados de las instalaciones de agua, gas y cloacas; prohibición de instalarlos en el interior de muebles, alacenas o armarios, debajo de mesadas, dentro de huecos de la construcción o en lugares de difícil acceso; «Los tableros no se deben instalar en los cuartos de baño»; símbolo de riesgo eléctrico IRAM 10005-1 de 40 mm y leyenda de función; un tablero seccional por planta habitable), 770.16.2.2 (0,9 m libres al frente), 770.16.2.3 (200 lx a 1 m del piso sobre el frente), 770.16.3.1 (principal dentro de la propiedad y a no más de 2 m del medidor, gabinete Clase II, IP54 a la intemperie), 770.16.3.2 (seccionales en lugares de fácil localización) y 770.16.4 (reserva del 20 % en módulos de 18 mm, IP41 o IP31D mínimo, comandos entre 0,40 m y 2 m). AEA 90364-7-771 (2006), 771.20.2.1 (mismas condiciones de lugar, más el IP adecuado en lugares húmedos, mojados o polvorientos y la exigencia de un seccional por planta habitable), 771.20.2.2 (0,9 m con personal BA1 e IEC 60439-3; 1 m con BA4 o BA5 e IEC 60439-1; 0,7 m de acceso posterior y 0,5 m con puerta posterior abierta), 771.20.2.3 (200 lx), 771.20.2.4 (local específico de tableros), 771.20.3.1 («Los tableros principales no se instalarán en los cuartos de baño») y 771.20.3.2 (tablero seccional general y tableros seccionales: «No se instalarán en los cuartos de baño»), 771.20.4 (reserva del 20 % hasta 250 A, IP41 o IP31D, IP3XD para BA4 o BA5, comandos entre 0,40 m y 2 m, borneras a 0,2 m como mínimo, gabinetes a 1,5 m en zonas de tránsito de vehículos). AEA 90364-7-701 (2012), 701.512.4, zona 3, misma prohibición para los cuartos de baño.'
+});
 /* ---------- 10. RUBROS Y EQUIPOS DE LOCAL COMERCIAL ---------- */
 F.push({
 id:'L1', fam:'loc', t:'Cámara de frío, heladera exhibidora o freezer',
@@ -4189,6 +4306,9 @@ pasos:[
  'Cargar los datos abajo.'
 ],
 med:{campos:[
+ {id:'local', lbl:'Qué local es', ayuda:'Decide la regla de tableros: en un cuarto de baño no se admite ninguno, en ninguna zona', tipo:'sel', opts:[
+   ['bano','Cuarto de baño, o local con bañera o ducha'],
+   ['cocina','Cocina o lavadero, sin bañera ni ducha']]},
  {id:'zona', lbl:'Zona del punto', tipo:'sel', opts:[['0','Zona 0'],['1','Zona 1'],['2','Zona 2'],['3','Zona 3']]},
  {id:'tipo', lbl:'Qué hay instalado', tipo:'sel', opts:[
    ['toma','Tomacorriente de 220 V'],
@@ -4206,29 +4326,38 @@ med:{campos:[
    ['tab','Tablero eléctrico']]},
  {id:'conex', lbl:'Cómo está conectado', tipo:'sel', opts:[['fija','Conexión fija y permanente'],['ficha','Con ficha y tomacorriente']]},
  {id:'resist', lbl:'Si es calefactor de ambiente, ¿tiene resistores a la vista?', tipo:'bool'},
- {id:'alcance', lbl:'Si es la caja del hidromasaje, ¿está debajo de la bañera y fuera del alcance del usuario?', tipo:'bool'},
- {id:'bano', lbl:'¿El local es un cuarto de baño?', tipo:'bool'}
+ {id:'alcance', lbl:'Si es la caja del hidromasaje, ¿está debajo de la bañera y fuera del alcance del usuario?', tipo:'bool'}
 ], ev:function(v){
  if(!v.zona||!v.tipo) return null;
  var li=[], e='ok', t='Admitido en esta zona';
  var no=function(m){ e='mal'; t='No admitido en esta zona'; li.push(m); };
+ var falta=function(m){ if(e!=='mal'){ e='ojo'; t='Faltan datos para decidir'; } li.push(m); };
  if(v.tipo==='tab'){
-   if(v.bano===true) return {e:'mal', t:'Prohibido: tablero dentro del baño', d:'', li:['No está permitida la instalación de tableros eléctricos en los cuartos de baño, en ninguna zona. Llevarlo fuera del local.','Si el tablero quedó del lado de afuera pero embutido en la misma pared, verificar que la envolvente y su acceso queden fuera del cuarto de baño.']};
-   li.push('En un local que no es cuarto de baño, el tablero sigue las reglas generales, pero no puede quedar dentro de una zona 0, 1 ni 2: esas zonas sólo admiten lo que se lista en 701.512.4.');
+   if(v.local!=='cocina') return {e:(v.local==='bano'?'mal':'ojo'),
+     t:(v.local==='bano'?'Prohibido: tablero dentro del baño':'Falta definir el local, y si es baño está prohibido'), d:'',
+     li:['No está permitida la instalación de tableros eléctricos en los cuartos de baño, en ninguna zona, tampoco en la zona 3. Alcanza por igual al tablero principal, al seccional general y a los tableros seccionales.',
+         'La prohibición está escrita tres veces: 701.512.4 zona 3, 770.16.2.1 «Los tableros no se deben instalar en los cuartos de baño», y en la 7-771 dos veces, 771.20.3.1 para el principal y 771.20.3.2 para el seccional general y los seccionales.',
+         'Llevarlo fuera del local. Si el tablero quedó del lado de afuera pero embutido en la misma pared, verificar que la envolvente y su acceso queden fuera del cuarto de baño.',
+         'Condiciones generales de ubicación del tablero: ficha B7.'].concat(v.local?[]:['Falta cargar qué local es, arriba de todo. Mientras no esté definido no se puede dar por admitido ningún tablero acá.'])};
+   li.push('En una cocina o lavadero sin bañera ni ducha la Sección 701 no prohíbe el tablero, pero no puede quedar dentro de una zona 0, 1 ni 2: esas zonas sólo admiten lo que se lista en 701.512.4.');
    if(v.zona!=='3') no('El punto está en zona '+v.zona+', que no admite tableros.');
+   else li.push('Siguen valiendo las condiciones generales de 770.16.2.1 y 771.20.2.1, que en una cocina son justamente las que se pasan por alto: lugar seco, ambiente normal, de fácil acceso y alejado de las instalaciones de agua, gas y cloacas; NO dentro de muebles, alacenas o armarios, NO debajo de mesadas, NO dentro de huecos de la construcción ni en lugares de difícil acceso. Ficha B7.');
  }
  else if(v.zona==='0'){
    if(v.tipo==='mbts'){ li.push('En zona 0 sólo se admiten aparatos que cumplan su norma de producto y sean aptos para zona 0 según el fabricante, con grado IPX7, conexión fija y permanente, y alimentados y protegidos por MBTS que no exceda 12 Vca o 24 Vcc.');
      if(v.conex==='ficha') no('En zona 0 la conexión tiene que ser fija y permanente. Con ficha no se admite.');
+     else if(v.conex===null) falta('Falta el dato de cómo está conectado. En zona 0 la conexión debe ser fija y permanente.');
    } else no('En zona 0 no se admite ningún dispositivo de comando, protección, tomacorriente ni fuente de MBTS. Lo único que puede haber es un aparato utilizador apto para zona 0: IPX7, conexión fija y permanente y MBTS de hasta 12 Vca o 24 Vcc, por ejemplo una luminaria sumergida de hidromasaje.');
  }
  else if(v.zona==='1'){
    if(v.tipo==='mbts'){ li.push('En zona 1 los aparatos van conectados en forma fija y permanente y alimentados por MBTS de hasta 12 Vca o 24 Vcc: luminarias, extractores y similares.');
-     if(v.conex==='ficha') no('En zona 1 la conexión tiene que ser fija y permanente.'); }
+     if(v.conex==='ficha') no('En zona 1 la conexión tiene que ser fija y permanente.');
+     else if(v.conex===null) falta('Falta el dato de cómo está conectado. En zona 1 la conexión debe ser fija y permanente.'); }
    else if(v.tipo==='caja'){ li.push('En zona 1 sólo se admiten cajas de paso, de paso y derivación y bocas de fijación cuando alimentan aparatos de MBTS de 12 Vca o 24 Vcc. La fuente de alimentación debe quedar fuera de las zonas 0, 1 y 2.'); }
    else if(v.tipo==='hidro'){
      li.push('Es la única excepción de 220 V en zona 1: cajas terminales o de bornes para el sistema de alimentación de hasta 220 Vca de la bomba del hidromasaje, ubicadas debajo de la bañera y fuera del alcance del usuario.');
      if(v.alcance===false) no('La caja no está debajo de la bañera y fuera del alcance del usuario, que es la condición de la excepción.');
+     else if(v.alcance===null) falta('Falta el dato de dónde está la caja. La excepción vale sólo si queda debajo de la bañera y fuera del alcance del usuario.');
      li.push('Los dispositivos de comando de las bañeras de hidromasaje deben ser de accionamiento neumático.');
    }
    else if(v.tipo==='sensor') no('En las zonas 0 y 1 la alimentación y la protección de las válvulas solenoides y los sensores de presencia deben provenir de fuentes MBTS que no excedan 12 Vca o 24 Vcc, con transformador de seguridad según IEC 61558-2-6.');
@@ -4239,7 +4368,9 @@ med:{campos:[
    if(ok2[v.tipo]){
      li.push('La zona 2 admite '+ok2[v.tipo]+', siempre conectados en forma fija y permanente.');
      if(v.conex==='ficha' && v.tipo!=='mbts') no('En zona 2 los aparatos van conectados en forma fija y permanente. Si el aparato viene con ficha, el tomacorriente debe quedar fuera de las zonas 0, 1 y 2 cuando la tensión supera 12 Vca o 24 Vcc.');
+     else if(v.conex===null && v.tipo!=='mbts') falta('Falta el dato de cómo está conectado. En zona 2 los aparatos van conectados en forma fija y permanente.');
      if(v.tipo==='calef' && v.resist===true) no('El calefactor tiene resistores a la vista. En zona 2 sólo se admiten los que no los tienen: con líquidos aislantes intermediarios, aire caliente o similares.');
+     else if(v.tipo==='calef' && v.resist===null) falta('Falta el dato de los resistores a la vista. En zona 2 sólo se admiten los calefactores de ambiente que no los tienen.');
    }
    else if(v.tipo==='toma') no('En zona 2 sólo se admiten tomacorrientes de MBTS, y los de equipos de señalización, comando y comunicaciones siempre que sean MBTS. Un tomacorriente de 220 V va fuera de las zonas 0, 1 y 2.');
    else if(v.tipo==='llave') no('En zona 2 los dispositivos de comando y protección sólo se admiten si son de MBTS. La llave de 220 V va fuera de las zonas 0, 1 y 2.');
@@ -4250,7 +4381,7 @@ med:{campos:[
  }
  else {
    li.push('La zona 3 admite cualquier aparato y cualquier dispositivo permitido por la Reglamentación, por conexión fija o por ficha y tomacorriente para las tensiones respectivas.');
-   if(v.bano===true) li.push('Con una excepción: no está permitida la instalación de tableros eléctricos en los cuartos de baño, tampoco en la zona 3.');
+   li.push('Con una excepción, que no depende de la zona: no está permitida la instalación de tableros eléctricos en los cuartos de baño, tampoco en la zona 3. Ficha B7.');
    li.push('Las masas eléctricas y las masas extrañas de las zonas 1, 2 y 3 deben estar equipotencializadas, marcos metálicos de puertas, ventanas y ventiluces incluidos. Quedan excluidos los picaportes de madera o material aislante. Ficha Z5.');
  }
  li.push('Todos los circuitos terminales del local llevan diferencial de 30 mA o menos, cualquiera sea la zona. Ficha Z4.');
@@ -4259,7 +4390,7 @@ med:{campos:[
  return {e:e, t:t, d:'', li:li, pel:pel};
 }},
 sol:['Correr el punto a la zona que lo admite en vez de discutir el grado IP: casi siempre es más barato y siempre es más seguro.','Pasar a MBTS de 12 Vca lo que tenga que quedar sí o sí en zona 1 o 2.','Sacar el tablero del cuarto de baño.','Reemplazar la luminaria de zona 2 por una Clase II con IPx4.','Dejar la caja de bornes del hidromasaje debajo de la bañera, fuera del alcance, y el comando neumático.'],
-cita:'AEA 90364-7-701 (2012), 701.512.4 (dispositivos por zona: ninguno en zona 0; en zona 1 sólo MBTS de 12 Vca o 24 Vcc con la fuente fuera de las zonas 0, 1 y 2, más la excepción de las cajas de bornes de hasta 220 Vca de la bomba del hidromasaje debajo de la bañera y el comando neumático; en zona 2 sólo MBTS; en zona 3 cualquier dispositivo, y prohibición de tableros en los cuartos de baño) y 701.55.1 a 701.55.5 (aparatos utilizadores por zona, luminarias Clase II IPx4 y calefactores sin resistores a la vista en zona 2, equipotencialización de masas en zonas 1, 2 y 3, y MBTS obligatoria para sensores y solenoides en zonas 0 y 1).'
+cita:'AEA 90364-7-701 (2012), 701.512.4 (dispositivos por zona: ninguno en zona 0; en zona 1 sólo MBTS de 12 Vca o 24 Vcc con la fuente fuera de las zonas 0, 1 y 2, más la excepción de las cajas de bornes de hasta 220 Vca de la bomba del hidromasaje debajo de la bañera y el comando neumático; en zona 2 sólo MBTS; en zona 3 cualquier dispositivo, y prohibición de tableros en los cuartos de baño) y 701.55.1 a 701.55.5 (aparatos utilizadores por zona, luminarias Clase II IPx4 y calefactores sin resistores a la vista en zona 2, equipotencialización de masas en zonas 1, 2 y 3, y MBTS obligatoria para sensores y solenoides en zonas 0 y 1). La misma prohibición, fuera de la Sección 701: AEA 90364-7-770, 770.16.2.1, «Los tableros no se deben instalar en los cuartos de baño», y AEA 90364-7-771, 771.20.3.1 para los tableros principales y 771.20.3.2 para el tablero seccional general y los tableros seccionales, «No se instalarán en los cuartos de baño».'
 });
 F.push({
 id:'Z4', fam:'ban', t:'Diferenciales y medidas de protección admitidas',
@@ -4655,7 +4786,7 @@ med:{campos:[
  {id:'hayhidro', lbl:'¿Hay bañera de hidromasaje?', tipo:'bool'}
 ], ev:function(v){
  var li=[], e='ok', hay=false;
- if(v.tabbano===true){ hay=true; e='mal'; li.push('No está permitida la instalación de tableros eléctricos en los cuartos de baño. Llevarlo fuera del local.'); }
+ if(v.tabbano===true){ hay=true; e='mal'; li.push('No está permitida la instalación de tableros eléctricos en los cuartos de baño. Llevarlo fuera del local. La prohibición alcanza por igual al tablero principal, al seccional general y a los tableros seccionales, y no depende de la zona: es del local entero.'); }
  if(v.tp){ hay=true;
    if(v.tp==='sa'){ e='mal'; li.push('El tablero principal de doble aislación es obligatorio en los tres esquemas del Anexo 701.A.'); }
    else if(v.tp==='nd'){ if(e!=='mal') e='ojo'; li.push('Hay que determinar la aislación del tablero principal: la doble aislación es obligatoria. Para considerarlo Clase II no alcanza con que la cubierta sea aislante, hay que cumplir todos los requisitos y verificar su permanencia en el tiempo.'); }
@@ -4670,12 +4801,14 @@ med:{campos:[
    if(v.idhidro===false){ if(e!=='mal') e='ojo'; li.push('En los tres esquemas la bañera de hidromasaje se protege con diferencial propio de 30 mA o menos, de cabecera o dedicado. Con diferencial dedicado, una falla a tierra en la bañera la despeja su propio dispositivo y no arrastra al resto.'); }
    else if(v.idhidro===true) li.push('El diferencial dedicado del hidromasaje es lo que muestran los esquemas 701.A.2 y 701.A.3.'); }
  if(!hay) return null;
+ if(v.tabbano===null){ if(e!=='mal') e='ojo'; li.push('Falta contestar si hay algún tablero dentro del cuarto de baño, que es el primer campo de esta ficha. Ningún tablero puede quedar dentro de un cuarto de baño, en ninguna zona.'); }
+ li.push('La prohibición de tableros en los cuartos de baño está escrita en 701.512.4 y, fuera de la Sección 701, en 770.16.2.1 y en la 7-771 dos veces: 771.20.3.1 para el tablero principal y 771.20.3.2 para el seccional general y los seccionales. Condiciones generales de ubicación: ficha B7.');
  li.push('Los tres unifilares del Anexo 701.A son indicativos y no limitativos. Se diferencian en dónde está la doble aislación y a qué altura el diferencial: 701.A.1 con seccionales de simple aislación y un 300 mA selectivo; 701.A.2 con seccional general de doble aislación, 300 mA selectivo y 30 mA en los derivados; 701.A.3 con toda la cadena de doble aislación y 30 mA en los terminales.');
  li.push('Una canalización metálica con cables con aislación y cubierta es de doble aislación, pero pasa a ser una masa extraña y necesita ser equipotencializada. Ficha Z5.');
- return {e:e, t: e==='mal'?'El esquema no cumple':(e==='ojo'?'El esquema admite mejoras':'El esquema cumple'), d:'', li:li};
+ return {e:e, t: e==='mal'?'El esquema no cumple':(v.tabbano===null?'Falta un dato para cerrar el esquema':(e==='ojo'?'El esquema admite mejoras':'El esquema cumple')), d:'', li:li};
 }},
 sol:['Sacar cualquier tablero que esté dentro del cuarto de baño.','Verificar que el tablero principal sea efectivamente de doble aislación, no sólo de cubierta aislante.','Poner diferencial de 30 mA en los circuitos terminales y dejar el 300 mA selectivo como respaldo aguas arriba.','Dar diferencial propio a la bañera de hidromasaje.','Equipotencializar las canalizaciones metálicas que quedan como masa extraña.'],
-cita:'AEA 90364-7-701 (2012), Anexo 701.A, figuras 701.A.1, 701.A.2 y 701.A.3: tablero principal de doble aislación obligatorio; variantes de simple y doble aislación en el seccional general y en los derivados; diferencial de 300 mA selectivo para el contacto indirecto, cuya sensibilidad y temporización intrínsecas otorgan la selectividad diferencial; protección de la bañera de hidromasaje por diferencial de 30 mA de cabecera o dedicado; nota sobre la salida de servicio del tablero seccional derivado ante una descarga a tierra; notas 1 a 5 sobre canalizaciones de simple y doble aislación y sobre los requisitos de la Clase II. 701.512.4, zona 3: prohibición de tableros en los cuartos de baño.'
+cita:'AEA 90364-7-701 (2012), Anexo 701.A, figuras 701.A.1, 701.A.2 y 701.A.3: tablero principal de doble aislación obligatorio; variantes de simple y doble aislación en el seccional general y en los derivados; diferencial de 300 mA selectivo para el contacto indirecto, cuya sensibilidad y temporización intrínsecas otorgan la selectividad diferencial; protección de la bañera de hidromasaje por diferencial de 30 mA de cabecera o dedicado; nota sobre la salida de servicio del tablero seccional derivado ante una descarga a tierra; notas 1 a 5 sobre canalizaciones de simple y doble aislación y sobre los requisitos de la Clase II. 701.512.4, zona 3: prohibición de tableros en los cuartos de baño. La misma prohibición en AEA 90364-7-770, 770.16.2.1, y en AEA 90364-7-771, 771.20.3.1 (tableros principales) y 771.20.3.2 (tablero seccional general y tableros seccionales).'
 });
 /* ---------- 13. VERIFICACIÓN Y RECEPCIÓN (771.23) ---------- */
 F.push({
@@ -5400,7 +5533,7 @@ var TRIAGE = [
   {t:'Motor que no anda', s:'No arranca, gira al revés, calienta o no toma carga', ids:['G1','G9','G7','G8','G2','B3'], c:''},
   {t:'Recepción de obra', s:'El recorrido completo de la 771.23, en orden', ids:['R1','R2','D2','R3','R4','R5','T3','I1','T1'], c:''},
   {t:'Inspección periódica', s:'Cada 5 años: 4 controles visuales y 3 mediciones', ids:['R6','T3','I1','T1'], c:''},
-  {t:'Relevar un local', s:'Habilitación: circuitos, bocas, cables', ids:['N8','N7','L6','B5'], c:''},
+  {t:'Relevar un local', s:'Habilitación: circuitos, bocas, cables', ids:['N8','N7','L6','B5','B7'], c:''},
   {t:'Baño, cocina o lavadero', s:'Zonas, grado IP, equipotencial, hidromasaje', ids:['Z1','Z3','Z2','Z4','Z5'], c:'ambar'},
   {t:'Emergencia y público', s:'Pública concurrencia, evacuación, 7-718', ids:['E1','E2','E3','E4','E5','E9'], c:'ambar'},
   {t:'Equipo del local', s:'Frío, cartel, cortina, cocina, caja', ids:['L1','L2','L3','L4','L5'], c:''}
@@ -7014,6 +7147,7 @@ var CRITERIOS=[
  ['Temperatura ambiente','Factor sobre la Iz de tabla, para PVC: 25 °C → 1,22 · 30 → 1,15 · 35 → 1,08 · 40 → 1,00 · 45 → 0,91 · 50 → 0,82 · 55 → 0,70 · 60 → 0,57. La columna de PVC termina en 60 °C.','Tabla 771.16.II.a'],
  ['Ocupación de cañerías','La cantidad de conductores por caño sale de tabla. Para los casos no previstos, el área ocupada incluida la aislación no supera el 35 % de la sección interna. Diámetro interno mínimo: 13 mm en circuitos terminales, 15 mm en principales y seccionales.','Tabla 771.12.IX y 771.12'],
  ['Secciones mínimas','Líneas principales 4 mm² · seccionales 2,5 · iluminación de usos generales 1,5 · tomacorrientes de usos generales 2,5 · usos especiales y específicos 2,5 · conductor de protección 2,5.','Tabla 771.13.I / Tabla 770.11.I'],
+ ['Ubicación del tablero','Lugar seco, ambiente normal, de fácil acceso y alejado de las instalaciones de agua, gas y cloacas. Nunca dentro de muebles, alacenas o armarios, ni debajo de mesadas, ni en huecos de la construcción o lugares de difícil acceso, ni en los cuartos de baño. Delante del frente, 0,9 m libres con personal BA1 y 1 m con BA4 o BA5; 200 lx medidos a 1 m del piso sobre el frente; comandos entre 0,40 m y 2 m; borneras a 0,2 m como mínimo; reserva del 20 % en módulos de 18 mm; IP41 o IP31D, IP54 a la intemperie. El tablero principal, a no más de 2 m del medidor y con gabinete Clase II.','AEA 90364-7-770, 770.16.2, 770.16.3 y 770.16.4 · AEA 90364-7-771, 771.20.2, 771.20.3 y 771.20.4 · AEA 90364-7-701, 701.512.4'],
  ['Disipación del tablero','Ptot = Pdp + 0,2·Pdp + Pau ≤ Pde declarada del gabinete, con Pdp = Σ Pd × K². K por cantidad de salidas: 2-3 → 0,8 · 4-5 → 0,7 · 6-9 → 0,6 · ≥10 → 0,5.','Anexo 771-H, Tablas 771-H.XIII y 771-H.XIV, y Tabla 771.20.II'],
  ['Grados de electrificación, vivienda','Mínimo hasta 60 m² · Medio hasta 130 m² · Elevado hasta 200 m² · Superior sobre 200 m². La superficie es la cubierta más el 50 % de la semicubierta. En la 7-771 se agrega la DPMS: 3,7 / 7 / 11 kVA.','Tabla 770.7.I y Tabla 771.8.I'],
  ['Grados de electrificación, local u oficina','Mínimo hasta 30 m² y 4,5 kVA · Medio hasta 75 m² y 7,8 kVA · Elevado hasta 150 m² y 12,2 kVA · Superior por encima. Manda el criterio más exigente entre superficie y DPMS. Si el inmueble fue proyectado como vivienda, rigen los valores de vivienda.','Tabla 771.8.IV y 771.8.3.1'],
