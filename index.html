@@ -382,6 +382,64 @@ html[data-tema="oscuro"] .nav-inf button[aria-current="page"]::before{background
 .aj > b{display:block;font-size:calc(15px * var(--fs))}
 .aj > p{font-size:calc(13.5px * var(--fs));color:var(--ink2);margin-top:3px;line-height:1.4}
 
+/* ---------- manual de instrumentos ---------- */
+details.man{background:var(--sup);border:1px solid var(--line);border-left:5px solid var(--cel);
+  border-radius:var(--s1);margin-bottom:var(--s2);scroll-margin-top:84px}
+details.man > summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:var(--s3);
+  padding:var(--s3) var(--s4);min-height:60px}
+details.man > summary::-webkit-details-marker{display:none}
+details.man > summary .mn{flex:1;min-width:0}
+details.man > summary b{display:block;font-size:calc(16px * var(--fs));font-weight:600;line-height:1.25}
+details.man > summary i{display:block;font-style:normal;font-size:calc(13px * var(--fs));color:var(--ink2);
+  margin-top:2px;line-height:1.3}
+details.man > summary .car{color:var(--ink3);font-size:calc(20px * var(--fs));line-height:1;transition:transform .15s}
+details.man[open] > summary{border-bottom:1px solid var(--line2)}
+details.man[open] > summary .car{transform:rotate(90deg)}
+@media (prefers-reduced-motion:reduce){details.man > summary .car{transition:none}}
+.man-c{padding:0 var(--s4) var(--s4)}
+.man-c h4{font-size:calc(13px * var(--fs));font-weight:700;color:var(--ink2);text-transform:uppercase;
+  letter-spacing:.04em;margin:var(--s4) 0 var(--s2);display:flex;align-items:baseline;gap:var(--s2)}
+.man-c h4 small{font-weight:400;text-transform:none;letter-spacing:0;margin-left:auto}
+.man-c h5{font-size:calc(14.5px * var(--fs));font-weight:700;margin:var(--s3) 0 var(--s2)}
+.man-c p{font-size:calc(15.5px * var(--fs));line-height:1.5}
+.man-c .eq{background:var(--sup2)}
+.man-c .eq .cfg{background:var(--sup3)}
+.man-c .cita{margin-top:var(--s4)}
+.chips.cods .chip{padding:7px 12px;min-height:38px}
+.chips.cods .chip .cod{margin-right:0;font-size:calc(13px * var(--fs));color:var(--ink)}
+.ir-man{display:inline-block;margin-top:var(--s2);background:transparent;border:1px solid var(--cel);color:var(--cel);
+  border-radius:var(--s1);padding:8px 12px;min-height:40px;font-size:calc(14px * var(--fs));font-weight:600;
+  cursor:pointer;text-align:left}
+.ir-man:active{background:var(--cel-bg)}
+#termo{scroll-margin-top:84px}
+
+/* ---------- guías paso a paso ---------- */
+.calc-b.guia{border-left-color:var(--cel)}
+.gsec .man-c > p{margin-top:var(--s3)}
+.gsec .man-c > .sol,.gsec .man-c > .pasos{margin-top:var(--s3)}
+.gs-calc{margin-top:var(--s3)}
+.gs-todo{background:none;border:1px solid var(--line);border-radius:var(--s1);color:var(--ink2);
+  font-size:calc(13px * var(--fs));font-weight:600;padding:4px 10px;min-height:32px;cursor:pointer}
+.tabla-w{overflow-x:auto;margin-top:var(--s3);-webkit-overflow-scrolling:touch}
+.tabla{width:100%;border-collapse:collapse;font-size:calc(14px * var(--fs));line-height:1.4}
+.tabla th,.tabla td{border:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
+.tabla th{background:var(--sup2);font-weight:700;font-size:calc(13px * var(--fs))}
+.tabla td:first-child{font-weight:600}
+.compra{background:var(--sup2);border:1px solid var(--line);border-left:4px solid var(--amar-b);
+  border-radius:var(--s1);padding:var(--s3) var(--s4);margin-top:var(--s2)}
+.compra b{display:block;font-size:calc(15.5px * var(--fs));line-height:1.3}
+.compra .mod{font-family:var(--mono);font-size:calc(13px * var(--fs));color:var(--ink);margin-top:4px;line-height:1.45}
+.compra p{font-size:calc(14.5px * var(--fs));margin-top:6px;line-height:1.45}
+.compra .links{margin-top:2px}
+.ml{display:inline-block;margin:6px 8px 0 0;padding:6px 10px;min-height:36px;border:1px solid var(--cel);
+  border-radius:var(--s1);color:var(--cel);font-size:calc(13.5px * var(--fs));font-weight:600;text-decoration:none;line-height:1.6}
+.ml:active{background:var(--cel-bg)}
+.pedido{font-family:var(--mono);font-size:calc(13px * var(--fs));white-space:pre-wrap;line-height:1.5;
+  background:var(--sup3);border-left:3px solid var(--amar-b);padding:8px 10px;margin-top:var(--s2);
+  border-radius:0 var(--s1) var(--s1) 0;color:var(--ink);word-break:break-word}
+.ver .pedido{background:rgba(255,255,255,.6);color:var(--ink)}
+html[data-tema="oscuro"] .ver .pedido{background:rgba(0,0,0,.25)}
+
 /* enlaces entre fichas */
 .xref{background:transparent;border:1px solid currentColor;border-radius:5px;
   color:inherit;font:inherit;font-weight:600;font-size:.86em;padding:0 5px;margin:0 1px;
@@ -535,11 +593,11 @@ var EQ = {
   f117loz:{n:'Fluke 117 — modo LoZ', cfg:'Selector en V~ y pulsar la tecla LoZ\nBaja la impedancia de entrada y drena\nel acople capacitivo: elimina la tensión fantasma\nNo usar LoZ sobre circuitos electrónicos sensibles'},
   f117cont:{n:'Fluke 117 — continuidad', cfg:'Selector en Ω / continuidad (zumbador)\nSIEMPRE sin tensión y con el circuito descargado\nCorriente de ensayo < 350 µA'},
   ut204:{n:'UT-204+ — pinza de corriente', cfg:'Selector en A~ (TRMS)\nAbrazar UN SOLO conductor\nCAT II 600 V / CAT III 300 V — el más bajo del maletín\nNo tiene función INRUSH'},
-  ut219:{n:'UT-219p — pinza', cfg:'CAT IV 600 V / CAT III 1000 V\nEs el de mayor categoría del maletín:\nusarlo en tablero principal y acometida'},
+  ut219:{n:'UT-219p — pinza de potencia', cfg:'CAT IV 600 V / CAT III 1000 V\nEl de mayor categoría entre los que\nmiden: tablero principal y acometida\nHasta 1000 V y 1000 A de alterna,\nTRMS · mordaza de 75 mm\nPotencia activa, aparente y\nreactiva, factor de potencia, ángulo\nde fase, armónicos y THD\nSecuencia de fases: Phase Detect\nPotencia: rojo a la fase, negro al\nneutro; abrazar sólo la fase, con la\ncorriente entrando por el frente\nPotencia negativa: algo invertido'},
   ut511:{n:'UT-511 — megóhmetro', cfg:'Tensiones: 100 / 250 / 500 / 1000 V cc\nFunción Lo para continuidad\nNO declara descarga automática ni bloqueo\npor tensión presente: verificar y descargar a mano'},
   ut582:{n:'UT-582+ — probador de diferenciales', cfg:'IΔn: 10 / 20 / 30 / 100 / 300 / 500 mA\nMultiplicadores: ×½ · ×1 · ×5\n×5 SÓLO hasta 30 mA\nFase de ensayo: 0° y 180°\nUL: fijar en 25 V (no 50 V)\nEnsaya senoidal 50 Hz = tipo AC solamente'},
-  dt5301:{n:'CEM DT-5301 — impedancia de bucle', cfg:'Rangos 20 Ω (≈25 A) y 200 Ω (≈2,3 A)\nExactitud ±2 % del FONDO DE ESCALA ±5 díg.\n→ ±0,45 Ω en el rango de 20 Ω\nDispara cualquier diferencial: puentearlo o\nmedir aguas arriba del ID'},
-  telu:{n:'UT-572 — telurímetro', cfg:'Método de caída de potencial (Fig.\n770.19.A)\nBornes E · ES · S · H\n3 hilos (E, S, H) para la\nresistencia de PAT\n4 hilos (E, ES, S, H) para\nresistividad del suelo\nRangos 4 / 40 / 400 / 4k / 40k Ω\n±(3 % + 5 díg) y, en el rango de 4\nΩ, ±(3 % + 15 díg)\nFrecuencia de ensayo seleccionable:\n94 o 128 Hz\nCAT III 300 V — máximo 300 V entre\nbornes\nElectrodo bajo ensayo DESCONECTADO\nde la instalación\nPicas en línea recta, a 5 o 10 m del\nelectrodo\nLa pica de tensión (S) al 62 % de la\ndistancia E–H\nMedir primero Ust: si pasa de 10 V,\nno ensayar'},
+  dt5301:{n:'CEM DT-5301 — impedancia de bucle', cfg:'Loop: 20 Ω (25 A, 20 ms) · 200 Ω\n(2,3 A, 40 ms) · 2000 Ω (15 mA,\n280 ms) · PSC: 200 A, 2 kA y 20 kA\nExactitud ±2 % del FONDO DE ESCALA\n±5 díg.: ±0,45 Ω en 20 Ω, ±4,5 Ω en\n200 Ω, ±45 A en 2000 A y ±450 A en\n20 kA\nCon la ficha: lazo fase–tierra\nFase–neutro, en el tablero: cable de\ntres puntas, la roja a la fase y la\nnegra y la verde juntas al neutro\nEn fase–tierra, 20 y 200 Ω disparan\ncualquier diferencial: puentearlo o\nmedir aguas arriba del ID. 2000 Ω\nensaya con 15 mA, la mitad de un ID\nde 30 mA: con fuga previa, dispara\nEn fase–neutro no dispara el ID\nHasta 250 V: no se conecta entre\nfases · CAT III 600 V'},
+  telu:{n:'UT-572 — telurímetro', cfg:'Método de caída de potencial (Fig.\n770.19.A)\nBornes E · ES · S · H\n3 hilos (E, S, H) para la\nresistencia de PAT\n4 hilos (E, ES, S, H) para\nresistividad del suelo\nRangos 4 / 40 / 400 / 4k / 40k Ω\n±(3 % + 5 díg) y, en el rango de 4\nΩ, ±(3 % + 15 díg)\nFrecuencia de ensayo seleccionable:\n94 o 128 Hz\nCAT III 300 V — máximo 300 V entre\nbornes\nElectrodo bajo ensayo DESCONECTADO\nde la instalación\nPicas en línea recta: la de\ncorriente (H) lo más lejos posible,\n20 m como referencia, y la de\ntensión (S) al 62 % de E–H\nAlcanzó si las tres lecturas con S\na ±1 m coinciden\nCables: E verde 5 m · S amarillo\n10 m · H rojo 20 m · ES negro 20 m\n· rojo de 40 m para alejar H\nMedir primero Ust: si pasa de 10 V,\nno ensayar'},
   ut251:{n:'UT-251A — pinza miliamperimétrica de fuga', cfg:'0,000 a 60,00 A con 1 µA de\nresolución\n±(1,5 % + 5 díg) · CAT III 600 V\nReconoce 50/60 Hz · unas 2 lecturas\npor segundo\nMordaza de 25 × 30 mm\nAbrazar FASE Y NEUTRO JUNTOS; en\ntrifásica, las tres\nfases y el neutro. El PE NO va\ndentro de la mordaza\nEs el instrumento de fuga: el\nUT-204+ no llega al mA'},
   ut12d:{n:'UT-12D — detector de tensión sin contacto', cfg:'Modo alto 90 a 1000 V~ · modo bajo\n24 a 1000 V~\nCAT IV 1000 V\nProbarlo en una fuente conocida\nANTES y DESPUÉS\nNO verifica ausencia de tensión: no\ndetecta a través\nde blindaje ni con el operador\naislado de tierra, y\npuede haber tensión sin que suene la\nalarma\nLa ausencia de tensión se confirma\ncon el Fluke 117'},
   glm:{n:'Bosch GLM 50-27 CG — distanciómetro láser', cfg:'0,05 a 50 m · ±1,5 mm en condiciones\nfavorables\nLáser clase 2 (515 nm) · IP65 ·\ninclinómetro ±0,2°\nPara la longitud del circuito: medir\nel RECORRIDO del\ncaño tramo por tramo y sumar. La\ndistancia en línea\nrecta da una caída de tensión menor\nque la real\nTambién para las alturas de las\nzonas del baño (7-701)'},
@@ -548,12 +606,733 @@ var EQ = {
 
 var EPP = {
   guantes:{n:'Guantes dieléctricos clase 00, con cobertor y guante interno', cfg:'Tensión máxima de empleo 500 V en\nalterna (750 V=)\nCubren la baja tensión domiciliaria\ny nada por encima\nAntes de cada uso: inspección visual\ny prueba de inflado\nEl cobertor de cuero va SIEMPRE\nencima: un corte o un\nraspón en el guante aislante lo\nanula\nGuardarlos sin doblar, fuera del sol\ny del calor\nTener a mano la fecha del último\nensayo del fabricante'},
-  facial:{n:'Protector facial Fravida 2090 — capuchón para arco eléctrico, con casco', cfg:'Conjunto completo: capuchón\nignífugo + visera + visor + casco\nMapuche IRAM 3620 Tipo 1 Clase B\n(13.200 V) · UNIT 687 (15.000 V)\n\nVISOR. Policarbonato de 2 mm,\nantiempañante, rebatible,\n20 × 40 cm · clase óptica 1\nMarcado del ocular 8-2-1 según\nGS-ET-29: 8 = arco eléctrico de\ncortocircuito · 2 = clase 7 kA ·\n1 = transmitancia clase 1\nIRAM 3904 clase 2: 400 V — 7 kA\nEN 166:2001\n\nCAPUCHÓN. Faldón ignífugo de\n70 × 60 cm: cubre rostro, cuello y\ntorso · ATPV 9,1 a 9,3 cal/cm²\nHAF ≈ 73,5 %\n\nPOR QUÉ CAPUCHÓN Y NO PANTALLA\nSOLA. Una pantalla deja cuello y\ngarganta expuestos. La tabla\n130.7(C)(15)(c) de NFPA 70E pide,\nde categoría 2 para arriba,\ncapucha O BIEN pantalla más\nbalaclava clasificada. Es criterio\nde referencia: la AEA no fija\ncategoría ni valor en cal/cm²\n\nLOS 7 kA SE VERIFICAN MIDIENDO.\nLa Ik presunta del tablero se lee\ncon el DT-5301. En vivienda o local\ncon acometida de 63 a 100 A queda\nholgadamente por debajo\n\nEs el punto b) del 2.1.2 del\nlistado. Corresponde en toda\nmaniobra con tablero abierto y con\ntensión, la termografía incluida'},
+  facial:{n:'Protector facial Fravida 2090 — capuchón para arco eléctrico, con casco', cfg:'Conjunto completo: capuchón\nignífugo + visera + visor + casco\nMapuche IRAM 3620 Tipo 1 Clase B\n(13.200 V) · UNIT 687 (15.000 V)\n\nVISOR. Policarbonato de 2 mm,\nantiempañante, rebatible,\n20 × 40 cm · clase óptica 1\nMarcado del ocular 8-2-1 según\nGS-ET-29: 8 = arco eléctrico de\ncortocircuito · 2 = clase 7 kA ·\n1 = transmitancia clase 1\nIRAM 3904 clase 2: 400 V — 7 kA\nEN 166:2001\n\nCAPUCHÓN. Faldón ignífugo de\n70 × 60 cm: cubre rostro, cuello y\ntorso · ATPV 9,1 a 9,3 cal/cm²\nHAF ≈ 73,5 %\n\nPOR QUÉ CAPUCHÓN Y NO PANTALLA\nSOLA. Una pantalla deja cuello y\ngarganta expuestos. La tabla\n130.7(C)(15)(c) de NFPA 70E pide,\nde categoría 2 para arriba,\ncapucha O BIEN pantalla más\nbalaclava clasificada. Es criterio\nde referencia: la AEA no fija\ncategoría ni valor en cal/cm²\n\nLOS 7 kA SE COMPARAN CON LA Ik"\nPRESUNTA DEL TABLERO, entre activos.\nEn un tablero seccional se mide con\nel DT-5301 en PSC: cable de tres\npuntas, la roja a la fase y la negra\ny la verde juntas al neutro. En el\nprincipal y la acometida, por\ncategoría, sale del dato de la\ndistribuidora en bornes del medidor\n(771.19.2.2.2) o del cálculo. Con la\nficha en un tomacorriente el DT-5301\nmide fase–tierra, que en TT pasa por\nRa y Rb y da mucho menos: no sirve\n(771.3.3.1). En trifásica, hasta el\ndoble de la lectura fase–neutro. Por\nencima de 7 kA, el visor queda fuera\nde su clase\n\nEs el punto b) del 2.1.2 del\nlistado. Corresponde en toda\nmaniobra con tablero abierto y con\ntensión, la termografía incluida'},
   gafas:{n:'Gafas de seguridad antivaho', cfg:'Protección ocular contra\nproyecciones e impacto\nNO tienen clasificación de arco\neléctrico: para maniobrar\nbajo carga o trabajar en tablero con\ntensión corresponde el\nprotector facial Fravida 2090, que es\nel punto b) del 2.1.2'},
   calzado:{n:'Calzado de seguridad dieléctrico', cfg:'Es la segunda barrera, no la\nprimera: aísla del piso,\nno de la parte activa\nCon el piso mojado no se puede\ncontar con él'},
   herr:{n:'Destornilladores y pinzas dieléctricos', cfg:'Verificar el marcado de doble\ntriángulo y 1000 V\n(IEC 60900). Sin ese marcado son\nherramientas comunes\ncon mango de plástico, no\nherramientas aisladas\nDescartar la que tenga el aislante\ncortado o quemado'},
   linterna:{n:'Linterna LED de vincha recargable', cfg:'Es la lámpara portátil del punto h)\ndel 2.1.2\nDeja las dos manos libres, que es lo\nque corresponde\ncuando se trabaja dentro de un\ntablero'}
 };
+
+/* ============================================================
+   MANUAL DE INSTRUMENTOS
+   Una entrada por instrumento: para qué sirve, qué mide y cómo, por qué se
+   mide así, el chequeo previo, el paso a paso, cómo leer el resultado y lo que
+   no hace. Los datos técnicos salen de los manuales y hojas de datos de cada
+   fabricante; los criterios, de la AEA 90364 citada en cada entrada. La
+   configuración se toma de EQ y las fichas que lo usan se arman solas.
+   ============================================================ */
+var MAN = {
+  f117:{n:'Fluke 117 — multímetro', s:'Tensión, tensión fantasma con LoZ y continuidad',
+    eqs:['f117v','f117loz','f117cont'],
+    para:'Es el instrumento que verifica la tensión: confirma si hay o no hay tensión, mide cuánta para diagnosticar cortes, caídas y neutros flojos, separa la tensión real de la fantasma con LoZ, y mide continuidad y resistencia sin tensión.',
+    mide:[
+      'Tensión: la diferencia de potencial entre las dos puntas. En V~ el tester casi no le toma corriente al circuito, y por eso un conductor suelto que corre junto a otro con tensión puede marcar 30 a 150 V sin poder alimentar nada: es acople capacitivo, la tensión fantasma.',
+      'LoZ: baja la impedancia de entrada y carga el circuito. El acople capacitivo no sostiene esa carga y la lectura se derrumba a casi cero; una tensión real queda firme. La diferencia entre las dos lecturas es el diagnóstico.',
+      'AutoVolt: en V elige solo entre alterna y continua.',
+      'Continuidad y resistencia: hace circular una corriente chica —menos de 350 µA— y mide la resistencia. El zumbador suena por debajo de 20 Ω y se calla por encima de 250 Ω.',
+      'VoltAlert: detecta tensión sin contacto, con los mismos límites que el UT-12D.'
+    ],
+    porque:[
+      'La ausencia de tensión se verifica con un instrumento que mide, no con uno que detecta: es el paso 3 de la consignación (Anexo 771-J.1, punto 1.1.4).',
+      'Las continuidades de recepción se miden con óhmetro de tensión menor a 12 V (771.23.3.3 a, b y c), y el Fluke la cumple. La corriente mínima de 0,2 A que recomienda 770.19.5.1, no: sirve para diagnosticar y comparar, no para certificar con ese método.'
+    ],
+    antes:[
+      'Puntas y cables sanos, sin cortes en la aislación. CAT III 600 V alcanza para tablero seccional y circuitos; en acometida y tablero principal corresponde el UT-219p.',
+      'Elegir la función antes de apoyar las puntas: nunca Ω ni continuidad sobre un circuito con tensión.',
+      'Verificación en tres pasos: medir una fuente conocida, medir el punto y volver a medir la fuente conocida. Si la segunda prueba falla, la medición del medio no vale.'
+    ],
+    pasos:[
+      {t:'Tensión', l:[
+        'Selector en V~ (AutoVolt): punta negra en COM y roja en V.',
+        'Medir una fuente conocida, por ejemplo un tomacorriente que funciona.',
+        'Medir en los bornes, no en el frente del tomacorriente: L–N, L–PE y N–PE. En trifásica, además, entre fases.',
+        'Si una lectura da un valor intermedio raro, pulsar LoZ sin mover las puntas y volver a leer (ficha A5).',
+        'Volver a medir la fuente conocida.'
+      ]},
+      {t:'Continuidad', l:[
+        'Sin tensión, con el circuito consignado y descargado: selector en Ω / continuidad.',
+        'Juntar las puntas y anotar la resistencia propia: se resta de cada medición.',
+        'Medir entre la barra de PE y el borne de tierra de cada boca, o entre los extremos del conductor, y restar la de las puntas (fichas T3, R4 y R5).'
+      ]}
+    ],
+    lee:[
+      'Fase–neutro: la ficha A4 toma 207 a 253 V, ±10 % de 230 V, como referencia práctica.',
+      'N–PE con la carga encendida: hasta unos 5 V es normal; por encima de 15 V el neutro tiene alta resistencia o está abierto (ficha A6).',
+      'Continuidad de PE: criterio práctico de 1 Ω o menos, ya restadas las puntas; no es un valor de la AEA (ficha T3).'
+    ],
+    no:[
+      'El VoltAlert, igual que el UT-12D, no verifica ausencia de tensión.',
+      'LoZ no se usa sobre circuitos electrónicos sensibles.',
+      'No es para medir la corriente de un circuito de la instalación: eso es trabajo de las pinzas, que no obligan a abrir el circuito.',
+      'Con menos de 350 µA, una unión floja u oxidada puede dar continuidad y fallar con la corriente de falla.'
+    ],
+    cita:'Hoja de datos Fluke 114/115/116/117. AEA 90364-7-771: 771.23.3.3 y Anexo 771-J.1, 1.1.4. AEA 90364-7-770: 770.19.5.1.'},
+
+  ut12d:{n:'UT-12D — detector de tensión sin contacto', s:'Avisa dónde hay tensión alterna; no verifica que no la haya',
+    eqs:['ut12d'],
+    para:'Sirve para saber rápido qué conductor, caja o artefacto tiene tensión antes de tocar nada, y para recorrer un tramo buscando dónde se pierde la fase. Es la primera alerta, nunca la verificación de ausencia de tensión.',
+    mide:[
+      'No mide tensión: detecta el campo eléctrico alterno que rodea a un conductor con tensión. El cuerpo del operador cierra el acople contra tierra, y por eso con el operador aislado de tierra puede no detectar.',
+      'Modo alto, de 90 a 1000 V~, para la red de 220/380 V. Modo bajo, de 24 a 1000 V~, para tensiones chicas o cables de aislación gruesa: es más sensible, y también es más fácil que avise por un conductor vecino.',
+      'Avisa con sonido y luz, y trae linterna.'
+    ],
+    porque:[
+      'La consignación pide verificar la ausencia de tensión en cada parte seccionada (Anexo 771-J.1, 1.1.4). El detector no alcanza: la ausencia se confirma midiendo con el Fluke 117.',
+      'Es el origen típico del diagnóstico equivocado de tensión fantasma: titila sobre un conductor que no alimenta nada (ficha A5).'
+    ],
+    antes:[
+      'Dos pilas AAA con carga.',
+      'Probarlo en una fuente conocida antes y después de usarlo.',
+      'Modo alto para trabajar en 220/380 V.'
+    ],
+    pasos:[{l:[
+      'Probarlo en un tomacorriente que funciona: tiene que avisar.',
+      'Acercar la punta al conductor, la boca o el aparato, sin tocar partes activas.',
+      'Recorrer de a un conductor: en un caño con varios, el que avisa puede ser el vecino.',
+      'Volver a probarlo en el tomacorriente que funciona.',
+      'Antes de tocar o de trabajar, confirmar la ausencia de tensión con el Fluke 117.'
+    ]}],
+    lee:[
+      'Avisa: probablemente hay tensión. No avisa: no es un dato.',
+      'Titila o avisa débil sobre un conductor desconectado: acople; confirmarlo con LoZ (ficha A5).'
+    ],
+    no:[
+      'No detecta a través de blindajes, caños ni bandejas metálicas, ni detecta tensión continua.',
+      'Puede haber tensión sin que avise: con el operador aislado de tierra o con las pilas bajas.',
+      'Es CAT IV 1000 V, pero no mide: la categoría no lo convierte en verificador.'
+    ],
+    cita:'Ficha de producto UNI-T UT12D. AEA 90364-7-771, Anexo 771-J.1, 1.1.4.'},
+
+  ut204:{n:'UT-204+ — pinza amperométrica', s:'Corriente de carga en amperes, sin abrir el circuito',
+    eqs:['ut204'],
+    para:'Mide la corriente que toma un circuito, una fase o un equipo, abrazando el conductor sin cortarlo. Con ese número se comprueba si la protección y el conductor están bien elegidos, si hay sobrecarga o desbalance, y con qué carga se hizo la termografía.',
+    mide:[
+      'La corriente que circula por un conductor crea a su alrededor un campo magnético proporcional a ella; la mordaza lo concentra y lo mide. Mide alterna y continua hasta 600 A, en verdadero valor eficaz: da bien con corrientes deformadas de fuentes, drivers de LED y variadores.',
+      'Por eso se abraza un solo conductor: la fase y el neutro de un circuito llevan la misma corriente en sentido contrario, sus campos se anulan y la pinza marca casi cero. Esa anulación es justamente la que aprovecha la pinza de fuga.',
+      'Con puntas mide también tensión, y tiene detector de tensión sin contacto.'
+    ],
+    porque:[
+      'La coordinación de 771.19.3 exige IB ≤ In ≤ IZ: la corriente del circuito no puede superar la del interruptor, ni esta la que admite el conductor. La pinza da la IB real (fichas P1 y P5).',
+      'Una termografía sólo se interpreta si se sabe con qué corriente se tomó.'
+    ],
+    antes:[
+      'Es CAT II 600 V / CAT III 300 V, la más baja entre los que miden: en tablero principal y acometida va el UT-219p.',
+      'Mordaza limpia y que cierre del todo.',
+      'Selector en A~ para alterna.'
+    ],
+    pasos:[{l:[
+      'Selector en A~.',
+      'Abrazar un solo conductor: la fase del circuito, o cada fase por separado en trifásica.',
+      'Cerrar la mordaza del todo y dejar el conductor lo más centrado posible.',
+      'Leer con la carga en régimen y anotar la hora: la corriente cambia con el uso.',
+      'En trifásica, medir las tres fases y el neutro (ficha B1).'
+    ]}],
+    lee:[
+      'Comparar con la In del interruptor y con la IZ corregida del conductor (fichas P1, P5 y C4).',
+      'Para termografía, al menos el 40 % de la In del circuito; por debajo, corregir por carga.',
+      'Fase y neutro juntos tienen que dar casi cero. Si no, hay corriente que vuelve por otro camino: medirla con el UT-251A.'
+    ],
+    no:[
+      'No resuelve miliamperes: la fuga se mide con el UT-251A.',
+      'No tiene función INRUSH: el arranque de un motor se diagnostica por la caída de tensión en el arranque y la corriente en régimen (ficha G1).',
+      'Un cable con vaina que lleva fase y neutro no se mide entero: hay que abrazar un conductor donde estén separados, en la bornera o en el tablero.'
+    ],
+    cita:'Ficha de producto UNI-T UT204+, serie UT200+. AEA 90364-7-771, 771.19.3.'},
+
+  ut219:{n:'UT-219p — pinza de potencia', s:'Potencia, factor de potencia, armónicos y secuencia de fases',
+    eqs:['ut219'],
+    para:'Es la pinza para el tablero principal y la acometida, por su categoría, y la única del maletín que mide potencia: activa, aparente y reactiva, factor de potencia, ángulo de fase, armónicos y THD. También indica la secuencia de fases.',
+    mide:[
+      'Toma a la vez la tensión, con las puntas, y la corriente, con la mordaza, y de las dos calcula la potencia activa (kW), la aparente (kVA), la reactiva (kVAr), el factor de potencia y el ángulo entre tensión y corriente.',
+      'Hasta 1000 V y 1000 A de alterna, en verdadero valor eficaz, con mordaza de 75 mm.',
+      'En trifásica da la potencia total con carga equilibrada o, por etapas, desequilibrada.',
+      'Secuencia de fases, de 80 a 1000 V: compara dos tensiones entre fases y muestra «1 2 3» si es directa y «3 2 1» si es inversa.'
+    ],
+    porque:[
+      'Es CAT IV 600 V / CAT III 1000 V, la mayor categoría entre los instrumentos que miden: por eso es el que corresponde en acometida y tablero principal.',
+      'El factor de potencia mínimo y su penalización los fija la distribuidora, no la AEA (ficha B4 y cálculo K8). La AEA lo usa para la caída de tensión: a falta de dato, cos φ = 0,85 (771.19.7).',
+      'La secuencia de fases decide el sentido de giro de los motores trifásicos (ficha G2).'
+    ],
+    antes:[
+      'Probarlo en una tensión conocida antes de cada uso.',
+      'Puntas y cocodrilos sanos y de la categoría del punto.'
+    ],
+    pasos:[
+      {t:'Potencia y factor de potencia, monofásica', l:[
+        'Punta roja en V y negra en COM; selector en W/VA/var.',
+        'Cocodrilo rojo en la fase y negro en el neutro.',
+        'Abrazar sólo la fase, con la corriente entrando por el frente de la pinza y saliendo hacia la tapa de abajo. Soltar el gatillo despacio y centrar el conductor: descentrado suma alrededor de 1 % de error.',
+        'Con SELECT pasar por potencia activa, aparente, reactiva, factor de potencia y ángulo de fase.',
+        'Si la potencia activa sale negativa y titila la luz roja, hay algo invertido, la pinza o las puntas: corregir y volver a medir.'
+      ]},
+      {t:'Potencia trifásica', l:[
+        'Selector en 3PW. Carga equilibrada: abrazar L1, V en L1 y COM en el neutro —o en L2 si no hay neutro— y HOLD.',
+        'Carga desequilibrada: modo desequilibrado, por etapas. Con neutro, una etapa por fase con COM en el neutro; sin neutro, dos etapas, L1 y L3, con COM en L2. Al final muestra la potencia total y la de cada etapa.'
+      ]},
+      {t:'Secuencia de fases', l:[
+        'Selector en Phase Detect. V en L1 y COM en L2; cuando la tensión se fija, pasar V a L3 dentro de los 10 s, sin mover COM.',
+        '«1 2 3»: directa. «3 2 1» con luz roja: inversa. «— — — —»: falta una fase o no se pudo medir.'
+      ]},
+      {t:'Armónicos y THD', l:[
+        'Selector en HARM. Arranca en armónicos de corriente; SELECT pasa a tensión, con la roja en V y la negra en COM.',
+        'Las teclas ▼ (/3P3W) y ▲ (/3P4W) recorren el orden de la armónica, hasta la 40ª con red de 50 Hz.',
+        'Muestra THD%f, referido a la fundamental, y THD%r, referido al valor eficaz total. Para elegir el tipo de banco de capacitores se usa THD%f.',
+        'Para el banco, el THD de tensión se mide entre fases —roja en L1 y negra en L2— y con el banco desconectado (guía de factor de potencia).',
+        'Necesita 30 V como mínimo y, en corriente, más del 10 % del rango: más de 6 A en el rango de 60 A.'
+      ]}
+    ],
+    lee:[
+      'Factor de potencia contra el umbral de la distribuidora, habitualmente 0,95; el cálculo K8 da los kVAr que faltan (ficha B4).',
+      'La exactitud del factor de potencia depende de la del ángulo, ±3° entre 40 y 70 Hz: cerca de 0,95 son unas dos centésimas para cada lado.',
+      'Corriente de neutro mayor que la de las fases: armónicos de orden 3, que en el neutro se suman (ficha B2). El THD de corriente dice cuánto pesan.',
+      'PF y cos φ: con armónicos el PF de la pinza da menos que el cos φ de 50 Hz, que es el que factura la distribuidora y el único que corrige un capacitor. cos φ ≈ PF × √(1 + THDi²), con el THDi en tanto por uno (cálculo K14).'
+    ],
+    no:[
+      'Abraza un conductor por vez.',
+      'Una medición puntual no es la factura: la penalización se calcula sobre la energía del período. Medir en distintos horarios (ficha B4).',
+      'Sin la app por Bluetooth da valores instantáneos. Según el manual, la app registra las mediciones y arma gráfico y tabla.'
+    ],
+    cita:'Manual y ficha de producto UNI-T UT219P. AEA 90364-7-771, 771.19.7.'},
+
+  ut251:{n:'UT-251A — pinza de fuga', s:'Corriente de fuga en miliamperes, con la instalación en servicio',
+    eqs:['ut251'],
+    para:'Mide la corriente de fuga a tierra de un circuito o de toda la instalación sin desconectar nada, con resolución de 1 µA. Es el instrumento para saber por qué dispara un diferencial y cuánto margen le queda.',
+    mide:[
+      'Se abrazan juntos todos los conductores activos: fase y neutro, o las tres fases y el neutro. Lo que va por la fase vuelve por el neutro y se anula; lo que no vuelve se fue a tierra, y eso es lo que marca. Es la misma diferencia que vigila el diferencial.',
+      'El PE queda fuera de la mordaza: la fuga vuelve por él, y si se lo incluye cancela la lectura.',
+      'Con el PE solo dentro de la mordaza, mide la corriente que circula por el conductor de protección (ficha T5).',
+      'Mide de 0,001 mA a 60 A con ±(1,5 % + 5 díg), unas dos lecturas por segundo.'
+    ],
+    porque:[
+      'Un diferencial no debe disparar con la mitad de su IΔn y tiene que disparar con el total: son los ensayos de IEC 61008 a ×½ y ×1. Por eso la app toma como límite práctico que la fuga permanente no pase del 50 % de IΔn; no es un valor de la AEA (ficha D1).',
+      'Ante un disparo sin causa conocida, 771.23.6 pide una revisión detallada antes de restablecer el servicio.'
+    ],
+    antes:[
+      'Mordaza limpia y que cierre del todo: con esta sensibilidad, un cierre imperfecto cambia la lectura.',
+      'Lejos de barras y transformadores con mucha corriente: un campo externo fuerte puede sumarse a la lectura.',
+      'Es CAT III 600 V.'
+    ],
+    pasos:[{l:[
+      'Con el diferencial cerrado y la instalación en uso normal, abrazar fase y neutro juntos a la salida del diferencial, sin el PE.',
+      'Anotar la lectura: es la fuga total aguas abajo de ese diferencial.',
+      'Abrir los circuitos de a uno y ver cuánto baja: el mayor salto es el principal aportante.',
+      'Dentro de ese circuito, desenchufar los equipos de a uno y repetir.',
+      'Para saber cuánto vuelve por tierra, abrazar sólo el PE (ficha T5).'
+    ]}],
+    lee:[
+      'Contra la IΔn del diferencial: la ficha D1 separa en 30 %, 50 % y 100 % de IΔn.',
+      'Fuga baja y el diferencial igual dispara: ensayarlo con el UT-582+ (ficha D2), puede estar disparando antes de su valor.',
+      'Fuga que sube con lluvia o humedad: aislación (fichas D4 e I1).'
+    ],
+    no:[
+      'Con un solo conductor en la mordaza mide la corriente de carga, no la fuga.',
+      'Si falta un activo —el neutro, o una fase en trifásica—, la lectura es corriente de carga y no sirve.',
+      'La fuga en servicio no es la aislación: una aislación que cumple puede convivir con fuga alta de equipos electrónicos (fichas I3 y G6).'
+    ],
+    cita:'Ficha de producto UNI-T UT251A. AEA 90364-7-771, 771.23.6. IEC 61008-1, ensayos a ×½ y ×1.'},
+
+  ut511:{n:'UT-511 — megóhmetro', s:'Resistencia de aislación con tensión continua de ensayo',
+    eqs:['ut511'],
+    para:'Mide la resistencia de aislación entre conductores y contra tierra, una de las mediciones obligatorias de recepción y de la inspección periódica, y sirve para encontrar el tramo con falla de aislación. Tiene además una función Lo de continuidad.',
+    mide:[
+      'Aplica una tensión continua de ensayo —100, 250, 500 o 1000 V— entre los conductores elegidos, mide la corriente que atraviesa la aislación y da la resistencia, hasta 10 GΩ.',
+      'La tensión de ensayo es más alta que la de servicio a propósito: hace aparecer defectos que con 220 V no se ven.',
+      'Los cables se cargan como un capacitor: la lectura sube al principio, y al terminar el circuito queda cargado.',
+      'Lo: baja resistencia de 0,1 a 999,9 Ω con 2,8 V en vacío y 0,1 Ω de resolución. El manual no declara la corriente de ensayo.'
+    ],
+    porque:[
+      'Es la medición d) de 771.23.3.3, y también de la inspección periódica (771.23.4.2).',
+      'Para la red de 220/380 V la AEA pide ensayar con 500 V o 1000 V de continua (771.23.5.1). Con 500 V, cada circuito tiene que dar 0,5 MΩ o más con los aparatos desconectados; con 250 V, 0,25 MΩ en MBTS y MBTF; con 1000 V, 1,0 MΩ en circuitos de más de 500 V (Tabla 771.23.I).',
+      'Además, 1000 Ω por volt aplicado por cada tramo de 100 m o fracción (771.23.5.1.1).',
+      'Se mide entre fases, entre las fases unidas y el neutro, entre las fases unidas y el PE, y entre neutro y PE (771.23.5.1).'
+    ],
+    antes:[
+      'No declara bloqueo por tensión presente ni descarga automática: verificar la ausencia de tensión con el Fluke 117 y descargar a mano.',
+      'Probar las puntas: abiertas, fuera de rango; juntas, en Lo, casi cero.',
+      'Desconectar lo que no tolera la tensión de ensayo: protectores de sobretensión, fuentes, drivers de LED, domótica.'
+    ],
+    pasos:[{l:[
+      'Seccionar el circuito y verificar la ausencia de tensión con el Fluke 117.',
+      'Desconectar cargas y aparatos, y cerrar las llaves de efecto para incluir todo el circuito.',
+      'Elegir la tensión de ensayo: 500 V para circuitos de hasta 500 V; 250 V para MBTS y MBTF.',
+      'Conectar las puntas al par de conductores de cada medición, ensayar y esperar a que la lectura se estabilice.',
+      'Hacer todas las mediciones de 771.23.5.1 y quedarse con el menor valor.',
+      'Descargar el circuito antes de tocarlo o de cambiar las puntas.',
+      'Si no cumple, buscar el tramo por bipartición (ficha I2).'
+    ]}],
+    lee:[
+      'Contra la Tabla 771.23.I según la tensión de ensayo: con 500 V, 0,5 MΩ o más (ficha I1).',
+      'Más que el mínimo, la comparación: un circuito que da mucho menos que sus vecinos tiene algo, aunque cumpla.',
+      'Un valor que baja de una inspección a otra, o con humedad, indica deterioro (fichas D4 e I4).'
+    ],
+    no:[
+      'La función Lo cumple los 12 V de 771.23.3.3, pero sin corriente declarada no se puede afirmar que llegue a los 0,2 A que recomienda 770.19.5.1.',
+      'Con aparatos conectados el valor sale más bajo que el real, y los aparatos se pueden dañar.'
+    ],
+    cita:'Manual y ficha de producto UNI-T UT511. AEA 90364-7-771: 771.23.3.3 d), 771.23.4.2, 771.23.5.1, 771.23.5.1.1 y Tabla 771.23.I.'},
+
+  ut582:{n:'UT-582+ — probador de diferenciales', s:'Tiempo y corriente de disparo del diferencial',
+    eqs:['ut582'],
+    para:'Ensaya el diferencial de verdad: le hace circular una fuga controlada y mide en cuánto tiempo dispara y, en rampa, con qué corriente. El botón de prueba del aparato sólo dice que el mecanismo se mueve.',
+    mide:[
+      'Desde un tomacorriente, hace circular una corriente controlada de fase a PE que no vuelve por el neutro: el diferencial la ve como fuga. Mide el tiempo hasta el corte.',
+      '×½ es la mitad de IΔn y el diferencial no tiene que disparar; con ×1 tiene que disparar; ×5 es el disparo rápido, sólo de 10 a 30 mA.',
+      'AUTO RAMP sube la corriente del 20 % al 110 % de IΔn y muestra a la vez la corriente y el tiempo de disparo.',
+      '0° y 180°: el ensayo arranca en el semiciclo positivo o en el negativo, y un diferencial puede responder distinto en cada uno.',
+      'Antes del ensayo, tres indicadores —L-PE, L-N y N-PE— revisan la conexión del tomacorriente. Mide también tensión y frecuencia.'
+    ],
+    porque:[
+      'En TT la protección contra contactos indirectos sólo se puede hacer con diferenciales (771.18.4.3): en circuitos terminales de 230 V tienen que cortar en 0,06 s como máximo, y en seccionales en 1 s (Tabla 771.18.I).',
+      'Los 300 ms a ×1 y los 40 ms a ×5 son los del ensayo de producto de IEC 61008 e IEC 61009; una falla franca en TT lleva al diferencial a la zona del ×5.',
+      'La AEA no enumera este ensayo entre las mediciones de recepción de 771.23.3.3; en la inspección periódica pide el ensayo con el pulsador de prueba (771.23.4.1).',
+      'UL en 25 V y no en 50 V, porque en Argentina la tensión límite de contacto es 24 V (Ley 19587, Decretos 351/79 y 911/96, que adopta 771.3.3.1).'
+    ],
+    antes:[
+      'Avisar: el ensayo corta la alimentación. Prever los equipos que no toleran el corte (ficha L5).',
+      'La boca tiene que tener PE con continuidad: sin PE el ensayo no se puede hacer.',
+      'Fijar UL en 25 V y el IΔn marcado en el diferencial.',
+      'Mirar los indicadores: bien es L-PE y L-N encendidos y N-PE apagado. L-PE y N-PE titilando: falta la tierra; L-N y N-PE: falta el neutro; los tres: fase y neutro invertidos. Con la conexión mal, no pulsar TEST.'
+    ],
+    pasos:[{l:[
+      'Elegir el ensayo con el selector, el IΔn con la tecla IΔn y la fase con PHASE/UL.',
+      '×½: no tiene que disparar.',
+      '×1 en 0° y en 180°: anotar el mayor de los dos tiempos.',
+      '×5, sólo si el IΔn es de 30 mA o menos.',
+      'AUTO RAMP cuando hay que saber con qué corriente dispara; por ejemplo, si la fuga medida con el UT-251A es baja y el diferencial dispara igual (ficha D1).',
+      'En 300 y 500 mA, esperar 5 minutos entre ensayos.',
+      'Cargar los resultados en la ficha D2.'
+    ]}],
+    lee:[
+      '×½ sin disparo, ×1 en 300 ms o menos y ×5 en 40 ms o menos (ficha D2).',
+      'En rampa, la corriente de disparo tiene que quedar entre el 50 % y el 100 % de IΔn: por debajo dispara de más, y por encima no protege como debe.',
+      '«Uf Hi» y el ensayo cortado: la tensión de falla superó UL. Revisar la puesta a tierra antes de seguir (fichas T1 y T3).'
+    ],
+    no:[
+      'Ensaya con corriente senoidal, o sea diferenciales tipo AC. Uni-T no declara aptitud para tipos A, F, B ni selectivos.',
+      'Las fugas de los equipos conectados aguas abajo se suman a la corriente de ensayo y el diferencial parece disparar antes: desconectar lo que se pueda.',
+      'No hay ×5 por encima de 30 mA.'
+    ],
+    cita:'Manual de usuario UNI-T UT582+. AEA 90364-7-771: 771.3.3.1, 771.18.4.3, Tabla 771.18.I y 771.23.4.1. IEC 61008-1 e IEC 61009-1.'},
+
+  telu:{n:'UT-572 — telurímetro', s:'Resistencia de puesta a tierra y resistividad del suelo',
+    eqs:['telu'],
+    para:'Mide la resistencia del electrodo de puesta a tierra, otra de las mediciones obligatorias de recepción y de la inspección periódica, y la resistividad del suelo para proyectar una toma de tierra.',
+    mide:[
+      'Hace circular una corriente alterna entre el electrodo (E) y la pica de corriente (H), mide la tensión entre el electrodo y la pica de tensión (S) y divide: R = U / I. Es el método de caída de potencial de 770.19.5.3.',
+      'Ensaya a 94 o 128 Hz, que no son múltiplos de 50 Hz: así las corrientes vagabundas de la red no se mezclan con la medición.',
+      'Antes de medir chequea la tensión de perturbación Ust del terreno.',
+      '3 hilos (E, S, H) para la puesta a tierra; 4 hilos (E, ES, S, H) para la resistividad del suelo.',
+      'Rangos de 4 Ω a 40 kΩ con ±(3 % + 5 díg); en el de 4 Ω, ±(3 % + 15 díg).'
+    ],
+    porque:[
+      'Es la medición e) de 771.23.3.3 y de la inspección periódica (771.23.4.2), y la AEA la quiere preferentemente con telurímetro (771.23.5.2).',
+      'En TT el límite es Ra ≤ 40 Ω (771.3.3.1, Tabla 771.3.I, columna 3). Con 30 mA, la columna de 24 V daría 800 Ω, pero la AEA fija 40 Ω para tener en cuenta las variaciones ocasionales.',
+      'La pica de tensión al 62 % de la distancia E–H y las tres lecturas a ±1 m son el método de 770.19.5.3.'
+    ],
+    antes:[
+      'Cortar la alimentación de la instalación y recién entonces desconectar el electrodo en su caja de inspección. Conectado, mide el paralelo con otras tierras y da un valor falsamente bajo.',
+      'Medir Ust: con más de 10 V, no ensayar.',
+      'Es CAT III 300 V: se usa con el electrodo desconectado, nunca sobre la instalación en servicio.',
+      'Cables: verde de 5 m (E), amarillo de 10 m (S), rojo de 20 m (H), negro de 20 m (ES) y rojo de 40 m para alejar H.'
+    ],
+    pasos:[{l:[
+      'Cortar la alimentación y desconectar el electrodo.',
+      'Clavar H en línea recta desde el electrodo, lo más lejos que permita el terreno: 20 m como referencia práctica.',
+      'Clavar S sobre la misma línea, al 62 % de E–H: 12,4 m con H a 20 m. Como el cable de S mide 10 m, poner el instrumento sobre la línea a 3 o 4 m del electrodo.',
+      'Medir Ust y después la resistencia, en 3 hilos.',
+      'Repetir con S un metro más lejos y un metro más cerca. Si las tres coinciden razonablemente, promediarlas; si no, alejar H —con el rojo de 40 m, y el negro de 20 m para S— y volver a empezar.',
+      'Reconectar el electrodo antes de energizar (ficha T1).'
+    ]}],
+    lee:[
+      'Ra ≤ 40 Ω, o UL / IΔn si da menos (ficha T1).',
+      'Si la lectura sube a medida que S se aleja, H todavía está dentro de la zona de influencia del electrodo: alejarla.',
+      'Ra alta: las opciones de mejora están en la ficha T2.'
+    ],
+    no:[
+      'Conectado a la instalación no mide el electrodo: mide el paralelo con otras tierras.',
+      'El manual habla de unos 5 a 10 m. Con jabalinas de 1,5 a 3 m eso puede quedar corto: lo que decide es que las tres lecturas coincidan.',
+      'No mide la continuidad del PE hasta las bocas: un electrodo bueno no sirve si el PE está cortado (ficha T3).'
+    ],
+    cita:'Manual UNI-T UT572. AEA 90364-7-770: 770.19.5.3 y Figura 770.19.A. AEA 90364-7-771: 771.3.3.1, Tabla 771.3.I, 771.23.3.3 e) y 771.23.5.2.'},
+
+  dt5301:{n:'CEM DT-5301 — impedancia de lazo', s:'Lazo de falla y corriente de cortocircuito presunta',
+    eqs:['dt5301'],
+    para:'Mide la impedancia de un lazo y la corriente presunta que resulta. Con la ficha en un tomacorriente mide el lazo fase–tierra, que en TT es casi entero Ra + Rb: sirve para comprobar boca por boca que el lazo a tierra cierra y, con su error a la vista, como alternativa a medir Ra. En un tablero seccional, con el cable de tres puntas entre fase y neutro, da la corriente de cortocircuito presunta, que es la del poder de corte y la del visor del protector facial.',
+    mide:[
+      'Le pide al circuito una corriente de ensayo muy breve y mide cuánto cae la tensión: de ahí la impedancia del lazo, Z = ΔU / I, y la corriente presunta, U / Z.',
+      'Mide el lazo entre su punta de fase y su punta de tierra. Con la ficha, la de tierra es el PE del tomacorriente: lazo fase–tierra. Con el cable de tres puntas y la verde en el neutro, el lazo es fase–neutro.',
+      'Loop: 20 Ω con 25 A durante 20 ms, 200 Ω con 2,3 A durante 40 ms y 2000 Ω con 15 mA durante 280 ms. PSC: 200 A con 2,3 A, y 2000 A y 20 kA con 25 A.',
+      'Tres luces: P-E y P-N encendidas, cableado correcto; P⇄N encendida, fase y neutro invertidos, y no hay que seguir.',
+      'Exactitud ±2 % del fondo de escala ±5 dígitos: un error fijo, que no depende de la lectura. ±0,45 Ω en 20 Ω, ±4,5 Ω en 200 Ω, ±45 A en 2000 A y ±450 A en 20 kA.'
+    ],
+    porque:[
+      'En TT, la corriente de una falla entre fase y masa es menor que la de cortocircuito, porque el lazo queda determinado por Ra y Rb (771.3.3.1).',
+      'Como el lazo fase–tierra incluye a Ra, un lazo bajo asegura una Ra baja: la AEA 90364-7-770 admite en TT medir la impedancia de lazo en lugar de la resistencia de puesta a tierra (770.19.5.3, Nota). Para asegurar Ra ≤ 40 Ω en el rango de 200 Ω, la lectura tiene que dar 35,5 Ω o menos.',
+      'El poder de corte de cada interruptor tiene que ser por lo menos igual a la corriente de cortocircuito presunta en el punto donde está instalado, y esa corriente se puede determinar por cálculo o por medición con un instrumento hecho para eso (771.19.2.2.2).',
+      'Es CAT III 600 V: en el criterio de la app va en tableros seccionales. En el tablero principal y la acometida corresponde CAT IV, y la corriente de cortocircuito sale del dato de la distribuidora en bornes del medidor o del cálculo (771.19.2.2.2).'
+    ],
+    antes:[
+      'Medir en el tablero es trabajo con tensión y con el frente abierto: protector facial, guantes clase 00 con cobertor y calzado dieléctrico.',
+      'En fase–tierra, los rangos de 20 y 200 Ω hacen circular amperes por el PE y disparan cualquier diferencial: medir aguas arriba del diferencial, o puentearlo sólo durante el ensayo.',
+      'Con 2,3 A por el PE y una Ra de 40 Ω, las masas suben unos 90 V durante el ensayo: nadie tocando masas ni elementos conductores.',
+      'El rango de 2000 Ω ensaya con 15 mA, la mitad de un diferencial de 30 mA: con fuga previa en la instalación, dispara igual.',
+      'En fase–neutro la corriente de ensayo va y vuelve por el diferencial, así que no lo dispara.',
+      'Verificar las luces antes de pulsar TEST.'
+    ],
+    pasos:[
+      {t:'Lazo fase–tierra, con la ficha', l:[
+        'Selector en Loop: 200 Ω para el lazo de una instalación TT.',
+        'Enchufar la ficha en el tomacorriente. Si está aguas abajo de un diferencial, resolver antes cómo no dispararlo.',
+        'Mirar las luces: P-E y P-N encendidas y P⇄N apagada.',
+        'Pulsar TEST: muestra el resultado 5 segundos y vuelve a la tensión.',
+        'Repetir en cada boca que haya que verificar. Para revisar sólo que el lazo cierra alcanza el rango de 2000 Ω, que ensaya con 15 mA y puede no disparar el diferencial: su lectura no sirve para Ra, pero un lazo abierto sale fuera de rango.'
+      ]},
+      {t:'Corriente de cortocircuito presunta, en un tablero seccional', l:[
+        'Con el EPP completo y el frente abierto, conectar primero la negra y la verde juntas al neutro, y después la roja a la fase, en los bornes de entrada del interruptor de cabecera.',
+        'Mirar las luces: P-E y P-N encendidas y P⇄N apagada. Si no, desconectar y revisar.',
+        'Selector en PSC, 20 kA. Si la lectura entra en un rango menor, repetir en ese rango, que tiene menos error.',
+        'Pulsar TEST y anotar.',
+        'En trifásica, repetir en cada fase y quedarse con la mayor.',
+        'Desconectar primero la roja.'
+      ]}
+    ],
+    lee:[
+      'Con la ficha, lazo alto o fuera de rango en una boca y normal en las demás: PE cortado o flojo entre esa boca y la barra (ficha T3).',
+      'Con la ficha, lazo alto en todas: el electrodo, el conductor de puesta a tierra o su conexión, o la tierra de servicio de la red, que también está en el lazo. Confirmarlo midiendo Ra con el UT-572 (fichas T1 y T2).',
+      'Para dar por buena una Ra de 40 Ω o menos: 35,5 Ω o menos en el rango de 200 Ω.',
+      'En el tablero, con la verde en el neutro, la PSC tiene que dar cientos o miles de amperes. Si da decenas, está midiendo el lazo a tierra: revisar la conexión.',
+      'Poder de corte: la lectura más su error tiene que quedar por debajo del Icn del interruptor (ficha P6).',
+      'En un tablero trifásico, la corriente de cortocircuito trifásica es mayor que la fase–neutro: con neutro de la misma sección que las fases, hasta el doble de la lectura. Es la que se compara con el poder de corte de los aparatos trifásicos y con los 7 kA del visor.'
+    ],
+    no:[
+      'No sirve para verificar una Zs contra el disparo de una termomagnética: en TT esa protección la da el diferencial, y la exactitud sobre fondo de escala no alcanza.',
+      'No se conecta entre fases: trabaja hasta 250 V.',
+      'Con la verde en el PE en vez del neutro, mide el lazo fase–tierra y dispara los diferenciales.',
+      'No es una de las mediciones de recepción de 771.23.3.3.'
+    ],
+    cita:'Hoja de datos CEM DT-5301 y manual del Kyoritsu 4118A, de iguales rangos, corrientes de ensayo y luces. AEA 90364-7-771: 771.3.3.1, 771.18.4.3 y 771.19.2.2.2. AEA 90364-7-770: 770.19.5.3, Nota.'},
+
+  ir:{n:'UNI-T UTi260B — cámara termográfica', s:'Temperatura de superficie: encuentra el punto caliente',
+    eqs:['ir'],
+    para:'Muestra en imagen la temperatura de todo lo que mira. Encuentra el borne flojo, el conductor sobrecargado o el aparato que calienta en un tablero abierto y en servicio, sin tocar nada.',
+    mide:[
+      'Un detector de 256 × 192 píxeles recibe la radiación infrarroja de 8 a 14 µm que emite cada superficie y la convierte en temperatura con la emisividad cargada.',
+      'Emisividad 0,95 para plástico, goma, pintura mate y vaina de conductor. Sobre cobre desnudo o barra pulida (0,03 a 0,07) la lectura sale muy por debajo de la real: cinta mate encima, o comparar entre fases.',
+      'Para que el número valga, el blanco tiene que cubrir unos 3 × 3 píxeles: 3,4 mm a 30 cm, 5,7 mm a 50 cm y 11,4 mm a 1 m.'
+    ],
+    porque:[
+      'La AEA no fija umbrales termográficos ni incluye la termografía en la recepción: es diagnóstico y mantenimiento, y los escalones de ΔT son criterio práctico.',
+      'Lo reglamentario que se usa: 70 °C en PVC y 90 °C en XLPE sobre la vaina (ficha C4), y 40 °C de ambiente de referencia de la Tabla 771.16.I.',
+      'El calor de un mal contacto va con el cuadrado de la corriente: por eso se mide con carga y se corrige por carga.'
+    ],
+    antes:[
+      'Protector facial Fravida 2090, guantes clase 00 con cobertor y calzado dieléctrico: se trabaja con el tablero abierto y con tensión.',
+      'Batería cargada, micro SD con lugar, y fecha y hora puestas.'
+    ],
+    pasosRef:'termo', pasosNota:'El procedimiento completo, en 16 pasos, está más abajo en esta misma pantalla, junto con el criterio de veredicto por ΔT.', pasosBoton:'Ir a la inspección termográfica ›',
+    lee:[
+      'Criterio por ΔT contra un componente comparable y contra el ambiente, más abajo junto al procedimiento (fichas C2, P3 y C5).',
+      'Antes de anotar un hallazgo, descartar el reflejo: si el punto caliente se corre al cambiar el ángulo, no es calor.'
+    ],
+    no:[
+      'Mide temperatura de superficie: un borne flojo dentro de un aparato cerrado aparece atenuado, y dentro de un caño embutido no aparece.',
+      'No ve a través del frente del tablero: el infrarrojo de 8 a 14 µm no atraviesa el policarbonato ni el vidrio.',
+      'No es una medición de recepción.'
+    ],
+    cita:'Ficha de producto UNI-T UTi260B. AEA 90364-7-771, Tabla 771.16.I.'},
+
+  glm:{n:'Bosch GLM 50-27 CG — distanciómetro láser', s:'Longitud de circuitos, alturas y distancias',
+    eqs:['glm'],
+    para:'Mide distancias, alturas e inclinaciones. En esta app da la longitud del circuito para la caída de tensión, las alturas de las zonas del baño y las distancias y alturas de ubicación del tablero.',
+    mide:[
+      'Mide la distancia hasta el punto donde pega el láser, por la luz que vuelve reflejada, desde el borde de referencia elegido.',
+      'De 0,05 a 50 m con ±1,5 mm en buenas condiciones; con luz fuerte o un blanco que refleja mal, hasta 20 m y ±3 mm.',
+      'Tiene inclinómetro de ±0,2°, área, volumen, medición indirecta de alturas y medición continua.'
+    ],
+    porque:[
+      'La caída de tensión se calcula con la longitud entre los dos puntos del circuito (771.19.7): medida en línea recta y no por el recorrido del caño, sale menor que la real (cálculo K1).',
+      'Las zonas del baño se definen por alturas y distancias al artefacto (ficha Z1), y el tablero tiene alturas y espacios libres mínimos (ficha B7).'
+    ],
+    antes:[
+      'Al encender toma el último borde de referencia que se eligió: trasero, delantero o centro de la rosca de trípode. Verificarlo en la pantalla.',
+      'Lente limpia y pilas con carga.',
+      'Láser clase 2: no apuntarlo a los ojos.'
+    ],
+    pasos:[{l:[
+      'Elegir el borde de referencia: el trasero para medir apoyado contra una pared o el piso.',
+      'Longitud de circuito: medir el recorrido del caño tramo por tramo —tablero, cajas, subidas y bajadas— y sumar.',
+      'Alturas: desde el piso terminado, que es la referencia de las fichas B7 y Z1.',
+      'Con luz fuerte, o sobre superficies brillantes, transparentes o porosas, apuntar a una superficie mate o usar una placa de blanco.'
+    ]}],
+    lee:[
+      'K1 usa la longitud para la caída de tensión; Z1 y B7 comparan alturas y distancias con los mínimos.'
+    ],
+    no:[
+      'Sobre vidrio, metal pulido o superficies porosas la lectura puede salir mal.'
+    ],
+    cita:'Manual Bosch GLM 50-27 CG Professional. AEA 90364-7-771, 771.19.7. AEA 90364-7-701.'}
+};
+var MAN_ORDEN = ['f117','ut12d','ut204','ut219','ut251','ut511','ut582','telu','dt5301','ir','glm'];
+
+/* ============================================================
+   GUÍAS PASO A PASO
+   Recorridos completos que atraviesan varias fichas y cálculos, en el orden
+   en que se trabaja en obra. Cada sección se pliega; los textos enlazan solos
+   «ficha X» y «cálculo K». eqs: instrumentos (claves de MAN) que muestran el
+   botón de la guía en su manual. fichas y calcs: dónde aparece el botón.
+   ============================================================ */
+var GUIAS = {
+  fp:{n:'Factor de potencia', t:'Factor de potencia: verificar, diagnosticar y corregir',
+    s:'Recargo, mediciones, capacitor por equipo, banco automático según armónicos, instalación y compra',
+    kw:'factor de potencia cos fi coseno capacitor capacitores condensador banco automatico reactiva kvar armonicos thd recargo penalizacion enre edenor edesur regulador reactor desintonia',
+    eqs:['ut219','ut204','dt5301','ir','f117'],
+    fichas:['B4'],
+    calcs:['K12','K13','K14','K8'],
+    intro:'En el orden de obra: ver si corresponde corregir y cuánto paga hoy el cliente, medir quién genera la reactiva y cuánta distorsión hay, decidir entre capacitor propio para los equipos grandes y banco automático para el resto —o las dos cosas—, y recién ahí comprar e instalar. Los números salen de los cálculos K12, K13 y K14. La AEA 90364 no fija el factor de potencia: la exigencia es de la distribuidora y los criterios técnicos, de los fabricantes.',
+    secs:[
+      {t:'1 · ¿Corresponde corregir?', s:'Lo que cobran Edenor y Edesur según las Res. ENRE 628/2024 y 76/2025',
+        l:[
+          'Residencial monofásico: exento del recargo, cualquiera sea su consumo. Corregir no le cambia la factura.',
+          'Residencial trifásico, General (comercios y oficinas) y alumbrado público: el cos φ sale de los medidores de energía activa y reactiva, y sólo para consumos de más de 300 kWh por bimestre. Se cuenta solamente la energía reactiva inductiva de la onda fundamental de 50 Hz: la distorsión armónica no entra en la cuenta.',
+          'Valor de referencia 0,95. Por debajo, el recargo es de 1,5 % por cada centésimo —o fracción mayor de 0,005— sobre los cargos que fija el cuadro tarifario, con un tope del 40 % del subtotal de cargos netos del mes.',
+          'La factura muestra el recargo en dos partes: la que va hasta 0,85, que se cobra completa como antes de 2024, y la del tramo de 0,85 a 0,95, que desde la Res. 76/2025 se cobra al 10 % —también a los que están por debajo de 0,85—. El ENRE revisa ese 10 % cada tres meses y puede llevarlo de a poco hasta el 100 %.',
+          'Por debajo de 0,60 la distribuidora puede suspender el servicio, con aviso previo, hasta que se adecue la instalación. Y no puede cobrar el recargo por una medición puntual: se calcula con la energía del período.',
+          'Propiedad horizontal o conjunto inmobiliario con acometida común: si el edificio lo permite, tiene que instalar un equipo automático único que lleve el cos φ del conjunto a 0,95, y avisarle a la distribuidora. Capacitores fijos, sólo con su conformidad. Con THD de tensión de 7 % o más, el banco lleva reactores antirresonantes.',
+          'Fuera del área de Edenor y Edesur, cada distribuidora fija su umbral en su cuadro tarifario: mirarlo en la factura.'
+        ],
+        nota:'Antes de presupuestar: tomar de la factura la energía activa, la reactiva y los días del período, y cargarlos en el cálculo K12. Da el cos φ del período, cuánto se paga hoy de recargo y los kVAr promedio que faltan.',
+        calc:['K12']},
+      {t:'2 · Medir', s:'UT-219p en el tablero principal, por fase y en distintos horarios',
+        pasos:[
+          'Tablero principal abierto y con tensión: protector facial Fravida 2090, guantes clase 00 y el UT-219p, que es el único CAT IV del maletín.',
+          'Potencia por fase, con neutro: selector en W/VA/var, roja a la fase y negra al neutro, y abrazar sólo esa fase con la corriente entrando por el frente. SELECT recorre P (kW), S (kVA), Q (kVAr), PF y ángulo. Repetir en L1, L2 y L3.',
+          'Sumar las fases: P = P1 + P2 + P3 y Q = Q1 + Q2 + Q3. El cos φ de la instalación es P / √(P² + Q²): el PF de cada fase no se promedia.',
+          'Repetir en tres horarios como mínimo: máxima demanda, uso típico y mínimo consumo. La Q máxima dimensiona el banco y la mínima, el escalón más chico. Según el manual, la app por Bluetooth registra y arma gráfico y tabla: si se usa, dejar la pinza registrando durante el ciclo de uso del cliente.',
+          'Armónicos: selector en HARM. Arranca en corriente y SELECT pasa a tensión; las teclas ▼ y ▲ recorren las armónicas hasta la 40ª. Muestra THD%f, referido a la fundamental, y THD%r, referido al total: para elegir el banco se usa THD%f.',
+          'THD de tensión entre fases —roja en L1 y negra en L2—, porque el banco trifásico va entre fases. Si ya hay un banco, medirlo con el banco desconectado. Anotar también la 5ª, la 7ª, la 11ª y la 13ª.',
+          'THD de corriente en cada fase de la acometida y en los circuitos grandes. El análisis de corriente necesita más del 10 % del rango: más de 6 A en el rango de 60 A.',
+          'Cada equipo grande —motor, bomba, compresor, ascensor, equipo de frío, variador— medido en su circuito: P, Q y PF. Es lo que decide si conviene un capacitor propio.',
+          'Si va a haber banco, la corriente de cortocircuito presunta en el tablero principal: el dato de la distribuidora en bornes del medidor (771.19.2.2.2) o, en un seccional cercano, la lectura PSC fase–neutro del DT-5301 con el cable de tres puntas. Es para la resonancia.'
+        ],
+        nota:'PF no es lo mismo que cos φ. La pinza da el factor de potencia total, que incluye la distorsión; el capacitor corrige sólo el desplazamiento de 50 Hz, que es además lo único que factura la distribuidora. Con mucha electrónica el PF puede dar 0,80 con el cos φ en 0,95: ahí no van capacitores. Estimación: cos φ ≈ PF × √(1 + THDi²), con el THDi en tanto por uno. El cálculo K14 la hace solo.'},
+      {t:'3 · Diagnosticar', s:'Quién genera la reactiva y qué corresponde en cada caso',
+        l:[
+          'Motores de inducción (bombas, compresores, ventiladores, ascensores): su reactiva casi no cambia con la carga, así que un motor poco cargado tiene un cos φ muy bajo. Si anda muchas horas con el mismo régimen: capacitor propio en bornes (paso 5, cálculo K13). Si está sobredimensionado o gira en vacío, la solución es el motor, no el capacitor.',
+          'Equipos de frío comerciales —cámaras, exhibidoras, compresores trifásicos—: igual que un motor, con el capacitor maniobrado por su propio contactor.',
+          'Tubos fluorescentes con balasto electromagnético sin capacitor: cos φ del orden de 0,5. Capacitor en cada artefacto, o reemplazo por LED con driver de factor de potencia alto.',
+          'Transformadores y soldadoras: reactiva de magnetización, intermitente. Van al banco automático.',
+          'Electrónica —LED sin corrección, computadoras, UPS, cargadores, variadores, aires inverter—: el PF bajo es por armónicos, no por desplazamiento. Los capacitores no lo corrigen y pueden entrar en resonancia (paso 6). Si el THDi es alto y el cos φ está bien, no hay nada que compensar.',
+          'Banco existente que no corrige: escalones que no enganchan, capacitores agotados —toman bastante menos que su corriente nominal o están abombados—, regulador mal ajustado o transformador de corriente mal ubicado. Revisarlo antes de agregar nada (ficha B4).'
+        ],
+        nota:'Regla de decisión: si uno o dos equipos explican la mayor parte de la Q y andan muchas horas, capacitor propio en cada uno; lo que queda —cargas que entran y salen— va a un banco automático en el tablero principal. Es la compensación mixta: distribuida en los equipos grandes y centralizada para el resto (ABB, cuaderno técnico 8).'},
+      {t:'4 · Elegir la solución', s:'Capacitor por equipo, banco automático o las dos cosas',
+        tabla:{cab:['Situación','Solución'], filas:[
+          ['Un motor o equipo de régimen fijo explica casi toda la Q','Capacitor en sus bornes, maniobrado con el contactor del equipo: entra y sale con él y nunca sobrecompensa (cálculo K13)'],
+          ['Cargas que entran y salen, sin un responsable dominante','Banco automático en el tablero principal: el regulador conecta sólo los escalones que hacen falta (cálculo K14)'],
+          ['Motores grandes y además cargas variables','Mixta: capacitor en cada motor y banco automático dimensionado con la Q que queda después'],
+          ['Consorcio con acometida común','Equipo automático único en la acometida (Res. ENRE 628/2024, art. 3); fijos, sólo con conformidad de la distribuidora'],
+          ['PF bajo con cos φ alto: mucha electrónica','No compensar con capacitores: el problema es la distorsión, que va con filtro, y la factura no la cobra'],
+          ['Motor con variador de frecuencia o arrancador suave','Nunca capacitores a la salida del variador o del arrancador: compensar aguas arriba, con el banco'],
+          ['Capacitor fijo en el tablero principal','Sólo si la Q mínima de la instalación supera la del capacitor. Si no, de noche queda capacitiva y sube la tensión; en consorcios, no se admite']
+        ]}},
+      {t:'5 · Capacitor propio para un motor o equipo', s:'Dimensionado, conexión y protección (cálculo K13)',
+        pasos:[
+          'Medir con el UT-219p la P y el PF del motor en su régimen habitual, y la corriente en vacío I0 con el motor girando desacoplado de la carga —o tomarla de la hoja de datos—. Sin I0 no se puede verificar la autoexcitación.',
+          'En el cálculo K13: los kVAr para llegar a 0,95 y el máximo para que no se autoexcite, Qc ≤ 0,9 × √3 × U × I0. Se adopta el menor.',
+          'Por qué el límite: al desconectarlo, el motor sigue girando por inercia y el capacitor lo magnetiza. Si el capacitor supera la reactiva de vacío, el motor trabaja como generador y la tensión en sus bornes sube, a veces a valores peligrosos.',
+          'Conectar el capacitor directo a los bornes del motor, aguas abajo del contactor: entra y sale con el motor y no necesita contactor ni regulador propios.',
+          'Relé térmico: con el capacitor en bornes queda aguas arriba y mide la corriente ya compensada, que es menor. Reajustarlo en la proporción cos φ antes / cos φ después; el cálculo K13 da el valor.',
+          'Cable del capacitor para 1,35 veces su corriente nominal como mínimo (Res. ENRE 628/2024, anexo II). En bornes del motor queda protegido por la protección del circuito del motor.',
+          'Pedir el capacitor de 440 V, por su potencia a 440 V: a 380 V entrega (380/440)² = 0,75 de la nominal. El cálculo K13 hace la cuenta y elige el valor comercial que no pasa el límite.',
+          'Verificar con el motor en marcha: la pinza en un cable del capacitor tiene que marcar Ic ≈ Qc / (√3 × U), y la corriente de línea tiene que bajar a lo calculado.',
+          'Antes de tocar los bornes, cortar y esperar la descarga; aun con resistencias de descarga, verificar con el Fluke 117 que no quede tensión.'
+        ],
+        alerta:'No se compensan en bornes: motores con variador de frecuencia —nunca un capacitor a la salida del variador—, con arrancador suave —sólo aguas arriba, con un contactor que lo conecte al terminar la rampa—, los que invierten el giro, frenan a contracorriente, marchan por impulsos o arrancan muy seguido, y los que la carga puede arrastrar, como ascensores y montacargas. Con estrella-triángulo, el capacitor no va en bornes: contactor propio comandado por el de línea, o al banco. Para todos esos, el banco automático.',
+        nota:'Equipo monofásico —bomba o equipo de frío de un comercio monofásico, que no está exento—: capacitor entre fase y neutro, en los bornes del equipo y maniobrado con él; al cortar se descarga por el bobinado. C [µF] = Qc [var] × 10⁶ / (2π × 50 × U²): con 220 V, 65,8 µF por kVAr. De servicio continuo, de polipropileno y de 400 V CA o más —los de marcha de 450 V sirven—; nunca uno de arranque, que es electrolítico y de servicio intermitente.',
+        calc:['K13']},
+      {t:'6 · Armónicos: qué tipo de banco', s:'Estándar, reforzado o con reactores de desintonía (cálculo K14)',
+        p:[
+          'El capacitor es un camino de baja impedancia para las armónicas: absorbe las que ya trae la red y, con la inductancia de la red, forma un circuito resonante. Si la resonancia cae cerca de una armónica presente —5ª, 7ª, 11ª, 13ª—, esa armónica se amplifica: capacitores recalentados, fusibles quemados, disparos y equipos que fallan.',
+          'La resonancia está en el orden hr = √(Scc / Qc), con Scc la potencia de cortocircuito trifásica en el punto del banco, en kVA, y Qc la del banco, en kVAr. Con Icc en kA y U en V, Scc = √3 × U × Icc. Cuanto más grande es el banco frente a la red, más baja cae la resonancia.',
+          'El reactor de desintonía en serie con cada escalón corre la resonancia por debajo de la 5ª: con p = 7 % queda en 189 Hz (orden 3,8). Como el reactor eleva la tensión sobre el capacitor, con reactor los capacitores son de 480 V en red de 400 V.'
+        ],
+        tabla:{cab:['Medición sin banco','Banco','Capacitor'], filas:[
+          ['THD de tensión hasta 3 % y cargas no lineales hasta 10 %','Estándar','440 V'],
+          ['THD de tensión de 3 a 5 %, o no lineales de 10 a 20 %','Reforzado (heavy duty)','440 V reforzado'],
+          ['THD de tensión de más de 5 %; no lineales de más de 20 %, o de más de 15 % con THD de tensión de más de 3 %; o resonancia a menos de ±10 % de la 5ª, 7ª, 11ª o 13ª','Con reactores de desintonía p = 7 % (189 Hz)','480 V'],
+          ['THD de tensión de 7 % o más en un consorcio con acometida común','Reactores antirresonantes obligatorios (Res. ENRE 628/2024, art. 4)','480 V'],
+          ['THD de tensión de más de 8 % o no lineales de más de 50 %','Filtro o estudio del fabricante','—']
+        ]},
+        nota:'La tabla junta los criterios de Schneider (THD de tensión máximo de 5 % para el estándar, 7 % para el reforzado y 8 % con reactor del 7 %; no lineales hasta 10 % y 20 %), de WEG (inductores antiarmónicos desde 20 % de no lineales; sin ellos, THD de tensión menor de 5 %) y de EPCOS, que distribuye Elecond (reactores desde 3 % de THD cuando las no lineales pasan del 15 %), y toma siempre el más exigente. El ±10 % alrededor de cada armónica es criterio práctico. Que el capacitor sea de 440 V aun en el estándar no es por los armónicos: la red puede llegar a 400 V + 10 % = 440 V, y para un capacitor de 400 V eso es 1,1 Un, que IEC 60831-1 admite sólo 8 horas por día.',
+        calc:['K14']},
+      {t:'7 · Instalar el banco automático', s:'Dónde va, cómo se alimenta y dónde va el transformador de corriente',
+        pasos:[
+          'Ubicación: gabinete propio junto al tablero principal, o dentro de él si sobra lugar y la disipación lo permite —sumar las pérdidas del banco en el cálculo K7—. Lugar seco, ventilado, con 40 °C de ambiente como máximo, lejos de inflamables y de fuentes de calor (Res. ENRE 628/2024, anexo II). Nunca en un baño.',
+          'Alimentación: circuito propio desde las barras del principal, aguas abajo del interruptor general. Termomagnética tripolar curva D, o seccionador fusible gG, de 1,35 × In del banco como mínimo —el cálculo K14 da el valor—, y diferencial tetrapolar de 30 mA (771.18.3.5), superinmunizado si dispara al conectar escalones. Confirmar en la hoja del diferencial que el botón de prueba funcione sin neutro, o llevarle el neutro. Si aun así dispara, 771.18.3.5 admite prescindir del de 30 mA en un circuito de carga única, demostrándolo, con la envolvente que impida el contacto directo y la protección contra contactos indirectos de 771.18.4: por ejemplo, 300 mA con Ra de 40 Ω o menos.',
+          'Cable con Iz igual o mayor que la protección (IB ≤ In ≤ Iz, cálculo K2) y PE hasta el gabinete. El gabinete metálico, a tierra (anexo II).',
+          'Transformador de corriente: en la fase L1, entre el interruptor general y la primera derivación, aguas arriba de la conexión del banco y de todas las cargas. P1 (K) hacia la red y P2 (L) hacia las cargas. Si el TI ve sólo las cargas, el regulador nunca ve el efecto del banco: conecta todo y sobrecompensa.',
+          'Secundario del TI con cable de 2,5 mm², hasta 10 m, por una bornera cortocircuitable. Nunca abrir el secundario con corriente en el primario: aparece una tensión peligrosa y el TI se daña. Poner a tierra el S2 (l) si lo pide el manual del regulador.',
+          'Tensión de medida del regulador según su manual: lo habitual es el TI en L1 y la tensión entre L2 y L3. El VarPlus Logic acepta también L1–N y detecta la conexión al encender. Con su propia protección.',
+          'Cada escalón: fusibles gG tripolares, contactor para capacitores (AC-6b, con resistencias de precarga) y capacitor. Las bobinas, a las salidas del regulador, con el común a la tensión de comando que indique el manual.',
+          'Ventilador con termostato si el gabinete es cerrado: el VarPlus Logic tiene salida de ventilador a 30 °C y alarma a 50 °C de fábrica.',
+          'Cartel en la tapa: «Antes de tocar un capacitor desconectado, cortocircuitar y poner a tierra sus bornes» (anexo II), y el esquema del banco.',
+          'Consorcio con acometida común: un único equipo, en el tablero general, avisándole a la distribuidora (art. 3).'
+        ]},
+      {t:'8 · Puesta en marcha y verificación', s:'Ajustes del regulador, prueba de escalones y control de armónicos',
+        pasos:[
+          'Antes de energizar: apriete de bornes, fusibles colocados, TI conectado al regulador y recién entonces sacar el puente de la bornera cortocircuitable.',
+          'Cargar en el regulador la tensión nominal, la relación del TI (50/5 → 10), el cos φ objetivo —0,96 inductivo, para tener margen sobre 0,95— y el reconocimiento automático de escalones, o el C/k que da el cálculo K14.',
+          'Tiempo de descarga o de reconexión: igual o mayor que el que declara el capacitor para bajar al 10 % de su tensión antes de volver a conectarlo. WEG UCWT declara 30 s; si la hoja sólo garantiza 75 V en 3 minutos, poner 240 s. El VarPlus Logic viene con 50 s de fábrica.',
+          'Comprobar que el regulador lea un cos φ inductivo parecido al del UT-219p en la acometida. Si marca capacitivo o algo muy distinto: TI invertido o en otra fase.',
+          'Modo manual: conectar los escalones de a uno y medir la corriente de cada uno: ≈ Q / (√3 × U), pareja en las tres fases. Uno que toma mucho menos tiene un capacitor agotado o un fusible quemado.',
+          'Modo automático, con la carga habitual: el cos φ de la acometida tiene que llegar al objetivo sin que los escalones entren y salgan a cada rato.',
+          'Armónicos con el banco conectado: THD de tensión y corriente de un cable del banco, en HARM. Si el THD de tensión sube claramente al conectar, o la corriente del banco pasa de 1,3 veces la nominal (IEC 60831-1), hay resonancia: no dejarlo así, va con reactores.',
+          'A la hora de funcionamiento, termografía con la UTi260B: capacitores, contactores, fusibles y bornes, y la temperatura del aire en el gabinete, que no pase de 40 °C.',
+          'Dejar documentado el esquema, los ajustes del regulador, la corriente de cada escalón y el THD con y sin banco. Al mes, controlar el cos φ de la factura con el cálculo K12.'
+        ]},
+      {t:'9 · Qué comprar y cómo pedirlo', s:'Marcas y modelos que se consiguen en Argentina',
+        p:['Dos caminos. El recomendado es el banco armado de fábrica: viene ensayado, con los componentes coordinados y cumpliendo el anexo II. El otro es armarlo con componentes sueltos; la lista va abajo. El cálculo K14 arma el texto del pedido con los números de la obra.'],
+        compra:[
+          {q:'Banco automático completo', m:'Leyden o Elecond (fabricantes nacionales) · Schneider',
+            d:'Pedirlo por kVAr efectivos a 380 V, escalones, tipo —estándar, reforzado o con reactores del 7 %— y relación del TI. Con reactores, siempre de fábrica: los reactores sueltos casi no se consiguen y tienen que estar coordinados con los capacitores.',
+            links:[['Bancos de 5 kVAr','https://listado.mercadolibre.com.ar/banco-de-capacitores-5-kvar'],['Bancos automáticos de 10 kVAr','https://listado.mercadolibre.com.ar/banco-de-capacitor-automatico-10-kvar']]},
+          {q:'Regulador automático de 6 salidas', m:'Schneider VarPlus Logic VL6 (VPL06N) o VarLogic NR6 · Circutor computer SMART III 6 (R13851) · Leyden JKW o Smartcap',
+            d:'Entrada de TI de 5 A, alarma de THD de tensión y de temperatura, y reconocimiento automático de escalones. El VL6 mide fase–fase o fase–neutro y detecta la conexión solo.',
+            links:[['VarLogic NR6 Schneider','https://listado.mercadolibre.com.ar/varlogic-nr6-schneider'],['Circutor de 6 pasos','https://articulo.mercadolibre.com.ar/MLA-1420691653-regulador-varimetrico-circutor-6-pasos-wi-fi-factor-potencia-_JM'],['Reguladores automáticos','https://listado.mercadolibre.com.ar/regulador-automatico-de-factor-de-potencia']]},
+          {q:'Capacitores trifásicos', m:'WEG UCWT (código: UCWT + kVAr + V48 para 440 V o V52 para 480 V; UCWT5V48 = 5 kVAr a 440 V) · Schneider VarPlus Can HDuty de 440 V · EPCOS PhiCap (Elecond)',
+            d:'Secos, autorregenerables, con dispositivo de sobrepresión (antiexplosivos) y resistencias de descarga, IEC 60831-1/2. De 440 V, no de 380 ni de 400 V. La potencia nominal es a su tensión nominal y a 50 Hz; en Schneider, «5/6 kVAr» es 5 a 50 Hz y 6 a 60 Hz.',
+            links:[['Capacitores WEG','https://listado.mercadolibre.com.ar/capacitor-trifasico-weg'],['Capacitores para corregir el factor de potencia','https://listado.mercadolibre.com.ar/capacitores-para-corregir-factor-de-potencia']]},
+          {q:'Contactores para capacitores, uno por escalón', m:'WEG CWMC (CWMC18: 22 A en AC-6b) · Schneider LC1DFK (12,5 kVAr a 400 V; LC1DFKM7 con bobina de 220 V)',
+            d:'Categoría AC-6b, con resistencias de precarga que limitan el pico de conexión: un contactor común se suelda. Elegir la bobina de la tensión de comando; hay CWMC con bobina de 380 V.',
+            links:[['WEG CWMC18','https://www.mercadolibre.com.ar/contactor-para-condensador-weg-cwmc-380vca-22a-1na-cwmc18-10/p/MLA24377280']]},
+          {q:'Transformador de corriente', m:'Tipo ventana .../5 A, clase 1 (ABB u otra marca)',
+            d:'Primario igual o mayor que el interruptor general: 50/5 A hasta 50 A. Va en obra, en L1, aguas arriba del banco.',
+            links:[['ABB ventana 50/5','https://articulo.mercadolibre.com.ar/MLA-1848630222-transformador-de-intensidad-abb-ventana-505-_JM'],['Transformadores de intensidad','https://listado.mercadolibre.com.ar/transformador-de-intensidad']]},
+          {q:'Fusibles por escalón', m:'Seccionador portafusible tripolar 10 × 38 (Zoloda, BAW) con fusibles gG',
+            d:'El calibre, de la tabla del fabricante del capacitor —WEG: 16 A gG para 5 kVAr a 400 V—; nunca menos de 1,35 × In del escalón.',
+            links:[['Seccionadores fusible','https://listado.mercadolibre.com.ar/seccionador-fusible']]},
+          {q:'Capacitor para un motor', m:'WEG UCWT de 440 V, del valor que da el cálculo K13',
+            d:'Con cable para 1,35 × su corriente, conectado en los bornes del motor.',
+            links:[['Capacitores WEG','https://listado.mercadolibre.com.ar/capacitor-trifasico-weg']]}
+        ],
+        pedido:'Banco automático de corrección del factor de potencia\nRed 3 × 380/220 V, 50 Hz, tensión máxima de servicio 440 V\nPotencia: [X] kVAr efectivos a 380 V, en [N] escalones de [a + b + c] kVAr\nTipo: [estándar / reforzado / con reactores de desintonía p = 7 % (189 Hz)]\nCapacitores trifásicos secos, autorregenerables, con dispositivo de sobrepresión y resistencias de descarga a menos de 75 V en 3 min, de [440 / 480] V, IEC 60831-1/2 e IRAM 2459-1/2\nRegulador de [6] salidas, entrada de TI de 5 A, con alarma de THD y de temperatura\nContactores AC-6b con resistencias de precarga, bobina 220 V 50 Hz\nFusibles gG por escalón y seccionador general\nConductores, barras y aparatos para 1,35 × In (Res. ENRE 628/2024, anexo II)\nGabinete metálico a tierra, ventilado, para 40 °C de ambiente, con cartel de advertencia de descarga\nCon protocolo de ensayo y hojas de datos',
+        nota:'Los enlaces abren Mercado Libre y necesitan internet. Llevan a la búsqueda o a la publicación del modelo: precios y vendedores cambian, así que confirmar en la publicación el código exacto, la tensión y que sea de 50 Hz.'},
+      {t:'10 · Mantenimiento y fallas', s:'Qué revisar cada 6 a 12 meses',
+        l:[
+          'Corriente de cada escalón contra la nominal, con el regulador en manual: uno que toma bastante menos tiene capacitores agotados (ficha B4).',
+          'Capacitores abombados: actuó el dispositivo de sobrepresión y ese capacitor ya no entrega nada. Reemplazarlo.',
+          'Contactores y sus resistencias de precarga, fusibles, ventilador y bornes, con la UTi260B.',
+          'Alarma de THD o de temperatura: el regulador desconecta escalones para protegerlos. Buscar la causa; no subir el límite.',
+          'Después de cambiar capacitores, volver a correr el reconocimiento de escalones del regulador.',
+          'Si el cos φ de la factura cae, empezar por el banco antes de agrandarlo.'
+        ]}
+    ],
+    cita:'Res. ENRE 628/2024 (B.O. 11/09/2024): arts. 3, 4, 10 y 11 y anexos I y II. Res. ENRE 76/2025 (B.O. 29/01/2025). Schneider Electric, Electrical Installation Guide, capítulo L: compensación de motores, armónicos e implementación de bancos. ABB, cuaderno técnico 8, Power factor correction and harmonic filtering in electrical plants. Catálogos WEG de capacitores (UCWT) y de contactores para capacitores (CWMC). EPCOS PhiCap, distribuido por Elecond. Manual del VarPlus Logic serie VL. Manual de usuario UNI-T UT219P. IEC 60831-1. AEA 90364-7-771: 771.16.2.4 (definición de THD), 771.18.3.5, 771.19.2.2.2 y 771.20.3. La AEA 90364 no fija el factor de potencia ni reglamenta la compensación. Criterio práctico, no de norma: el ±10 % alrededor de cada armónica, el estrella-triángulo y las cargas que arrastran al motor.'},
+
+  fugas:{n:'Fugas a tierra', t:'Fugas a tierra: buscar y corregir',
+    s:'Medir, clasificar, localizar, confirmar con el megóhmetro, corregir y registrar',
+    kw:'fuga fugas diferencial disyuntor disparo salta corta aislacion megohmetro pinza miliamperimetrica neutro tierra humedad',
+    eqs:['ut251','ut511','ut582','f117'],
+    fichas:['D1','D4','D5','D6','D7','I3','G5','G6','T5'],
+    calcs:['K15','K10'],
+    intro:'Recorrido completo, en el orden de obra: qué es fuga y qué no, medir la fuga total de cada diferencial con el UT-251A, localizar el circuito y el aparato, confirmar con el UT-511, descartar lo que parece fuga y no es, verificar el diferencial con el UT-582+, corregir y registrar. Cada paso lleva a la ficha que evalúa los valores medidos.',
+    secs:[
+      {t:'1 · Qué es fuga y qué no', s:'Fuga normal, fuga por falla y lo que hace disparar sin ser fuga',
+        l:[
+          'Fuga es la corriente que sale de los activos y vuelve por el PE o por tierra en lugar de volver por el neutro. El diferencial mide exactamente eso: la suma de las corrientes de todos los activos.',
+          'Hay fuga normal y fuga por falla. Los filtros de las fuentes conmutadas, los drivers LED, los variadores y los cables largos derivan corriente al PE por diseño: es capacitiva, se suma entre aparatos y no es una falla. La fuga por falla es aislación dañada, humedad o una resistencia perforada.',
+          'Límites de la norma de producto para un aparato solo (IEC 60335-1): clase I portátil, 0,75 mA; clase I fijo con motor, 3,5 mA; clase I fijo de calefacción, 0,75 mA o 0,75 mA por kW, lo que sea mayor, hasta 5 mA; clase II, 0,25 mA. Equipos de informática fijos o móviles (IEC 62368-1): 3,5 mA. Un aparato que mide bastante más que su límite tiene falla.',
+          'Lo que hace disparar sin ser fuga: un neutro compartido entre circuitos de distinto diferencial, un puente entre neutro y PE aguas abajo, un diferencial envejecido que dispara por debajo de su valor y los transitorios de conexión (paso 6).',
+          'Referencia: la fuga permanente aguas abajo de un diferencial no debería pasar del 30 % de su IΔn —9 mA en uno de 30 mA— (BS 7671, 531.3.2, basada en IEC 60364-5-53). La AEA no fija un valor; la app usa 30, 50 y 100 % de IΔn como escalones (ficha D1).',
+          'Lo que sí dice la AEA: con calefacción por piso o techo, limitar la potencia aguas abajo de cada diferencial a 7,5 kW en 220 V o 13 kW en 380 V por la fuga capacitiva (771-E.4.2 y 701.C.4.2). Un equipo fijo con más de 10 mA en el PE pide PE reforzado y puede no ser compatible con diferenciales (771-C.7). Y una fuga de 300 a 500 mA puede iniciar un incendio (770.14.3.2).'
+        ]},
+      {t:'2 · Antes de empezar', s:'Patrón del disparo, tablero y seguridad',
+        pasos:[
+          'Preguntar el patrón: ¿a qué hora salta?, ¿con lluvia o con el lavado?, ¿al encender algo?, ¿de noche?, ¿rearma enseguida o no rearma? El patrón ya separa fuga permanente, humedad, aparato, transitorio y falla franca.',
+          'Mirar el tablero: cuántos diferenciales hay y qué circuitos cuelga cada uno, si los neutros pasan por la térmica (bipolar) o salen de una barra común, y si hay algún puente entre la barra de neutro y la de PE.',
+          'Anotar el IΔn y el tipo de cada diferencial —AC, A, F, B, superinmunizado— y su fecha si la tiene.',
+          'Avisar que algunos ensayos cortan la alimentación y prever heladeras, computadoras y alarmas (ficha L5).',
+          'Seguridad: la pinza se usa con tensión y el tablero abierto —guantes clase 00, protector facial y herramienta aislada—; la aislación se mide sin tensión, con los cinco pasos de la consignación.'
+        ]},
+      {t:'3 · Medir la fuga total de cada diferencial', s:'UT-251A con la instalación en uso normal',
+        pasos:[
+          'Con todo en uso normal, abrazar con el UT-251A todos los activos a la salida del diferencial: fase y neutro, o las tres fases y el neutro. El PE queda afuera de la mordaza.',
+          'Mordaza bien cerrada y lejos de barras con mucha corriente: con 1 µA de resolución, un cierre imperfecto o un campo externo cambian la lectura.',
+          'Anotar la lectura: es la fuga total de ese diferencial. Cargarla en la ficha D1, o en la ficha D6 si son muchos circuitos.',
+          'Control: con fase y neutro juntos tiene que marcar mA. Si marca amperes que siguen a la carga, falta un activo en la mordaza o el neutro de algún circuito vuelve por otro lado (paso 6).',
+          'Abrazar solo el PE que baja al electrodo: es la corriente que vuelve por tierra (ficha T5).'
+        ],
+        tabla:{cab:['Fuga / IΔn','Qué indica','Qué hacer'], filas:[
+          ['hasta 30 %','Normal','Si igual dispara: transitorio, neutro cruzado o diferencial sensible (pasos 6 y 7)'],
+          ['30 a 50 %','Alta','Buscar el aportante antes de que empiecen los cortes'],
+          ['50 a 100 %','Explica los disparos','Localizar y corregir (pasos 4 y 5)'],
+          ['100 % o más','Falla franca','No rearmar con ese circuito: aislarlo y medir la aislación (fichas D7 e I1)']
+        ]}},
+      {t:'4 · Localizar el circuito y el aparato', s:'De la fuga total a cada circuito y a cada equipo',
+        pasos:[
+          'Sin cortar nada: abrazar fase y neutro de cada circuito por separado. Con térmica bipolar, a su salida; si los neutros salen de una barra común, la fase y el neutro de ese circuito donde salen juntos del tablero, nunca la fase con la barra.',
+          'Cortando: con la pinza fija a la salida del diferencial, abrir los circuitos de a uno; el que produce el mayor salto es el principal aportante.',
+          'La suma de los circuitos puede dar más que la total: las fugas de fases distintas se compensan en parte dentro de un diferencial tetrapolar, y la capacitiva y la resistiva no se suman en línea.',
+          'Dentro del circuito señalado: desenchufar los aparatos de a uno, o medir cada aparato en su cable con fase y neutro en la mordaza (ficha D5), y comparar con los límites de producto del paso 1.',
+          'Si la fuga sigue con todo desenchufado, está en el cableado fijo: paso 5.',
+          'Si aparece con la lluvia, el lavado o la ducha: humedad (ficha D4).',
+          'Si aparece con un aparato encendido y crece con el uso: resistencia perforada —termotanque, calefón eléctrico, plancha, lavarropas—; medirla también en caliente (ficha D5).',
+          'Si dispara sin fuga medible: buscar el transitorio en el momento del disparo —arranque de una bomba, encendido de equipos con filtro, termotanque con timer— y ensayar el diferencial en rampa (paso 7).'
+        ]},
+      {t:'5 · Confirmar con el megóhmetro', s:'UT-511 a 500 V, sin tensión',
+        pasos:[
+          'Consignar el circuito y verificar la ausencia de tensión con el Fluke 117.',
+          'Desconectar todos los aparatos y lo que no tolera 500 V —protectores de sobretensión, fuentes, drivers, domótica— y cerrar las llaves de efecto.',
+          'Medir con 500 V de continua fase–PE, neutro–PE y fase–neutro; en trifásica, las fases unidas contra PE y contra neutro. Mínimo 0,5 MΩ (Tabla 771.23.I; ficha I1).',
+          'Neutro–PE bajo es la falla más engañosa: con poca carga el diferencial no la ve y con carga dispara. Para medirla hay que soltar el neutro del circuito de su barra.',
+          'Si da bajo, localizar el tramo por bipartición: abrir la caja del medio, separar y medir cada mitad (ficha I2).',
+          'Si el megóhmetro da bien y la pinza mide fuga alta en servicio: es capacitiva de la electrónica, o la falla aparece sólo con humedad o con temperatura (ficha I3).',
+          'Descargar el circuito al terminar: el UT-511 no declara descarga automática.'
+        ]},
+      {t:'6 · Lo que parece fuga y no es', s:'Neutros cruzados, puentes neutro–PE, transitorios y tipo de diferencial',
+        l:[
+          'Neutro cruzado entre circuitos de distinto diferencial: dispara apenas se carga un circuito, y la pinza con fase y neutro de ese circuito marca amperes que siguen a la carga. Sin tensión y con los neutros de los dos circuitos sueltos de sus barras, el Fluke en continuidad entre ellos encuentra el puente. Cada circuito con su neutro, que vuelva por su propio diferencial.',
+          'Puente neutro–PE aguas abajo: el diferencial no rearma o dispara con carga, y por el PE circula corriente que sigue a la carga. Una vez separados, neutro y PE no se vuelven a unir (771-C.4.1). Medir sin tensión entre la barra de neutro y la de PE (fichas D7 y T5).',
+          'Diferencial que dispara antes de su valor: en rampa y con los circuitos desconectados tiene que disparar entre el 50 y el 100 % de IΔn; por debajo, reemplazarlo (ficha D2).',
+          'Transitorios de conexión: equipos con filtro de entrada grande, tubos y motores. La pinza en régimen no los ve. Diferencial superinmunizado (tipo A SI) o circuito propio para esos equipos.',
+          'Equipos con componente continua —variadores, inverters, lavarropas con motor inverter, cargadores de vehículos—: un diferencial tipo AC puede no actuar ante esa falla. Tipo A como mínimo, F para variadores monofásicos y B para variadores trifásicos, según pida el fabricante del equipo. El UT-582+ sólo ensaya tipo AC.'
+        ]},
+      {t:'7 · Verificar el diferencial', s:'UT-582+: tiempos, rampa y tipo',
+        pasos:[
+          'Desde un tomacorriente del circuito, con UL en 25 V y el IΔn del aparato: ×½ no tiene que disparar, ×1 en 0° y en 180°, y ×5 si es de 30 mA o menos. Tiempos y criterios en la ficha D2.',
+          'AUTO RAMP sube del 20 al 110 % de IΔn y da la corriente de disparo: con los aparatos desconectados tiene que quedar entre 50 y 100 % de IΔn.',
+          'Rampa con todo conectado y con todo desconectado: si con carga dispara mucho antes, la fuga de los aparatos se está sumando a la del ensayo. Confirma la fuga de base.',
+          'El UT-582+ ensaya con corriente senoidal: sirve para los tipo AC. Uni-T no declara aptitud para tipos A, F, B ni selectivos.'
+        ]},
+      {t:'8 · Corregir', s:'Cada causa con su solución (cálculo K15 para repartir)',
+        tabla:{cab:['Causa','Corrección'], filas:[
+          ['Aparato con aislación dañada: resistencia, motor o cable de entrada','Reparar o reemplazar la pieza, y sacarlo de servicio mientras tanto (ficha D5)'],
+          ['Humedad en cajas, tomas exteriores o artefactos','Cajas, tapas y prensacables con el IP del lugar, juntas nuevas, drenaje del caño y empalmes en caja estanca (ficha D4)'],
+          ['Tramo de cable dañado o envejecido','Reemplazar el tramo entre cajas, sin empalmes dentro del caño (fichas I2 e I4)'],
+          ['Fuga capacitiva repartida: electrónica, LED','Repartir los circuitos entre varios diferenciales de 30 mA, con la fuga de cada uno debajo del 30 % de IΔn (cálculo K15, fichas D6 y G6)'],
+          ['Un equipo con fuga normal alta: variador, cocina industrial, servidor','Circuito y diferencial propios, del tipo que pida el fabricante'],
+          ['Disparos por transitorios','Diferencial superinmunizado (tipo A SI) y separar las cargas que los producen'],
+          ['Neutro compartido o puente neutro–PE','Cada circuito con su neutro y sacar el puente (fichas D7 y T5)'],
+          ['Diferencial que dispara por debajo del 50 % de IΔn','Reemplazarlo (ficha D2)']
+        ]},
+        alerta:'Lo que no se hace: subir a más de 30 mA el diferencial de un circuito terminal para que no dispare —771.18.3.5 exige 30 mA en IUG, IUE, TUG, TUE, ACU, APM y los demás circuitos terminales—, puentear el diferencial o rearmar con una falla franca conectada.',
+        calc:['K15'],
+        compra:[
+          {q:'Diferencial superinmunizado tipo A', m:'Schneider superinmunizado (SI) · Siemens 5SV3314-6 (2 × 40 A, 30 mA) · ABB F202 superinmunizado',
+            d:'Para circuitos con mucha electrónica o que disparan por transitorios. Sigue siendo de 30 mA: no baja la protección.',
+            links:[['Schneider superinmunizado','https://listado.mercadolibre.com.ar/disyuntor-diferencial-superinmunizado-schneider'],['Siemens 5SV3314-6','https://articulo.mercadolibre.com.ar/MLA-1450864805-diferencial-2x40a-30ma-super-inmunizado-5sv3314-6-siemens-_JM'],['ABB F202 superinmunizado','https://articulo.mercadolibre.com.ar/MLA-804413560-disyuntor-diferencial-abb-2x25-a-30ma-f202-superinmunizado-_JM'],['Diferenciales tipo A','https://listado.mercadolibre.com.ar/disyuntor-diferencial-tipo-a']]}
+        ]},
+      {t:'9 · Después de corregir', s:'Medir de nuevo y dejar la línea de base',
+        pasos:[
+          'Repetir la fuga total de cada diferencial con la instalación en uso normal.',
+          'Ensayar el diferencial (ficha D2) y medir la aislación del circuito reparado (ficha I1).',
+          'Dejar en el informe la fuga por diferencial y por circuito, la aislación y los tiempos de disparo: es la línea de base para la próxima inspección periódica (ficha R6).',
+          'Actualizar el unifilar si cambió el reparto de circuitos entre diferenciales (ficha B5).'
+        ]}
+    ],
+    cita:'AEA 90364-7-771: 771.18.3.5 (diferencial de 30 mA como máximo en los circuitos terminales), 771.23.5.1 y Tabla 771.23.I (aislación), 771.23.6 (revisión antes de restablecer), 771-C.4.1 (neutro y PE no se vuelven a unir), 771-C.7 (PE reforzado con más de 10 mA) y 771-E.4.2. AEA 90364-7-770, 770.14.3.2, Nota 1 (fuga e incendio). AEA 90364-7-701, 701.C.4.2. BS 7671:2018, 531.3.2. IEC 60335-1 e IEC 62368-1 (fuga de aparatos). Manuales UNI-T UT251A, UT511 y UT582+.'}
+};
+var GUIAS_ORDEN = ['fp','fugas'];
 
 /* ============================================================
    CATÁLOGO DE FALLAS
@@ -1055,13 +1834,14 @@ causas:['Interruptor de 3 kA en un tablero donde la corriente de cortocircuito p
 eq:[EQ.dt5301],
 pasos:[
  'Leer el poder de corte marcado en el frente del interruptor (Icn en kA, dentro del rectángulo).',
- 'Estimar la corriente de cortocircuito presunta en el punto. Si hay dato de la distribuidora en la acometida, partir de ahí y calcular la reducción por el alimentador.',
+ 'Determinar la corriente de cortocircuito presunta en el punto. En un tablero seccional se mide con el DT-5301 en PSC, con el cable de tres puntas: la roja a la fase y la negra y la verde juntas al neutro, en los bornes de entrada del interruptor de cabecera. En el tablero principal y la acometida, por categoría, sale del dato de la distribuidora en bornes del medidor y del cálculo de la reducción por el alimentador.',
+ 'Sumarle a la lectura el error del instrumento: ±45 A en el rango de 2000 A y ±450 A en el de 20 kA. En un tablero trifásico la corriente de cortocircuito trifásica es mayor que la fase–neutro: con neutro de la misma sección que las fases, hasta el doble de la lectura.',
  'Comparar. Icn debe ser mayor o igual a la Icc presunta en ese punto.',
- 'Tener presente que el DT-5301 mide impedancia de bucle a tierra con una exactitud referida al fondo de escala: no sirve para determinar la Icc de un cortocircuito entre activos, y además no mide impedancia de línea L–N.'
+ 'Con la ficha en un tomacorriente el DT-5301 mide el lazo fase–tierra, que en TT pasa por Ra y Rb: esa corriente es mucho menor y no sirve para el poder de corte.'
 ],
 med:{campos:[
  {id:'icn', lbl:'Poder de corte del interruptor (Icn)', u:'kA'},
- {id:'icc', lbl:'Corriente de cortocircuito presunta en el punto', ayuda:'De la planilla de cargas o del dato de la distribuidora', u:'kA'}
+ {id:'icc', lbl:'Corriente de cortocircuito presunta en el punto', ayuda:'Medida con el DT-5301 entre fase y neutro, de la planilla de cargas o del dato de la distribuidora', u:'kA'}
 ], ev:function(v){
  if(v.icn===null||v.icc===null) return null;
  var d='Poder de corte <span class="num">'+f(v.icn,1)+' kA</span> contra Icc presunta <span class="num">'+f(v.icc,1)+' kA</span>.';
@@ -1558,12 +2338,12 @@ sint:'Verificación del electrodo de puesta a tierra. Obligatoria en la inspecci
 causas:['Verificación programada','Instalación nueva antes de la puesta en servicio','Sospecha de jabalina seca, corroída o desconectada','Después de una obra que pudo afectar el electrodo'],
 eq:[EQ.telu],
 pasos:[
- 'Desconectar el electrodo de la instalación: el borne de medición o la caja de inspección de la jabalina existe justamente para esto. Sin desconectarlo se mide el paralelo con otras tierras y da un valor falsamente bajo.',
  'Cortar la alimentación de la instalación antes de desconectar el PE. Nunca dejar la instalación energizada con el electrodo desconectado.',
- 'Clavar la pica de corriente T1 lo más lejos posible, en línea recta desde el electrodo. Como referencia, al menos 20 m.',
- 'Clavar la pica de tensión T2 sobre la misma línea, aproximadamente al 62 % de la distancia entre el electrodo y T1.',
- 'Medir y anotar.',
- 'Repetir desplazando T2 un metro más lejos y un metro más cerca. Si las tres lecturas coinciden razonablemente, promediarlas. Si no, aumentar la distancia a T1 y volver a empezar.',
+ 'Desconectar el electrodo de la instalación: el borne de medición o la caja de inspección de la jabalina existe justamente para esto. Sin desconectarlo se mide el paralelo con otras tierras y da un valor falsamente bajo.',
+ 'Clavar la pica de corriente —borne H del UT-572, T1 en la Figura 770.19.A— en línea recta desde el electrodo, lo más lejos que permita el terreno. Como referencia práctica, 20 m: el largo del cable rojo; el de 40 m sirve para alejarla más.',
+ 'Clavar la pica de tensión —borne S, T2 en la figura— sobre la misma línea, al 62 % de la distancia entre el electrodo y la pica de corriente: 12,4 m con la pica de corriente a 20 m. El cable amarillo de S mide 10 m: poner el instrumento sobre la línea, a 3 o 4 m del electrodo, para que llegue.',
+ 'Medir primero la tensión de perturbación Ust: con más de 10 V, no ensayar. Después medir la resistencia y anotar.',
+ 'Repetir desplazando la pica de tensión un metro más lejos y un metro más cerca. Si las tres lecturas coinciden razonablemente, promediarlas. Si no, alejar la pica de corriente y volver a empezar: esa comprobación, y no un número fijo de metros, es la que dice si la distancia alcanzó.',
  'Reconectar el electrodo antes de energizar.'
 ],
 dib:svgCaidaPotencial,
@@ -2366,8 +3146,9 @@ F.push({
 id:'G2', fam:'car', t:'Motor trifásico que gira al revés',
 sint:'La bomba no impulsa, la cinta va para atrás, el compresor no comprime. El motor funciona bien pero en sentido contrario.',
 causas:['Secuencia de fases invertida en la conexión del motor','Cambio de acometida o de tablero que invirtió la secuencia','Motor reconectado después de una reparación'],
-eq:[EQ.f117v],
+eq:[EQ.f117v, EQ.ut219],
 pasos:[
+ 'Medir la secuencia de fases en el tablero con el UT-219p en Phase Detect: V en L1 y COM en L2 y, cuando la tensión se fija, V en L3 dentro de los 10 s. «1 2 3» es directa y «3 2 1», inversa: es el dato que se deja registrado al final.',
  'Cortar la alimentación del motor y verificar ausencia de tensión.',
  'Intercambiar dos de las tres fases en los bornes del motor. Cualquier par sirve.',
  'Verificar el sentido con un arranque breve, sin carga si es posible.',
@@ -2858,7 +3639,7 @@ sint:'La distribuidora penaliza por bajo factor de potencia. La corriente medida
 causas:['Motores trabajando muy por debajo de su potencia nominal','Iluminación con balastos convencionales sin compensar','Equipo de compensación fuera de servicio o con capacitores agotados','Contactor de la batería de condensadores que no engancha'],
 eq:[EQ.ut219, EQ.ut204],
 pasos:[
- 'Medir el factor de potencia en la cabecera con el instrumento que lo permita, en actividad normal.',
+ 'Medir el factor de potencia en la cabecera con el UT-219p, en actividad normal. En monofásica, en W/VA/var. En trifásica con neutro, también en W/VA/var, fase por fase con la negra al neutro, y sumar P y Q de las tres fases: el modo 3PW desequilibrado entrega la potencia activa total y la de cada etapa, no el factor de potencia del conjunto.',
  'Si hay batería de condensadores, verificar que esté en servicio: medir la corriente que toma cada escalón.',
  'Revisar los capacitores: los agotados toman mucha menos corriente de la nominal y a veces se ven abombados.',
  'Verificar los contactores de la batería y el regulador.'
@@ -4017,7 +4798,7 @@ function svgCaidaPotencial(){
   pica(xH,'H','pica de corriente','var(--ink)');
   /* cotas, bien separadas de los rótulos */
   cota(x0,xS,suelo+104,'var(--ojo)','62 % de la distancia E–H');
-  cota(x0,xH,suelo+146,'var(--line)','E–H: 5 a 10 m según el electrodo','var(--ink)');
+  cota(x0,xH,suelo+146,'var(--line)','E–H: 20 m como referencia · más si no coinciden','var(--ink)');
   /* instrumento */
   o.push('<rect x="238" y="26" width="164" height="56" rx="8" fill="var(--sup)" stroke="var(--cel)" stroke-width="2"/>');
   T(320,48,'UT-572','middle',14,'var(--cel)',true);
@@ -5423,7 +6204,7 @@ var ST = {
   favoritos:[], recientes:[], guardados:{}, plegadas:{},
   obra:{cliente:'', dir:'', tipo:'', inst:'', mat:'', obs:'', fecha:hoyISO()},
   ajustes:{tema:'auto', fs:1, wake:false},
-  editando:null, firmaCalc:null, filtroCrit:''
+  editando:null, firmaCalc:null, filtroCrit:'', manAbierto:null, guia:null
 };
 (function(){
   var d=leerAlm();
@@ -6060,7 +6841,7 @@ ev:function(v){
           {k:'S después', v:f(S2,2), u:'kVA'},{k:'Corriente', v:f(I1,1)+'→'+f(I2,1), u:'A'}],
     svg:gTriangulo(P, Q1, Math.max(0,Q2)), li:li};
 },
-cita:'La exigencia de factor de potencia y su penalización las fija cada distribuidora en su cuadro tarifario, no la AEA 90364. El cálculo es el clásico Qc = P (tan φ₁ − tan φ₂). La verificación de armónicas antes de compensar sale del criterio de 771.16.2.4 sobre contenido armónico.'
+cita:'La exigencia de factor de potencia y su penalización las fija cada distribuidora en su cuadro tarifario, no la AEA 90364. El cálculo es el clásico Qc = P (tan φ₁ − tan φ₂). La AEA define el THD en 771.16.2.4 pero no reglamenta la compensación: la verificación de armónicas antes de compensar es criterio de los fabricantes, y está en la guía de factor de potencia y en el cálculo K14.'
 },
 
 /* ---------- K9 · potencia, corriente y calibre ---------- */
@@ -6272,6 +7053,397 @@ ev:function(v){
   return out;
 },
 cita:'AEA 90364-7-771: 771.16.2.5 (los conductores de alimentación a un motor se dimensionan para no menos del 125 % de su intensidad nominal), 771.17.3.1 (protección específica exigible desde 0,75 kW; por debajo es recomendable y se admite maniobrar con pequeños interruptores automáticos, interruptores-seccionadores o interruptores de efecto de categoría de empleo adecuada, quedando el motor sin protección propia) y 771.17.3.2 (protección dedicada contra sobrecargas, detección de falta de fase en polifásicos, y los fusibles e interruptores automáticos no son aplicables a la sobrecarga del motor). AEA 90364-7-770, 770.13.3, dice lo mismo. Caídas admisibles: 5 % en régimen y 15 % durante el arranque para los circuitos que alimentan sólo motores, 770.15.6 y 771.13.b; gradientes de la Tabla 771.19.IV, con cos φ = 0,30 para el arranque. Las relaciones Ia/In por tipo de arranque son valores típicos de catálogo, no de la Reglamentación.'
+},
+
+/* ---------- K12 · factor de potencia de la factura y recargo ENRE ---------- */
+{
+id:'K12', t:'Factor de potencia de la factura', s:'cos φ del período, recargo de Edenor y Edesur y kVAr promedio que faltan',
+ver:['B4'],
+campos:[
+ {id:'ea', lbl:'Energía activa del período', ayuda:'De la factura', u:'kWh'},
+ {id:'er', lbl:'Energía reactiva del período', ayuda:'De la factura: es la reactiva inductiva', u:'kVArh'},
+ {id:'dias', lbl:'Días del período (opcional)', ayuda:'Para el umbral de 300 kWh por bimestre y los kVAr promedio', u:'días'},
+ {id:'hd', lbl:'Horas de funcionamiento por día (opcional)', ayuda:'Vacío = 24 h. Un comercio que abre 10 horas: 10', u:'h'},
+ {id:'cat', lbl:'Categoría del suministro', tipo:'sel', opts:[
+   ['r1','T1 residencial monofásico'],
+   ['r3','T1 residencial trifásico'],
+   ['g','T1 general: comercio u oficina'],
+   ['ph','Consorcio con acometida común'],
+   ['t2','T2: medianas demandas']]},
+ {id:'c2', lbl:'cos φ objetivo', ayuda:'Vacío = 0,96, con margen sobre 0,95', u:''}
+],
+ev:function(v){
+  var Ea=num(v.ea), Er=num(v.er), d=num(v.dias), hd=num(v.hd), cat=v.cat||null, c2=num(v.c2);
+  if(Ea===null || Er===null) return null;
+  if(Ea<=0) return {e:'ojo', t:'Falta la energía activa', d:'La energía activa del período tiene que ser mayor que cero.', li:[]};
+  if(Er<0) return {e:'ojo', t:'Energía reactiva inválida', d:'Cargá la energía reactiva inductiva tal como figura en la factura.', li:[]};
+  if(c2===null) c2=0.96;
+  if(c2<=0 || c2>1) return {e:'ojo', t:'cos φ objetivo fuera de rango', d:'El factor de potencia va entre 0 y 1.', li:[]};
+  if(d!==null && d<=0) d=null;
+  if(hd!==null && (hd<=0 || hd>24)) hd=null;
+  /* cos φ y tg φ redondeados a la milésima, como se informan: así el umbral de
+     la fracción de 0,005 no depende del ruido de la coma flotante */
+  var tg=Math.round(Er/Ea*1000)/1000, c=Math.round(1000/Math.sqrt(1+Math.pow(Er/Ea,2)))/1000, t2=Math.tan(Math.acos(c2));
+  /* centésimos de apartamiento: cada 0,01 entero, y la fracción sólo si pasa de 0,005 */
+  function cent(dif){ if(!(dif>0)) return 0; var m=dif*1000, n=Math.floor(m/10+1e-9); if(m-n*10>5+1e-9) n++; return n; }
+  /* La factura divide el recargo en dos partes (art. 10): la que va hasta 0,85, que
+     se cobra completa como antes, y el tramo de 0,85 a 0,95, que la Res. 76/2025
+     manda cobrar al 10 % para todos, también para los que están por debajo de 0,85. */
+  var n=cent(0.95-c), nA=cent(0.85-c), nB=Math.max(0, n-nA);
+  var pleno=n*1.5, pA=nA*1.5, pB=nB*1.5, hoy=pA+pB*0.10;
+  var bim=(d!==null) ? Ea*60/d : null;
+  var horas=(d!==null) ? d*(hd!==null?hd:24) : null;
+  var Qavg=(horas!==null) ? (Er-Ea*t2)/horas : null;
+  var exento=(cat==='r1'), bajo300=((cat==='r3'||cat==='g') && bim!==null && bim<=300);
+  var li=[];
+  li.push('tg φ = kVArh / kWh = '+f(Er)+' / '+f(Ea)+' = '+f(tg,3)+'; cos φ = 1 / √(1 + tg² φ) = '+f(c,3)+'.');
+  if(!cat) li.push('Elegí la categoría del suministro: de ella depende si se cobra el recargo.');
+  if(exento) li.push('Residencial monofásico: exento del recargo por bajo cos φ, cualquiera sea su consumo (Res. ENRE 628/2024, Anexo I). Corregir no le cambia la factura.');
+  if(bajo300) li.push('Consumo equivalente de '+f(bim,0)+' kWh por bimestre: con 300 kWh o menos no se le determina el cos φ (Anexo I, Tarifa 1).');
+  if(exento || bajo300){ /* no se le cobra: las cuentas del recargo no corresponden */ }
+  else if(n>0){
+    li.push('cos φ por debajo de 0,95 en '+n+' centésimo'+(n===1?'':'s')+' —cada centésimo, o la fracción que pase de 0,005—: recargo pleno = '+n+' × 1,5 % = '+f(pleno,1)+' % sobre los cargos del cuadro tarifario.');
+    if(nA>0) li.push('La factura lo divide en dos partes (art. 10). Hasta 0,85: '+nA+' × 1,5 % = '+f(pA,1)+' %, que se cobra completo, como antes de 2024. Tramo de 0,85 a 0,95: '+nB+' × 1,5 % = '+f(pB,1)+' %, que la Res. ENRE 76/2025 manda cobrar al 10 %: '+f(pB*0.10,2)+' %. Hoy se cobra '+f(hoy,2)+' %.');
+    else li.push('Todo el apartamiento está en el tramo de 0,85 a 0,95, que la Res. ENRE 76/2025 manda cobrar al 10 %: hoy, '+f(hoy,2)+' %.');
+    li.push('El ENRE revisa ese 10 % cada tres meses y puede llevarlo de a poco hasta el 100 %, que es el recargo pleno. El total de recargos no puede pasar del 40 % del subtotal de cargos netos del mes (art. 11).');
+  } else li.push('Sin recargo: cos φ de 0,95 o más, o a 0,005 o menos de la referencia.');
+  if(c<0.6 && !exento && !bajo300) li.push('Por debajo de 0,60 la distribuidora, con notificación previa, puede suspender el servicio hasta que se adecue la instalación.');
+  if(cat==='ph') li.push('Consorcio con acometida común: equipo automático único que lleve el cos φ del conjunto a 0,95, avisándole a la distribuidora; capacitores fijos sólo con su conformidad, y reactores antirresonantes si el THD de tensión es de 7 % o más (arts. 3 y 4). El recargo se calcula sobre la suma de los cargos fijos y variables de todos los copropietarios (art. 6).');
+  if(Qavg!==null){
+    if(Qavg>0) li.push('kVAr promedio que faltan para cos φ '+f(c2,2)+': Qc = (kVArh − kWh × tg φ₂) / horas = ('+f(Er)+' − '+f(Ea)+' × '+f(t2,3)+') / '+f(horas,0)+' h = '+f(Qavg,2)+' kVAr. Es el promedio del período: el banco se dimensiona con la Q máxima medida con la pinza (cálculo K14).');
+    else li.push('Con el promedio del período ya se llega a cos φ '+f(c2,2)+': no faltan kVAr.');
+  } else li.push('Cargá los días del período para el umbral de 300 kWh por bimestre y los kVAr promedio que faltan.');
+  li.push('El recargo se calcula sólo con la energía reactiva inductiva de 50 Hz —la distorsión armónica no cuenta— y no se puede cobrar por una medición puntual.');
+  var e, t;
+  if(exento){ e='info'; t='Exento: residencial monofásico'; }
+  else if(bajo300){ e='info'; t='No se le determina el cos φ'; }
+  else if(n===0){ e='ok'; t='Sin recargo · cos φ '+f(c,3); }
+  else if(nA===0){ e='ojo'; t='Recargo reducido: hoy '+f(hoy,2)+' %'; }
+  else { e='mal'; t='Recargo: hoy '+f(hoy,2)+' %, pleno '+f(pleno,1)+' %'; }
+  var cobra=(exento||bajo300) ? 0 : hoy;
+  var kp=[{k:'cos φ del período', v:f(c,3), u:'', e:(exento||bajo300)?'':(n===0?'ok':(nA===0?'ojo':'mal'))},
+          {k:'tg φ', v:f(tg,3), u:''},
+          {k:'Recargo pleno', v:(exento||bajo300)?'0':f(pleno,1), u:'%'},
+          {k:'Se cobra hoy', v:cobra>40?'40':(cobra===0?'0':f(cobra,2)), u:cobra>40?'% del subtotal (tope)':'%'}];
+  if(Qavg!==null) kp.push({k:'kVAr promedio', v:f(Math.max(0,Qavg),2), u:'kVAr'});
+  return {e:e, t:t,
+    d:'Energía activa <span class="num">'+f(Ea)+' kWh</span> y reactiva <span class="num">'+f(Er)+' kVArh</span>'+(d!==null?' en <span class="num">'+f(d,0)+' días</span>':'')+'.',
+    kpis:kp, li:li};
+},
+cita:'Res. ENRE 628/2024 (B.O. 11/09/2024), Anexo I, Tarifa 1, inciso 4: exentos los residenciales monofásicos cualquiera sea su consumo; para residenciales trifásicos, generales y alumbrado público el cos φ se determina con medidores de energía activa y reactiva, sólo con la reactiva inductiva de la onda fundamental de 50 Hz y sólo para consumos de más de 300 kWh bimestrales; recargo de 1,50 % por cada centésimo, o fracción mayor de 0,005, por debajo de 0,95; suspensión del servicio por debajo de 0,60; no se aplica por mediciones puntuales. Art. 6: consorcios. Art. 10: el recargo va en dos partes, hasta 0,85 y de 0,85 a 0,95, esta última también para los usuarios por debajo de 0,85. Art. 11: tope del 40 % del subtotal de cargos netos. Res. ENRE 76/2025 (B.O. 29/01/2025): deroga el calendario del art. 13 y fija en 10 % la aplicación del tramo de 0,85 a 0,95, en todas las categorías, con revisión trimestral hasta el 100 %. La Tarifa 3 usa como referencia tg φ = 0,33 y no está en este cálculo. Fuera del área de Edenor y Edesur rige el cuadro tarifario de cada distribuidora. Qc promedio = (kVArh − kWh · tg φ₂) / horas de funcionamiento.'
+},
+
+/* ---------- K13 · capacitor para un motor ---------- */
+{
+id:'K13', t:'Capacitor para un motor', s:'Compensación individual: kVAr, límite de autoexcitación y reajuste del relé térmico',
+ver:['B4','G7','G8'],
+campos:[
+ {id:'p', lbl:'Potencia activa medida en régimen', ayuda:'UT-219p en el circuito del motor, con su carga habitual', u:'kW'},
+ {id:'fp', lbl:'cos φ medido en régimen', u:''},
+ {id:'i0', lbl:'Corriente en vacío I0', ayuda:'Motor girando desacoplado de la carga, o de la hoja de datos', u:'A'},
+ {id:'c2', lbl:'cos φ objetivo', ayuda:'Vacío = 0,95', u:''},
+ {id:'u', lbl:'Tensión entre fases', tipo:'sel', opts:[['380','380 V'],['400','400 V']]},
+ {id:'arr', lbl:'Arranque y servicio', tipo:'sel', opts:[
+   ['dir','Arranque directo, un solo sentido de giro'],
+   ['yd','Estrella-triángulo'],
+   ['sua','Arrancador suave'],
+   ['vfd','Variador de frecuencia'],
+   ['inv','Invierte el giro, frena a contracorriente o arranca muy seguido'],
+   ['arr','La carga lo puede arrastrar: ascensor, montacargas']]},
+ {id:'rel', lbl:'Ajuste actual del relé térmico (opcional)', u:'A'},
+ {id:'con', lbl:'Dónde queda el capacitor', tipo:'sel', opts:[
+   ['bornes','En bornes del motor: el relé queda aguas arriba'],
+   ['antes','Entre el contactor y el relé: el relé ve sólo el motor']]}
+],
+ev:function(v){
+  var P=num(v.p), c1=num(v.fp), I0=num(v.i0), c2=num(v.c2), U=(v.u==='400')?400:U_LIN,
+      arr=v.arr||'dir', rel=num(v.rel), con=v.con||'bornes';
+  function fk(x){ return f(x, Math.abs(x-Math.round(x))<1e-9 ? 0 : 1); }
+  if(arr==='vfd') return {e:'mal', t:'Con variador no va capacitor en el motor',
+    d:'El motor alimentado por un variador de frecuencia no se compensa en sus bornes.',
+    li:['Nunca conectar capacitores a la salida del variador: la tensión que entrega es conmutada a alta frecuencia, y el capacitor toma picos de corriente que lo dañan a él y a la etapa de salida del variador.',
+        'El variador toma de la red una corriente casi en fase con la tensión; lo que tiene son armónicos. Si en la instalación hay reactiva para compensar, va al banco automático aguas arriba, elegido según el THD (cálculo K14).']};
+  if(P===null || c1===null) return null;
+  if(P<=0) return {e:'ojo', t:'Falta la potencia', d:'La potencia activa medida tiene que ser mayor que cero.', li:[]};
+  if(c1<=0 || c1>1) return {e:'ojo', t:'cos φ fuera de rango', d:'El factor de potencia va entre 0 y 1.', li:[]};
+  if(c2===null) c2=0.95;
+  if(c2<=0 || c2>1) return {e:'ojo', t:'cos φ objetivo fuera de rango', d:'El factor de potencia va entre 0 y 1.', li:[]};
+  if(I0!==null && I0<=0) I0=null;
+  if(rel!==null && rel<=0) rel=null;
+  var r3=Math.sqrt(3), t1=Math.tan(Math.acos(c1)), t2=Math.tan(Math.acos(c2));
+  var Qm=P*t1, Qobj=Math.max(0, P*(t1-t2));
+  var dd='Motor con <span class="num">'+f(P,2)+' kW</span> y cos φ <span class="num">'+f(c1,3)+'</span> a <span class="num">'+U+' V</span>'+(I0!==null?', I0 = <span class="num">'+f(I0,2)+' A</span>':'')+'.';
+  var li=['Reactiva del motor: Q = P × tan φ₁ = '+f(P,2)+' kW × '+f(t1,3)+' = '+f(Qm,2)+' kVAr.'];
+  if(Qobj<=0){
+    li.push('El cos φ ya es igual o mejor que el objetivo de '+f(c2,2)+': un capacitor lo llevaría a sobrecompensar.');
+    return {e:'ok', t:'El motor ya está en cos φ '+f(c1,2)+': no hace falta', d:dd,
+      kpis:[{k:'Q del motor', v:f(Qm,2), u:'kVAr'},{k:'Qc para el objetivo', v:'0', u:'kVAr'}], li:li};
+  }
+  li.push('Para llegar a cos φ '+f(c2,2)+': Qc = P × (tan φ₁ − tan φ₂) = '+f(Qobj,2)+' kVAr.');
+  if(arr==='inv' || arr==='arr'){
+    li.push(arr==='inv'
+      ? 'Los motores que invierten el giro, frenan a contracorriente, marchan por impulsos o arrancan muy seguido no se compensan en bornes (Schneider).'
+      : 'Si la carga puede arrastrar al motor —ascensor, montacargas—, el capacitor no va en bornes: al cortar, el motor arrastrado queda conectado al capacitor y se autoexcita (criterio práctico).');
+    li.push('Su reactiva, '+f(Qobj,2)+' kVAr, va al banco automático del tablero (cálculo K14).');
+    return {e:'ojo', t:'Este motor no se compensa en bornes', d:dd,
+      kpis:[{k:'Q del motor', v:f(Qm,2), u:'kVAr'},{k:'Al banco', v:f(Qobj,2), u:'kVAr'}], li:li};
+  }
+  var Qmax=(I0!==null) ? 0.9*r3*U*I0/1000 : null;
+  var Qrec=(Qmax!==null) ? Math.min(Qobj,Qmax) : Qobj;
+  if(Qmax!==null) li.push('Límite de autoexcitación: Qc ≤ 0,9 × √3 × U × I0 = 0,9 × 1,732 × '+U+' V × '+f(I0,2)+' A = '+f(Qmax,2)+' kVAr.'+(Qmax<Qobj?' Manda el límite: el motor queda por debajo del objetivo y lo que falta va al banco.':''));
+  else li.push('Sin la corriente en vacío I0 no se puede verificar la autoexcitación. Medirla con el motor girando desacoplado, o tomarla de la hoja de datos, antes de comprar el capacitor.');
+  var k440=Math.pow(440/U,2), SER=[0.5,1,1.5,2,2.5,3,4,5,6,7.5,10,12.5,15,20,25,30], cn=null, i;
+  for(i=0;i<SER.length;i++) if(SER[i]<=Qrec*k440+1e-9) cn=SER[i];
+  var Qc=(cn!==null) ? cn/k440 : 0, Qd=Qm-Qc, cf=P/Math.sqrt(P*P+Qd*Qd);
+  var I1=P*1000/(r3*U*c1), I2=P*1000/(r3*U*cf), Ic=Qc*1000/(r3*U);
+  var relN=(rel!==null && con==='bornes' && Qc>0) ? rel*c1/cf : null;
+  if(cn===null){
+    li.push('Hace falta menos de lo que entrega el capacitor más chico de la serie (0,5 kVAr a 440 V = '+f(0.5/k440,2)+' kVAr a '+U+' V): no conviene compensar este motor por separado. Su reactiva va al banco.');
+    return {e:'info', t:'Menos que el capacitor más chico', d:dd,
+      kpis:[{k:'Qc para el objetivo', v:f(Qobj,2), u:'kVAr'},{k:'Límite autoexcitación', v:Qmax!==null?f(Qmax,2):'—', u:Qmax!==null?'kVAr':''}], li:li};
+  }
+  li.push('Capacitor a pedir: '+fk(cn)+' kVAr a 440 V, que a '+U+' V entrega '+f(Qc,2)+' kVAr —la potencia va con el cuadrado de la tensión: (U / 440)² = '+f(1/k440,3)+'—. Es el valor comercial más grande que no pasa '+f(Qrec,2)+' kVAr efectivos. De 440 V y no de 380 ni de 400 V, porque la red puede llegar a 440 V entre fases.');
+  li.push('Con ese capacitor el cos φ queda en '+f(cf,3)+' y la corriente de línea baja de '+f(I1,1)+' A a '+f(I2,1)+' A.');
+  if(con==='bornes'){
+    if(relN!==null) li.push('Relé térmico: queda aguas arriba del capacitor y mide la corriente compensada. Reajustarlo a '+f(rel,2)+' A × '+f(c1,3)+' / '+f(cf,3)+' = '+f(relN,2)+' A (cos φ antes / cos φ después).');
+    else li.push('Relé térmico: con el capacitor en bornes queda aguas arriba y mide la corriente compensada. Reajustarlo en la proporción cos φ antes / cos φ después = '+f(c1,3)+' / '+f(cf,3)+' = '+f(c1/cf,3)+'; cargá el ajuste actual y sale el valor.');
+  } else li.push('Relé térmico: ve sólo la corriente del motor y no se toca. El capacitor queda protegido por la protección del circuito.');
+  li.push('Corriente del capacitor: Ic = Qc / (√3 × U) = '+f(Ic,2)+' A. Cable para 1,35 × Ic = '+f(1.35*Ic,2)+' A como mínimo (Res. ENRE 628/2024, anexo II).');
+  li.push('Verificación con el motor en marcha: la pinza en un cable del capacitor tiene que marcar unos '+f(Ic,2)+' A, y en la línea, unos '+f(I2,1)+' A.');
+  if(arr==='sua') li.push('Arrancador suave: el capacitor no va a su salida ni en bornes durante el arranque. Sólo aguas arriba del arrancador, con un contactor propio que lo conecte al terminar la rampa, con el by-pass cerrado.');
+  if(arr==='yd') li.push('Estrella-triángulo: en la conmutación los bornes del motor quedan sin alimentación, así que el capacitor no va en bornes. Contactor propio comandado por el contactor de línea, o compensarlo en el banco (criterio práctico).');
+  var e, t;
+  if(Qmax===null){ e='ojo'; t='Capacitor de '+fk(cn)+' kVAr · falta verificar I0'; }
+  else if(arr==='sua' || arr==='yd'){ e='ojo'; t='Capacitor de '+fk(cn)+' kVAr, con contactor propio'; }
+  else { e='info'; t='Capacitor de '+fk(cn)+' kVAr a 440 V'; }
+  var kp=[{k:'Qc para el objetivo', v:f(Qobj,2), u:'kVAr'},
+          {k:'Límite autoexcitación', v:Qmax!==null?f(Qmax,2):'—', u:Qmax!==null?'kVAr':'', e:Qmax===null?'ojo':''},
+          {k:'Capacitor a 440 V', v:fk(cn), u:'kVAr'},
+          {k:'cos φ final', v:f(cf,3), u:''},
+          {k:'Corriente', v:f(I1,1)+'→'+f(I2,1), u:'A'}];
+  if(relN!==null) kp.push({k:'Relé nuevo', v:f(relN,2), u:'A'});
+  return {e:e, t:t, d:dd, kpis:kp, svg:gTriangulo(P, Qm, Math.max(0,Qd)), li:li};
+},
+cita:'Schneider Electric, Electrical Installation Guide, capítulo L, «Power factor correction of induction motors»: capacitor directo en bornes del motor; Qc ≤ 0,9 × I0 × Un × √3 para evitar la autoexcitación; con la protección aguas arriba del capacitor, reajustarla en la proporción cos φ antes / cos φ después; no compensar motores especiales (paso a paso, a contracorriente, por impulsos, con inversión de giro). ABB, cuaderno técnico 8: compensación distribuida. Res. ENRE 628/2024, anexo II: conductores y protecciones para 1,35 × In del capacitor. La potencia de un capacitor va con el cuadrado de la tensión. Variador y arrancador suave: criterio de los fabricantes de esos equipos; estrella-triángulo y cargas que arrastran al motor: criterio práctico. La AEA 90364 no reglamenta la compensación.'
+},
+
+/* ---------- K14 · banco automático de capacitores ---------- */
+{
+id:'K14', t:'Banco automático de capacitores', s:'Potencia, escalones, tipo según armónicos, protecciones, regulador y el pedido',
+ver:['B4'],
+campos:[
+ {id:'p', lbl:'Potencia activa en máxima demanda', ayuda:'UT-219p en el tablero principal: suma de las tres fases', u:'kW'},
+ {id:'fp', lbl:'Factor de potencia en ese momento', ayuda:'El PF de la pinza, o el que da la suma de fases', u:''},
+ {id:'thdi', lbl:'THD de corriente en la acometida (opcional)', ayuda:'THD%f del UT-219p: pasa el PF a cos φ de desplazamiento', u:'%'},
+ {id:'c2', lbl:'cos φ objetivo', ayuda:'Vacío = 0,96', u:''},
+ {id:'qind', lbl:'kVAr en capacitores propios de motores (opcional)', ayuda:'Los del cálculo K13: se descuentan del banco', u:'kVAr'},
+ {id:'qmin', lbl:'Q mínima a compensar (opcional)', ayuda:'Medida en el horario de menor consumo', u:'kVAr'},
+ {id:'thdv', lbl:'THD de tensión entre fases, sin banco', ayuda:'THD%f del UT-219p, roja en L1 y negra en L2', u:'%'},
+ {id:'nl', lbl:'Potencia de cargas no lineales (opcional)', ayuda:'Variadores, UPS, computadoras, drivers LED, inverters', u:'kVA'},
+ {id:'icc', lbl:'Corriente de cortocircuito presunta (opcional)', ayuda:'En el tablero principal, para la resonancia', u:'kA'},
+ {id:'iccor', lbl:'Origen de esa corriente', tipo:'sel', opts:[['dist','Dato trifásico de la distribuidora'],['dt','DT-5301, PSC fase–neutro']]},
+ {id:'u', lbl:'Tensión entre fases', tipo:'sel', opts:[['380','380 V'],['400','400 V']]},
+ {id:'ig', lbl:'Interruptor general (opcional)', ayuda:'Para elegir el transformador de corriente', u:'A'},
+ {id:'ph', lbl:'¿Consorcio con acometida común?', tipo:'bool'}
+],
+ev:function(v){
+  var P=num(v.p), PF=num(v.fp), thdi=num(v.thdi), c2=num(v.c2), qind=num(v.qind), qmin=num(v.qmin),
+      thdv=num(v.thdv), nl=num(v.nl), icc=num(v.icc), iccor=v.iccor||'dist', U=(v.u==='400')?400:U_LIN,
+      ig=num(v.ig), ph=(v.ph===true), r3=Math.sqrt(3), i;
+  function fk(x){ return f(x, Math.abs(x-Math.round(x))<1e-9 ? 0 : 1); }
+  function fsec(s){ return (s%1===0) ? String(s) : f(s,1); }
+  if(P===null || PF===null) return null;
+  if(P<=0) return {e:'ojo', t:'Falta la potencia', d:'La potencia activa en máxima demanda tiene que ser mayor que cero.', li:[]};
+  if(PF<=0 || PF>1) return {e:'ojo', t:'Factor de potencia fuera de rango', d:'El factor de potencia va entre 0 y 1.', li:[]};
+  if(c2===null) c2=0.96;
+  if(c2<=0 || c2>1) return {e:'ojo', t:'cos φ objetivo fuera de rango', d:'El factor de potencia va entre 0 y 1.', li:[]};
+  if(thdi!==null && thdi<0) thdi=null;
+  if(thdv!==null && thdv<0) thdv=null;
+  if(qind!==null && qind<0) qind=null;
+  if(qmin!==null && qmin<=0) qmin=null;
+  if(nl!==null && nl<0) nl=null;
+  if(icc!==null && icc<=0) icc=null;
+  if(ig!==null && ig<=0) ig=null;
+  var li=[], c1=PF;
+  if(thdi!==null && thdi>0) c1=Math.min(1, PF*Math.sqrt(1+Math.pow(thdi/100,2)));
+  var t1=Math.tan(Math.acos(c1)), t2=Math.tan(Math.acos(c2));
+  var Qnec=P*(t1-t2), Qb=Qnec-(qind!==null?qind:0);
+  var dd='Máxima demanda <span class="num">'+f(P,2)+' kW</span> con PF <span class="num">'+f(PF,3)+'</span>'+(c1!==PF?' (cos φ <span class="num">'+f(c1,3)+'</span>)':'')+' a <span class="num">'+U+' V</span>.';
+  if(thdi!==null && thdi>0) li.push('cos φ de desplazamiento ≈ PF × √(1 + THDi²) = '+f(PF,3)+' × √(1 + '+f(thdi/100,2)+'²) = '+f(c1,3)+'. Es el que corrige el capacitor y el único que cuenta la factura.');
+  else li.push('Sin el THD de corriente se toma el PF como cos φ. Con mucha electrónica el PF da menos que el cos φ y el banco sale sobredimensionado: cargá el THDi.');
+  li.push('Q a compensar = P × (tan φ₁ − tan φ₂) = '+f(P,2)+' kW × ('+f(t1,3)+' − '+f(t2,3)+') = '+f(Qnec,2)+' kVAr'+(qind?'; menos '+f(qind,2)+' kVAr en los motores, quedan '+f(Qb,2)+' kVAr para el banco':'')+'.');
+  if(Qb<=0.05){
+    var armon=(c1>=c2 && PF<c2);
+    if(armon) li.push('El PF de la pinza está por debajo del objetivo por la distorsión, no por desplazamiento: los capacitores no lo corrigen y pueden entrar en resonancia. Si hay que bajar la distorsión, es con filtro; la factura no la cobra.');
+    else if(qind) li.push('Los capacitores de los motores ya alcanzan: no hace falta banco.');
+    else li.push('El cos φ ya está en el objetivo: no hace falta banco.');
+    return {e:'ok', t: armon ? 'El PF bajo es por armónicos: no van capacitores' : 'No hace falta banco', d:dd,
+      kpis:[{k:'cos φ', v:f(c1,3), u:'', e:'ok'},{k:'Q a compensar', v:f(Math.max(0,Qb),2), u:'kVAr'}], li:li};
+  }
+  /* escalonamiento */
+  var conf, mul;
+  if(Qb<=2){ conf='1-2'; mul=[1,2]; }
+  else if(qmin!==null && Qb/5>qmin){ conf='1-2-4'; mul=[1,2,4]; }
+  else { conf='1-2-2'; mul=[1,2,2]; }
+  var nU=0; mul.forEach(function(x){ nU+=x; });
+  var uq=Qb/nU;
+  /* tipo de banco */
+  var Smax=P/PF, nlp=(nl!==null) ? nl/Smax*100 : null, nivel=0, raz=[];
+  var hrA=null, hrB=null, cerca=[];
+  if(icc!==null){
+    var Ssc=r3*U*icc;
+    hrA=Math.sqrt(Ssc/Qb); hrB=(iccor==='dt') ? Math.sqrt(2*Ssc/Qb) : hrA;
+    [5,7,11,13].forEach(function(h){ if(h*1.1>=hrA && h*0.9<=hrB) cerca.push(h); });
+  }
+  if(thdv===null) raz.push('Falta el THD de tensión: sin él no se puede elegir el tipo con seguridad. Medirlo con el UT-219p en HARM, entre fases y con el banco desconectado.');
+  else if(thdv>8){ nivel=3; raz.push('THD de tensión '+f(thdv,1)+' %: pasa el 8 % que admite un banco con reactores del 7 % (Schneider). Hace falta un estudio del fabricante: filtro o reactor de otra sintonía.'); }
+  else if(thdv>5){ nivel=2; raz.push('THD de tensión '+f(thdv,1)+' %: por encima del 5 %, el capacitor sin reactor queda fuera de lo que admiten WEG y el estándar de Schneider. Con reactores del 7 % se llega a 8 %.'); }
+  else if(thdv>3){ nivel=1; raz.push('THD de tensión '+f(thdv,1)+' %: de 3 a 5 %, capacitor reforzado; Schneider lo admite hasta 7 %.'); }
+  else raz.push('THD de tensión '+f(thdv,1)+' %: hasta 3 % no condiciona el tipo de banco.');
+  if(thdv!==null && thdv>=7) raz.push('Con 7 % o más, en un consorcio con acometida común los reactores antirresonantes son obligatorios (Res. ENRE 628/2024, art. 4).');
+  if(nlp!==null){
+    if(nlp>50){ nivel=Math.max(nivel,3); raz.push('Cargas no lineales: '+f(nlp,0)+' % de la potencia aparente. Más del 50 % pide filtrado (Schneider).'); }
+    else if(nlp>20){ nivel=Math.max(nivel,2); raz.push('Cargas no lineales: '+f(nlp,0)+' % de la potencia aparente. Más del 20 % pide reactores de desintonía (WEG, Schneider).'); }
+    else if(nlp>15 && thdv!==null && thdv>3){ nivel=Math.max(nivel,2); raz.push('Cargas no lineales: '+f(nlp,0)+' %, con THD de tensión de más de 3 %: EPCOS pide reactores.'); }
+    else if(nlp>10){ nivel=Math.max(nivel,1); raz.push('Cargas no lineales: '+f(nlp,0)+' % de la potencia aparente. De 10 a 20 %, capacitor reforzado (Schneider).'); }
+    else raz.push('Cargas no lineales: '+f(nlp,0)+' % de la potencia aparente. Hasta 10 % admite el estándar (Schneider).');
+  }
+  if(hrA!==null){
+    var hrTxt=(hrB!==hrA) ? 'entre '+f(hrA,1)+' y '+f(hrB,1)+' —con la PSC fase–neutro, la corriente trifásica queda entre una y dos veces ese valor—' : f(hrA,1);
+    if(cerca.length){ nivel=Math.max(nivel,2); raz.push('Resonancia: hr = √(Scc / Qc) = '+hrTxt+', a menos de ±10 % de '+(cerca.length>1 ? 'las armónicas '+cerca.slice(0,-1).join(', ')+' y '+cerca[cerca.length-1] : 'la armónica '+cerca[0])+'. Esa combinación de banco y red necesita reactores.'); }
+    else raz.push('Resonancia: hr = √(Scc / Qc) = '+hrTxt+', lejos de la 5ª, la 7ª, la 11ª y la 13ª.');
+  } else raz.push('Sin la corriente de cortocircuito no se verifica la resonancia.');
+  var TIPOS=['estándar','reforzado (heavy duty)','con reactores de desintonía p = 7 % (189 Hz)','a definir con un estudio de armónicos del fabricante'];
+  var Un=(nivel>=2) ? 480 : 440, kv=Math.pow(Un/U,2)*((nivel>=2) ? 0.93 : 1), fac=[1.5,1.8,1.35,1.35][nivel];
+  var SER=[0.5,1,1.5,2,2.5,3,4,5,6,7.5,10,12.5,15,20,25,30,40,50];
+  function cercano(q){ var b=SER[0], bd=Infinity; for(var j=0;j<SER.length;j++){ var x=Math.abs(Math.log(SER[j]/q)); if(x<bd-1e-12){ bd=x; b=SER[j]; } } return b; }
+  var pasos=[], tot=0;
+  mul.forEach(function(m){
+    var ef=m*uq, nom=ef*kv, com=(nivel<2) ? cercano(nom) : null, efc=(com!==null) ? com/kv : ef;
+    pasos.push({ef:ef, nom:nom, com:com, efc:efc}); tot+=efc;
+  });
+  var Ib=tot*1000/(r3*U), Imin=fac*Ib, In=null, sec=null;
+  for(i=0;i<SERIE_IN.length;i++) if(SERIE_IN[i]>=Imin-1e-9){ In=SERIE_IN[i]; break; }
+  if(In!==null) for(i=0;i<TAB_IZ.length;i++) if(TAB_IZ[i][2]>=In){ sec=Math.max(2.5, TAB_IZ[i][0]); break; }
+  var CTS=[50,60,75,100,125,150,200,250,300,400,500,600], ctp=null;
+  if(ig!==null) for(i=0;i<CTS.length;i++) if(CTS[i]>=ig){ ctp=CTS[i]; break; }
+  var ck=(ctp!==null) ? (pasos[0].efc*1000/(r3*U))/(ctp/5) : null;
+  var pTxt=pasos.map(function(p){ return f(p.efc,2); }).join(' + ');
+  li.push('Escalonamiento '+conf+': '+pasos.length+' escalones; en el diseño combinan de 1 a '+nU+' veces '+f(uq,2)+' kVAr. '+(qmin!==null
+    ? (pasos[0].efc<=qmin+1e-9 ? 'El escalón más chico, '+f(pasos[0].efc,2)+' kVAr, entra con la Q mínima de '+f(qmin,2)+' kVAr.'
+                               : 'El escalón más chico, '+f(pasos[0].efc,2)+' kVAr, supera la Q mínima de '+f(qmin,2)+' kVAr: a esa hora queda sin compensar, pero no sobrecompensa porque el regulador no lo conecta.')
+    : 'Cargá la Q mínima para verificar el escalón más chico.'));
+  raz.forEach(function(x){ li.push(x); });
+  li.push([
+    'Tipo: estándar. Capacitores de 440 V aunque el banco sea estándar: la red puede llegar a 440 V entre fases, y para un capacitor de 400 V eso es 1,1 Un, que IEC 60831-1 admite sólo 8 horas por día.',
+    'Tipo: reforzado (heavy duty): capacitores de 440 V construidos para más sobrecorriente armónica. Los 440 V cubren además la tensión máxima de la red, 400 V + 10 %.',
+    'Tipo: con reactores de desintonía p = 7 % (189 Hz). Capacitores de 480 V: el reactor eleva la tensión sobre el capacitor.',
+    'Tipo: a definir con un estudio de armónicos del fabricante, que elige la sintonía del reactor o el filtro y la tensión de los capacitores.'][nivel]);
+  if(nivel<2) li.push('Capacitores a pedir, de '+Un+' V: '+pasos.map(function(p){ return fk(p.com)+' kVAr (entrega '+f(p.efc,2)+' a '+U+' V)'; }).join(' + ')+'. Son los valores comerciales más cercanos a '+pasos.map(function(p){ return f(p.nom,2); }).join(' + ')+' kVAr nominales; el regulador reconoce el tamaño real de cada escalón.');
+  else if(nivel===2) li.push('Con reactores, pedir el banco armado de fábrica por kVAr efectivos a '+U+' V: los reactores tienen que estar coordinados con los capacitores.');
+  else li.push('Pedir el estudio y el equipo al fabricante, con las mediciones de THD de tensión y de corriente, la potencia y la corriente de cortocircuito.');
+  li.push('Corriente del banco: In = '+f(tot,2)+' kVAr / (√3 × '+U+' V) = '+f(Ib,1)+' A. Protección: '+f(fac,2)+' × In = '+f(Imin,1)+' A como mínimo'+
+    (nivel===0 ? ' (Schneider: 1,5 en el estándar)' : nivel===1 ? ' (Schneider: 1,8 en el reforzado)' : ' (Res. ENRE 628/2024, anexo II: 1,35; Schneider pide 1,19 con reactor del 7 %)')+
+    (In!==null ? '. Termomagnética tripolar de '+In+' A curva D, o seccionador fusible gG del mismo calibre: el magnético tiene que quedar por encima de 10 × In del banco para no disparar con el pico de conexión (Schneider), y la curva D lo cumple.'
+               : '. Pasa los 125 A de la serie cargada: interruptor en caja moldeada, con el magnético por encima de 10 × In del banco.'));
+  if(sec!==null) li.push('Cable: Iz de '+In+' A o más → '+fsec(sec)+' mm² en caño (Tabla 771.16.I, tres conductores cargados, 40 °C, sin agrupamiento; con agrupamiento o más temperatura, cálculo K2), y nunca menos de 2,5 mm² en un circuito de uso específico (Tabla 771.13.I). Más el PE.');
+  li.push('Por escalón: fusibles gG del calibre que indique el fabricante del capacitor y nunca menos de 1,35 × I del escalón ('+pasos.map(function(p){ return f(1.35*p.efc*1000/(r3*U),1)+' A'; }).join(', ')+'), y contactor para capacitores AC-6b con resistencias de precarga.');
+  li.push('En el circuito del banco, diferencial tetrapolar de 30 mA (771.18.3.5); superinmunizado si dispara al conectar escalones.');
+  if(ctp!==null) li.push('Transformador de corriente '+ctp+'/5 A clase 1, en L1 aguas arriba del banco y de todas las cargas: en el regulador, relación '+(ctp/5)+'. Si el regulador pide C/k: '+f(pasos[0].efc,2)+' kVAr / (√3 × '+U+' V × '+(ctp/5)+') = '+f(ck,3)+' A.');
+  else li.push('Cargá el interruptor general para elegir el transformador de corriente y el C/k.');
+  li.push('Regulador: cos φ objetivo '+f(c2,2)+' inductivo; tiempo de descarga igual o mayor que el que declara el capacitor para bajar al 10 % de su tensión (WEG UCWT: 30 s; si sólo garantiza 75 V en 3 min, 240 s).');
+  if(Qb<1.5) li.push('Con menos de 1,5 kVAr un banco automático rara vez se justifica: ver si alcanza con el capacitor del motor principal (cálculo K13).'+(ph?' En un consorcio con acometida común igual tiene que ser automático (art. 3).':''));
+  if(ph) li.push('Consorcio con acometida común: equipo automático único, sin fijos salvo conformidad de la distribuidora, y avisarle de la instalación (Res. ENRE 628/2024, art. 3).');
+  var lin=[];
+  lin.push('Banco automático de corrección del factor de potencia'+(ph?', equipo único para la acometida común (Res. ENRE 628/2024, art. 3)':''));
+  lin.push('Red 3 × '+(U===400?'400/230':'380/220')+' V, 50 Hz, tensión máxima de servicio 440 V');
+  lin.push('Potencia: '+f(tot,2)+' kVAr efectivos a '+U+' V, en '+pasos.length+' escalones de '+pTxt+' kVAr');
+  lin.push('Tipo: '+TIPOS[nivel]+(thdv!==null?' (THD de tensión medido: '+f(thdv,1)+' %)':''));
+  lin.push(nivel<3 ? 'Capacitores trifásicos secos, autorregenerables, con dispositivo de sobrepresión y resistencias de descarga a menos de 75 V en 3 min, de '+Un+' V, IEC 60831-1/2 e IRAM 2459-1/2'
+                   : 'Capacitores y filtrado según el estudio del fabricante, IEC 60831-1/2 e IRAM 2459-1/2');
+  lin.push('Regulador de 6 salidas, entrada de TI de 5 A, con alarma de THD y de temperatura');
+  lin.push('Contactores AC-6b con resistencias de precarga, bobina 220 V 50 Hz');
+  lin.push('Fusibles gG por escalón y seccionador general');
+  lin.push('Conductores, barras y aparatos para 1,35 × In como mínimo (Res. ENRE 628/2024, anexo II)');
+  lin.push('Gabinete metálico a tierra, ventilado, para 40 °C de ambiente, con cartel de advertencia de descarga');
+  if(ctp!==null) lin.push('Transformador de corriente '+ctp+'/5 A clase 1, a instalar en L1 aguas arriba del banco');
+  lin.push('Con protocolo de ensayo y hojas de datos');
+  var e=(nivel===3) ? 'mal' : (nivel===2 ? 'ojo' : 'info');
+  if(thdv===null && nivel<2) e='ojo';
+  var t=(nivel===3) ? 'Banco de '+f(tot,1)+' kVAr: hace falta estudio de armónicos'
+      : (thdv===null && nivel<2) ? 'Banco de '+f(tot,1)+' kVAr · falta el THD de tensión'
+      : 'Banco de '+f(tot,1)+' kVAr · '+['estándar','reforzado','con reactores del 7 %'][nivel];
+  var Qantes=P*t1, Qdesp=Math.max(0, Qantes-(qind!==null?qind:0)-tot);
+  return {e:e, t:t,
+    d:dd+'<div class="pedido" id="pedidoK14">'+esc(lin.join('\n'))+'</div>'+
+      '<button type="button" class="ir-man no-print" data-copia="pedidoK14">Copiar el pedido</button>',
+    kpis:[{k:'Banco', v:f(tot,2), u:'kVAr'},{k:'Escalones', v:conf, u:''},{k:'Capacitores', v:nivel<3?String(Un):'—', u:nivel<3?'V':''},
+          {k:'Protección', v:In!==null?String(In):'—', u:In!==null?'A':''},{k:'TI', v:ctp!==null?ctp+'/5':'—', u:''},
+          {k:'Resonancia', v:hrA!==null?(hrB!==hrA?f(hrA,1)+'–'+f(hrB,1):f(hrA,1)):'—', u:'', e:cerca.length?'mal':(hrA!==null?'ok':'')}],
+    svg:gTriangulo(P, Qantes, Qdesp), li:li};
+},
+cita:'Res. ENRE 628/2024: art. 3 (equipo automático único en propiedad horizontal con acometida común, sin fijos salvo conformidad de la distribuidora), art. 4 (THD de tensión de 7 % o más: reactores antirresonantes) y anexo II (regulación automática; escalones tales que la variación del factor de potencia no supere ±10 % del valor medio; capacitores antiexplosivos IEC 60831-1/2 e IRAM 2459-1/2; descarga a menos de 75 V en 3 min; lugar seco, ventilado, 40 °C máximo, lejos de inflamables y de fuentes de calor; envolvente metálica a tierra; cartel de advertencia; conductores, barras, seccionadores y fusibles para 1,35 × In). Schneider Electric, Electrical Installation Guide, capítulo L: hr = √(Scc/Q); no lineales hasta 10 % estándar y hasta 20 % reforzado; THD de tensión máximo de 5 % estándar, 7 % reforzado y 8 % con reactor del 7 %; reactores de 5,7, 7 y 14 % (210, 190 y 135 Hz); capacitores de 480 V con reactor en red de 400 V; protección a 1,5 × In (estándar), 1,8 × In (reforzado) y 1,19 × In (reactor del 7 %), con el magnético a 10 × In. WEG, catálogo de capacitores: inductores antiarmónicos desde 20 % de cargas no lineales; resistencias de descarga UCWT a 1/10 de Un en 30 s. EPCOS PhiCap (Elecond): sin filtro con THD menor de 3 % o hasta 15 % de no lineales. IEC 60831-1: 1,3 × In de sobrecorriente permanente y 1,1 × Un durante 8 h por día. AEA 90364-7-771: Tabla 771.13.I, Tabla 771.16.I y 771.18.3.5. La serie de kVAr comerciales es la habitual de los fabricantes: confirmarla en el catálogo de la marca. El ±10 % alrededor de cada armónica es criterio práctico.'
+},
+
+/* ---------- K15 · fugas por diferencial ---------- */
+{
+id:'K15', t:'Fugas por diferencial', s:'Reparto de circuitos para dejar cada diferencial debajo del 30 % de su IΔn',
+ver:['D1','D6','G6'],
+campos:[
+ {id:'idn', lbl:'IΔn de los diferenciales', tipo:'sel', opts:[['10','10 mA'],['30','30 mA'],['100','100 mA'],['300','300 mA']]},
+ {id:'nid', lbl:'Diferenciales para repartir', tipo:'sel', opts:[['1','1'],['2','2'],['3','3'],['4','4']]},
+ {id:'c1', lbl:'Fuga del circuito 1', ayuda:'UT-251A con fase y neutro de ese circuito en la mordaza', u:'mA'},
+ {id:'c2', lbl:'Fuga del circuito 2', u:'mA'},
+ {id:'c3', lbl:'Fuga del circuito 3', u:'mA'},
+ {id:'c4', lbl:'Fuga del circuito 4', u:'mA'},
+ {id:'c5', lbl:'Fuga del circuito 5', u:'mA'},
+ {id:'c6', lbl:'Fuga del circuito 6', u:'mA'},
+ {id:'c7', lbl:'Fuga del circuito 7', u:'mA'},
+ {id:'c8', lbl:'Fuga del circuito 8', u:'mA'}
+],
+ev:function(v){
+  var idn=v.idn ? parseFloat(v.idn) : null, nid=v.nid ? parseInt(v.nid,10) : 1, cs=[], i, k, x;
+  for(i=1;i<=8;i++){
+    x=num(v['c'+i]);
+    if(x!==null){
+      if(x<0) return {e:'ojo', t:'Fuga inválida', d:'Las fugas medidas no pueden ser negativas.', li:[]};
+      cs.push({n:i, v:x});
+    }
+  }
+  if(idn===null || !cs.length) return null;
+  if(!(nid>=1)) nid=1;
+  var lim=0.3*idn, l50=0.5*idn, tot=0;
+  cs.forEach(function(c){ tot+=c.v; });
+  function reparte(m){
+    var g=[], o=cs.slice().sort(function(a,b){ return (b.v-a.v) || (a.n-b.n); }), j;
+    for(j=0;j<m;j++) g.push({s:0, c:[]});
+    o.forEach(function(c){ var mi=0; for(var q=1;q<g.length;q++) if(g[q].s<g[mi].s-1e-12) mi=q; g[mi].s+=c.v; g[mi].c.push(c); });
+    var mx=0; g.forEach(function(y){ if(y.s>mx) mx=y.s; });
+    return {g:g, max:mx};
+  }
+  var r=reparte(nid), solos=cs.filter(function(c){ return c.v>lim+1e-9; }), nec=null;
+  if(!solos.length) for(k=1;k<=8;k++){ if(reparte(k).max<=lim+1e-9){ nec=k; break; } }
+  var e=(r.max<=lim+1e-9) ? 'ok' : (r.max<=l50+1e-9 ? 'ojo' : 'mal');
+  var li=[];
+  li.push('Fuga total: '+f(tot,2)+' mA = '+f(tot/idn*100,0)+' % de IΔn. Referencia: 30 % de '+idn+' mA = '+f(lim,1)+' mA por diferencial (BS 7671, 531.3.2).');
+  r.g.forEach(function(y,j){
+    var cc=y.c.slice().sort(function(a,b){ return a.n-b.n; });
+    li.push('Diferencial '+(j+1)+': '+(cc.length
+      ? cc.map(function(c){ return 'circuito '+c.n+' ('+f(c.v,2)+' mA)'; }).join(' + ')+' = '+f(y.s,2)+' mA, el '+f(y.s/idn*100,0)+' % de IΔn'
+      : 'sin circuitos')+'.');
+  });
+  if(solos.length) li.push((solos.length===1 ? 'El circuito '+solos[0].n+' solo ya supera' : 'Los circuitos '+solos.map(function(c){ return c.n; }).join(', ')+' superan solos')+' el 30 %: repartir no alcanza. Buscar la falla (ficha D5) o, si es la fuga normal de un equipo, darle circuito y diferencial propios.');
+  else if(nec!==null && nec>nid) li.push('Con '+nid+' diferencial'+(nid>1?'es':'')+' no alcanza: hacen falta '+nec+' para que cada uno quede debajo del 30 %.');
+  else if(nec!==null) li.push('Con '+nid+' diferencial'+(nid>1?'es':'')+' alcanza'+(nec<nid?'; con '+nec+' también':'')+'.');
+  li.push('Reparto por el mayor primero: cada circuito va al diferencial que lleva menos fuga. La suma es aritmética; en un diferencial tetrapolar las fugas de fases distintas se compensan en parte y la real puede dar menos. Medir de nuevo después de repartir.');
+  if(idn>30) li.push('Los de '+idn+' mA son para la protección contra contactos indirectos entre tableros (771.18.4 b.1); los circuitos terminales llevan 30 mA como máximo (771.18.3.5).');
+  var t=(e==='ok') ? 'Cada diferencial queda debajo del 30 %' : (e==='ojo' ? 'Alguno queda entre 30 y 50 % de IΔn' : 'Alguno pasa del 50 % de IΔn: va a disparar');
+  return {e:e, t:t, d:cs.length+' circuito'+(cs.length>1?'s':'')+' repartido'+(cs.length>1?'s':'')+' en '+nid+' diferencial'+(nid>1?'es':'')+' de <span class="num">'+idn+' mA</span>.',
+    kpis:[{k:'Fuga total', v:f(tot,2), u:'mA'},{k:'Peor diferencial', v:f(r.max,2), u:'mA', e:e},
+          {k:'Límite 30 %', v:f(lim,1), u:'mA'},{k:'Diferenciales necesarios', v:nec!==null?String(nec):'—', u:''}],
+    li:li};
+},
+cita:'BS 7671:2018, 531.3.2, basada en IEC 60364-5-53: la fuga acumulada aguas abajo de un diferencial no debe pasar del 30 % de su IΔn. AEA 90364-7-771, 771.18.3.5: diferencial de 30 mA como máximo en los circuitos terminales; 771.18.4 b.1): hasta 300 mA para la protección contra contactos indirectos entre tableros, con Ra ≤ 40 Ω. El reparto por el mayor primero es un método de cálculo, no una prescripción.'
 }
 
 ];
@@ -6464,6 +7636,9 @@ function pintarResultados(){
         });
         h += '</div>';
       }
+      h += '<div class="rot">Guías paso a paso</div><div class="calc-lista guias">';
+      for(var gi=0;gi<GUIAS_ORDEN.length;gi++) h += botonGuiaInicio(GUIAS_ORDEN[gi]);
+      h += '</div>';
       h += '<div class="rot">Arranques rápidos</div><div class="grilla">';
       for(var i=0;i<TRIAGE.length;i++){
         h += '<button class="tri '+TRIAGE[i].c+'" data-tri="'+i+'"><b>'+esc(TRIAGE[i].t)+'</b><i>'+esc(TRIAGE[i].s)+'</i></button>';
@@ -6480,6 +7655,10 @@ function pintarResultados(){
 
   if(ST.triage===null){
     var total=0;
+    if(q){
+      var gs=GUIAS_ORDEN.filter(function(k){ return textoGuia(GUIAS[k]).indexOf(q)>=0; });
+      if(gs.length){ h += '<div class="rot">Guías</div><div class="calc-lista guias">'; gs.forEach(function(k){ h += botonGuiaInicio(k); }); h += '</div>'; }
+    }
     for(var k=0;k<FAMILIAS.length;k++){
       var fam=FAMILIAS[k];
       var items=F.filter(function(x){ return x.fam===fam.id && (!q || textoBusqueda(x).indexOf(q)>=0); });
@@ -6502,7 +7681,7 @@ function pintarResultados(){
     }
   }
 
-  h += '<div class="pie"><b>'+F.length+' fichas y '+CALC.length+' cálculos</b> atados a tu equipamiento: Fluke 117, UT-204+, UT-251A, UT-219p, UT-511, UT-582+, UT-12D, CEM DT-5301, telurímetro UT-572 y distanciómetro GLM 50-27 CG. Los criterios de aceptación salen de la AEA 90364 partes 7-770, 7-771, 7-701 y 7-718; donde el criterio es práctico y no reglamentario, está dicho en la ficha.<br><br>'+
+  h += '<div class="pie"><b>'+F.length+' fichas, '+CALC.length+' cálculos y '+GUIAS_ORDEN.length+' guías</b> atados a tu equipamiento: Fluke 117, UT-204+, UT-251A, UT-219p, UT-511, UT-582+, UT-12D, CEM DT-5301, telurímetro UT-572, distanciómetro GLM 50-27 CG y cámara termográfica UTi260B. Los criterios de aceptación salen de la AEA 90364 partes 7-770, 7-771, 7-701 y 7-718; donde el criterio es práctico y no reglamentario, está dicho en la ficha.<br><br>'+
        (ALM.ok ? 'Funciona sin internet y guarda el informe en este teléfono: podés cerrar la app y seguir donde quedaste.'
                : '<b>Atención:</b> este teléfono no deja guardar datos (la app está abierta como archivo local o en modo privado). El informe se pierde al cerrar: copialo antes de salir.')+
        '</div>';
@@ -6519,6 +7698,7 @@ function pintarResultados(){
     b.onclick=function(){ var id=this.dataset.fam; ST.plegadas[id]=!ST.plegadas[id]; pintarResultados(); };
   });
   cont.querySelectorAll('[data-id]').forEach(function(b){ b.onclick=function(){ ir('ficha', this.dataset.id); }; });
+  cont.querySelectorAll('[data-guia]').forEach(function(b){ b.onclick=function(){ ir('guia', this.dataset.guia); }; });
 }
 function itemHTML(x, q){
   return '<li><button class="item" data-id="'+x.id+'"><span class="cod">'+x.id+'</span>'+
@@ -6539,6 +7719,8 @@ function vistaFicha(){
        '<button class="fav" data-fav="'+x.id+'" aria-pressed="'+esFav(x.id)+'" aria-label="Marcar como favorita">★</button></div>';
   h += '<h2>'+esc(x.t)+'</h2>';
   h += '<div class="sint">'+esc(x.sint)+'</div>';
+  var gf=guiasDe('fichas', x.id);
+  if(gf.length) h += '<div class="no-print">'+botonesGuia(gf)+'</div>';
   h += '<div class="alerta"><b>Antes de medir.</b> Verificación de ausencia de tensión en tres pasos: probar el instrumento en una fuente conocida, medir el punto, volver a probar el instrumento. Usar guantes clase 00, calzado dieléctrico y protección ocular; el detalle y lo que falta del material de seguridad está en Equipos. Trabajar sin tensión siempre que el ensayo lo permita; si hay que medir con tensión, usar el instrumento de mayor categoría que corresponda al punto.</div>';
 
   h += '<div class="bloque"><h3>Causas <small>ordenadas por frecuencia</small></h3><ul class="causas">';
@@ -6547,7 +7729,13 @@ function vistaFicha(){
 
   if(x.eq && x.eq.length){
     h += '<div class="bloque"><h3>Equipo y configuración</h3>';
-    for(var j=0;j<x.eq.length;j++) h += '<div class="eq"><b>'+esc(x.eq[j].n)+'</b><div class="cfg">'+esc(x.eq[j].cfg)+'</div></div>';
+    var vistos={};
+    for(var j=0;j<x.eq.length;j++){
+      var mk=manualDe(x.eq[j]);
+      h += '<div class="eq"><b>'+esc(x.eq[j].n)+'</b><div class="cfg">'+esc(x.eq[j].cfg)+'</div>'+
+           ((mk && !vistos[mk]) ? '<button type="button" class="ir-man no-print" data-man="'+mk+'">Cómo se usa, paso a paso ›</button>' : '')+'</div>';
+      if(mk) vistos[mk]=true;
+    }
     h += '</div>';
   }
 
@@ -6598,6 +7786,8 @@ function vistaFicha(){
     };
   });
   app.querySelectorAll('.chip[data-id]').forEach(function(b){ b.onclick=function(){ ir('ficha', this.dataset.id); }; });
+  app.querySelectorAll('[data-man]').forEach(function(b){ b.onclick=function(){ ir('equipos', this.dataset.man); }; });
+  app.querySelectorAll('[data-guia]').forEach(function(b){ b.onclick=function(){ ir('guia', this.dataset.guia); }; });
   var fv=app.querySelector('[data-fav]');
   if(fv) fv.onclick=function(){ alternarFav(x.id); this.setAttribute('aria-pressed', String(esFav(x.id))); };
   var ev=document.getElementById('evaluar'); if(ev) ev.onclick=diagnosticar;
@@ -6699,8 +7889,11 @@ function vistaCalc(){
     });
     h+='</div></div>';
   }
+  var gc=guiasDe('calcs', c.id);
+  if(gc.length) h+='<div class="bloque no-print"><h3>Guía</h3>'+botonesGuia(gc)+'</div>';
   h+='<div class="cita"><b>Referencia.</b> '+esc(c.cita)+'</div></div>';
   app.innerHTML=h;
+  app.querySelectorAll('[data-guia]').forEach(function(b){ b.onclick=function(){ ir('guia', this.dataset.guia); }; });
 
   var deb=null;
   app.querySelectorAll('[data-c]').forEach(function(el){
@@ -6759,6 +7952,7 @@ function pintarSalidaCalc(){
     return;
   }
   cont.innerHTML = pintarVeredicto(ST.veredicto);
+  ligarCopia(cont);
   cont.querySelectorAll('.xref[data-id]').forEach(function(b){ b.onclick=function(){ ir('ficha', this.dataset.id); }; });
   if(g){
     var yaEsta = ST.editando!==null && ST.registro[ST.editando];
@@ -7040,26 +8234,201 @@ function aplicarRespaldo(n, modo){
   guardar();
 }
 
+/* ---------- manual de instrumentos ---------- */
+/* Devuelve la entrada del manual a la que pertenece una ficha de configuración. */
+function manualDe(e){
+  for(var i=0;i<MAN_ORDEN.length;i++){
+    var m=MAN[MAN_ORDEN[i]];
+    for(var j=0;j<m.eqs.length;j++) if(EQ[m.eqs[j]]===e) return MAN_ORDEN[i];
+  }
+  return null;
+}
+/* Fichas que usan alguno de los instrumentos, en el orden del catálogo. */
+function fichasQueUsan(keys){
+  var r=[], i, j, k, x, usa;
+  for(i=0;i<F.length;i++){
+    x=F[i]; usa=false;
+    if(x.eq) for(j=0;j<x.eq.length && !usa;j++) for(k=0;k<keys.length;k++) if(x.eq[j]===EQ[keys[k]]){ usa=true; break; }
+    if(usa) r.push(x.id);
+  }
+  return r;
+}
+/* Enlaza «ficha X», «fichas X, Y y Z» y «cálculo K» dentro del texto ya escapado. */
+function xrefMan(t){
+  t=t.replace(/\b([Ff]ichas?)\s+((?:[A-Z]{1,2}\d{1,2})(?:(?:,\s*|\s+[ye]\s+)[A-Z]{1,2}\d{1,2})*)/g, function(todo, pal, lista){
+    return pal+' '+lista.replace(/[A-Z]{1,2}\d{1,2}/g, function(id){
+      return buscarFalla(id) ? '<button type="button" class="xref" data-id="'+id+'">'+id+'</button>' : id;
+    });
+  });
+  return t.replace(/\b([Cc]álculos?)\s+(K\d{1,2}(?:(?:,\s*|\s+[ye]\s+)K\d{1,2})*)\b/g, function(todo, pal, lista){
+    return pal+' '+lista.replace(/K\d{1,2}/g, function(id){
+      return buscarCalc(id) ? '<button type="button" class="xref" data-calc="'+id+'">'+id+'</button>' : id;
+    });
+  });
+}
+function listaMan(tit, l){
+  if(!l || !l.length) return '';
+  var h='<h4>'+esc(tit)+'</h4><ul class="sol">';
+  for(var i=0;i<l.length;i++) h+='<li>'+xrefMan(esc(l[i]))+'</li>';
+  return h+'</ul>';
+}
+function htmlManual(){
+  var h='<div class="bloque"><h3>Manual de instrumentos <small>qué mide y cómo se usa</small></h3>';
+  h+='<div class="sint">Tocá un instrumento. Cada uno trae para qué sirve, qué mide y cómo, por qué se mide así, el chequeo previo, el paso a paso, cómo leer el resultado, lo que no hace, su configuración y las fichas que lo usan.</div>';
+  for(var i=0;i<MAN_ORDEN.length;i++){
+    var k=MAN_ORDEN[i], m=MAN[k], g, p, q, e, usa, x;
+    h+='<details class="man" id="man-'+k+'"'+(ST.manAbierto===k?' open':'')+'><summary><span class="mn"><b>'+esc(m.n)+'</b><i>'+esc(m.s)+'</i></span><span class="car" aria-hidden="true">›</span></summary><div class="man-c">';
+    h+='<h4>Para qué sirve</h4><p>'+xrefMan(esc(m.para))+'</p>';
+    h+=listaMan('Qué mide y cómo', m.mide);
+    h+=listaMan('Por qué se mide así', m.porque);
+    h+=listaMan('Antes de usarlo', m.antes);
+    h+='<h4>Paso a paso</h4>';
+    if(m.pasosRef){
+      h+='<p>'+esc(m.pasosNota)+'</p><button type="button" class="ir-man" data-ancla="'+m.pasosRef+'">'+esc(m.pasosBoton)+'</button>';
+    } else {
+      for(g=0;g<m.pasos.length;g++){
+        if(m.pasos[g].t) h+='<h5>'+esc(m.pasos[g].t)+'</h5>';
+        h+='<ol class="pasos">';
+        for(p=0;p<m.pasos[g].l.length;p++) h+='<li>'+xrefMan(esc(m.pasos[g].l[p]))+'</li>';
+        h+='</ol>';
+      }
+    }
+    h+=listaMan('Cómo leer el resultado', m.lee);
+    h+=listaMan('Lo que no hace y errores comunes', m.no);
+    h+='<h4>Configuración</h4>';
+    for(q=0;q<m.eqs.length;q++){ e=EQ[m.eqs[q]]; if(e) h+='<div class="eq"><b>'+esc(e.n)+'</b><div class="cfg">'+esc(e.cfg)+'</div></div>'; }
+    usa=fichasQueUsan(m.eqs);
+    if(usa.length){
+      h+='<h4>Se usa en <small>'+usa.length+' ficha'+(usa.length===1?'':'s')+'</small></h4><div class="chips cods">';
+      for(q=0;q<usa.length;q++){ x=buscarFalla(usa[q]); h+='<button type="button" class="chip" data-id="'+usa[q]+'" title="'+esc(x.t)+'" aria-label="'+esc(usa[q]+' · '+x.t)+'"><span class="cod">'+usa[q]+'</span></button>'; }
+      h+='</div>';
+    }
+    var gm=guiasDe('eqs', k);
+    if(gm.length) h+='<h4>Guías</h4>'+botonesGuia(gm);
+    h+='<div class="cita"><b>Referencia.</b> '+esc(m.cita)+'</div>';
+    h+='</div></details>';
+  }
+  return h+'</div>';
+}
+
+/* ---------- guías paso a paso ---------- */
+/* Guías que listan un id en uno de sus campos: 'fichas', 'calcs' o 'eqs'. */
+function guiasDe(campo, id){
+  var r=[], i, g;
+  for(i=0;i<GUIAS_ORDEN.length;i++){ g=GUIAS[GUIAS_ORDEN[i]]; if(g[campo] && g[campo].indexOf(id)>=0) r.push(GUIAS_ORDEN[i]); }
+  return r;
+}
+function botonesGuia(keys){
+  var h='', i;
+  for(i=0;i<keys.length;i++) h+='<button type="button" class="ir-man no-print" data-guia="'+keys[i]+'">Guía paso a paso: '+esc(GUIAS[keys[i]].n)+' ›</button> ';
+  return h;
+}
+function botonGuiaInicio(k){
+  var g=GUIAS[k];
+  return '<button class="calc-b guia" data-guia="'+k+'"><span class="n"><b>'+esc(g.t)+'</b><i>'+esc(g.s)+'</i></span><span class="fl">›</span></button>';
+}
+function textoGuia(g){ return (g.t+' '+g.s+' '+g.kw).toLowerCase(); }
+/* Copia el texto de un bloque (el pedido del banco, por ejemplo) al portapapeles. */
+function copiarDe(id){
+  var el=document.getElementById(id);
+  if(!el) return;
+  var txt=el.textContent;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(function(){ toast('Texto copiado'); }, function(){ mostrarTexto(txt); });
+  } else mostrarTexto(txt);
+}
+function ligarCopia(raiz){
+  raiz.querySelectorAll('[data-copia]').forEach(function(b){ b.onclick=function(){ copiarDe(this.dataset.copia); }; });
+}
+function htmlSecGuia(k, i, x){
+  var h='<details class="man gsec" id="g-'+k+'-'+i+'"><summary><span class="mn"><b>'+esc(x.t)+'</b><i>'+esc(x.s)+'</i></span>'+
+        '<span class="car" aria-hidden="true">›</span></summary><div class="man-c">', j, q, c, cc;
+  if(x.p) for(j=0;j<x.p.length;j++) h+='<p>'+xrefMan(esc(x.p[j]))+'</p>';
+  if(x.l){ h+='<ul class="sol">'; for(j=0;j<x.l.length;j++) h+='<li>'+xrefMan(esc(x.l[j]))+'</li>'; h+='</ul>'; }
+  if(x.pasos){ h+='<ol class="pasos">'; for(j=0;j<x.pasos.length;j++) h+='<li>'+xrefMan(esc(x.pasos[j]))+'</li>'; h+='</ol>'; }
+  if(x.tabla){
+    h+='<div class="tabla-w"><table class="tabla"><thead><tr>';
+    for(j=0;j<x.tabla.cab.length;j++) h+='<th scope="col">'+esc(x.tabla.cab[j])+'</th>';
+    h+='</tr></thead><tbody>';
+    for(j=0;j<x.tabla.filas.length;j++){
+      h+='<tr>';
+      for(q=0;q<x.tabla.filas[j].length;q++) h+='<td>'+xrefMan(esc(x.tabla.filas[j][q]))+'</td>';
+      h+='</tr>';
+    }
+    h+='</tbody></table></div>';
+  }
+  if(x.compra){
+    for(j=0;j<x.compra.length;j++){
+      c=x.compra[j];
+      h+='<div class="compra"><b>'+esc(c.q)+'</b><div class="mod">'+esc(c.m)+'</div><p>'+xrefMan(esc(c.d))+'</p>';
+      if(c.links && c.links.length){
+        h+='<div class="links">';
+        for(q=0;q<c.links.length;q++) h+='<a class="ml" href="'+esc(c.links[q][1])+'" target="_blank" rel="noopener noreferrer">'+esc(c.links[q][0])+' ↗</a>';
+        h+='</div>';
+      }
+      h+='</div>';
+    }
+  }
+  if(x.pedido) h+='<h4>Texto para pedirlo</h4><div class="pedido" id="ped-'+k+'-'+i+'">'+esc(x.pedido)+'</div>'+
+                  '<button type="button" class="ir-man no-print" data-copia="ped-'+k+'-'+i+'">Copiar el texto</button>';
+  if(x.alerta) h+='<div class="alerta">'+xrefMan(esc(x.alerta))+'</div>';
+  if(x.nota) h+='<div class="nota">'+xrefMan(esc(x.nota))+'</div>';
+  if(x.calc && x.calc.length){
+    h+='<div class="chips gs-calc">';
+    for(j=0;j<x.calc.length;j++){ cc=buscarCalc(x.calc[j]); if(cc) h+='<button type="button" class="chip" data-calc="'+cc.id+'"><span class="cod">'+cc.id+'</span>'+esc(cc.t)+'</button>'; }
+    h+='</div>';
+  }
+  return h+'</div></details>';
+}
+function vistaGuia(){
+  var k=ST.guia, g=GUIAS[k], i;
+  if(!g){ vistaInicio(); return; }
+  ST.vista='guia'; btnVolver.hidden=false;
+  tituloBarra.innerHTML='Guía · '+esc(g.n)+'<span>'+esc(g.s)+'</span>';
+  var h='<div class="ficha"><div class="migas">Guía paso a paso</div><h2>'+esc(g.t)+'</h2>';
+  h+='<div class="sint">'+xrefMan(esc(g.intro))+'</div>';
+  if(g.calcs && g.calcs.length){
+    h+='<div class="bloque"><h3>Cálculos de la guía</h3><div class="chips">';
+    g.calcs.forEach(function(id){ var c=buscarCalc(id); if(c) h+='<button type="button" class="chip" data-calc="'+id+'"><span class="cod">'+id+'</span>'+esc(c.t)+'</button>'; });
+    h+='</div></div>';
+  }
+  h+='<div class="bloque"><h3>Paso a paso <small><button type="button" class="gs-todo no-print" id="gsTodo">Abrir todo</button></small></h3>';
+  for(i=0;i<g.secs.length;i++) h+=htmlSecGuia(k, i, g.secs[i]);
+  h+='</div>';
+  if(g.fichas && g.fichas.length){
+    h+='<div class="bloque"><h3>Fichas de la guía <small>'+g.fichas.length+'</small></h3><div class="chips cods">';
+    g.fichas.forEach(function(id){ var x=buscarFalla(id); if(x) h+='<button type="button" class="chip" data-id="'+id+'" title="'+esc(x.t)+'" aria-label="'+esc(id+' · '+x.t)+'"><span class="cod">'+id+'</span></button>'; });
+    h+='</div></div>';
+  }
+  h+='<div class="cita"><b>Referencia.</b> '+esc(g.cita)+'</div></div>';
+  app.innerHTML=h;
+  app.querySelectorAll('.chip[data-id], .xref[data-id]').forEach(function(b){ b.onclick=function(){ ir('ficha', this.dataset.id); }; });
+  app.querySelectorAll('[data-calc]').forEach(function(b){ b.onclick=function(){ ir('calc', this.dataset.calc); }; });
+  ligarCopia(app);
+  var bt=document.getElementById('gsTodo');
+  if(bt) bt.onclick=function(){
+    var ds=app.querySelectorAll('details.gsec'), abrir=false, n;
+    for(n=0;n<ds.length;n++) if(!ds[n].open){ abrir=true; break; }
+    for(n=0;n<ds.length;n++) ds[n].open=abrir;
+    this.textContent=abrir?'Cerrar todo':'Abrir todo';
+  };
+  pintarNav();
+}
+
 /* ---------- equipamiento ---------- */
 function vistaEquipos(){
   ST.vista='equipos'; btnVolver.hidden=false;
   tituloBarra.innerHTML='Equipamiento<span>Instrumentos, protección personal y sus límites</span>';
   var h='<div class="ficha"><h2>Los instrumentos y lo que no pueden hacer</h2>';
   h+='<div class="sint">Los datos salen de los manuales de fabricante. Lo que resultó falso al verificarlo quedó corregido acá, y lo que el equipamiento no alcanza a hacer está dicho abajo.</div>';
-  h+='<div class="bloque"><h3>Fichas de configuración</h3>';
-  var ks=['f117v','f117loz','f117cont','ut204','ut251','ut219','ut511','ut582','dt5301','telu','ut12d','glm','ir'];
-  for(var i=0;i<ks.length;i++){
-    var e=EQ[ks[i]];
-    h+='<div class="eq"><b>'+esc(e.n)+'</b><div class="cfg">'+esc(e.cfg)+'</div></div>';
-  }
-  h+='</div>';
+  h+=htmlManual();
   h+='<div class="bloque"><h3>Correcciones que aparecieron al verificar los manuales</h3><ul class="sol">'+
      '<li>El UT-582+ no tiene 1000 mA: el máximo es 500 mA, y sí tiene 20 mA. El multiplicador ×5 sólo funciona hasta 30 mA, así que no se puede ensayar ×5 sobre un diferencial de 100, 300 o 500 mA. Los ensayos de 300 y 500 mA sólo se repiten cada 5 minutos.</li>'+
      '<li>El UT-511 también ofrece 100 V además de 250, 500 y 1000 V. No declara descarga automática ni bloqueo por tensión presente: la verificación previa y la descarga son responsabilidad del operador.</li>'+
-     '<li>Las fichas de fuga pedían la lectura en miliamperes apuntando al UT-204+, que es una pinza de 200 A y no resuelve mA. La medición de fuga corresponde al UT-251A, que llega a 1 µA. Quedaron corregidas las diez fichas afectadas.</li>'+
+     '<li>Las fichas de fuga pedían la lectura en miliamperes apuntando al UT-204+, que es una pinza de 600 A y no resuelve mA. La medición de fuga corresponde al UT-251A, que llega a 1 µA. Quedaron corregidas las diez fichas afectadas.</li>'+
      '<li>La cámara termográfica UNI-T UTi260B entró al maletín y reemplaza al termómetro infrarrojo de punto, que quedó sin comprar. De las 21 fichas que piden lectura térmica, 13 piden recorrer o comparar varios puntos —eso con un instrumento de un punto por vez no se hace, y en la C5 las cajas se enfrían antes de terminar el barrido—, 5 piden un valor puntual sobre plástico, pintura o solado, donde los dos dan lo mismo, y 3 lo nombran sin tener paso térmico propio.</li>'+
      '<li>El criterio de compra que traía la app pedía −30 a 400 °C como mínimo. La UTi260B va de −20 a 550 °C: sobra por arriba y queda 10 °C corta por abajo. Sólo importaría midiendo el evaporador de una cámara de frío, y el paso térmico de la ficha L1 es sobre la bornera del equipo y el borne del tablero, no sobre el evaporador. Criterio corregido.</li>'+
-     '<li>El CEM DT-5301 tiene la exactitud referida al fondo de escala (±2 % F.E. ±5 díg.), o sea ±0,45 Ω en el rango de 20 Ω. No sirve para verificar una Zs contra el disparo de una termomagnética, no mide impedancia de línea L-N, y sus rangos de 20 Ω (25 A) y 200 Ω (2,3 A) disparan cualquier diferencial.</li>'+
+     '<li>El CEM DT-5301 tiene la exactitud referida al fondo de escala (±2 % F.E. ±5 díg.), o sea ±0,45 Ω en el rango de 20 Ω. No sirve para verificar una Zs contra el disparo de una termomagnética. Con la ficha en un tomacorriente mide el lazo fase–tierra; el fase–neutro y su corriente presunta se miden en el tablero, con el cable de tres puntas. En fase–tierra, sus rangos de 20 Ω (25 A) y 200 Ω (2,3 A) disparan cualquier diferencial, y el de 2000 Ω ensaya con 15 mA, la mitad de un diferencial de 30 mA: con fuga previa también dispara.</li>'+
      '</ul></div>';
   h+='<div class="bloque"><h3>Lo que este equipamiento no alcanza a verificar</h3><ul class="sol">'+
      '<li>Continuidad de PE para certificación: 770.19.5.1 recomienda ensayar con 0,2 A mínimo. El Fluke 117 usa menos de 350 µA y la función Lo del UT-511 no declara corriente. Cumplen la condición de tensión de menos de 12 V de 771.23.3.3, pero no la de corriente: sirven para diagnosticar y comparar, no para certificar según esa recomendación.</li>'+
@@ -7085,7 +8454,7 @@ function vistaEquipos(){
      '<li>Descargar la instalación, y poner a tierra y en cortocircuito donde la tensión pueda volver por una maniobra o una falla.</li>'+
      '<li>Señalizar y delimitar la zona de trabajo.</li>'+
      '</ol><div class="nota">Bloquear no autoriza por sí solo a trabajar: recién con los cinco pasos la instalación está consignada. Al terminar, el mismo que consignó retira las puestas a tierra, comprueba que no quede nadie en la zona y recién ahí repone.</div></div>';
-  h+='<div class="bloque"><h3>Inspección termográfica <small>UTi260B · paso a paso</small></h3>';
+  h+='<div class="bloque" id="termo"><h3>Inspección termográfica <small>UTi260B · paso a paso</small></h3>';
   h+='<div class="sint">El instrumento no decide nada por sí solo: en termografía el resultado depende casi por completo de la carga que había, de la distancia, del ángulo y de la emisividad cargada. Estos pasos son los que hacen que el número sirva.</div>';
   h+='<div class="alerta"><b>Se hace con el tablero abierto y con tensión.</b> Es exactamente la maniobra para la que corresponde el protector facial: el <b>Fravida 2090</b> del maletín, capuchón con visor clasificado IRAM 3904 clase 2 (400 V — 7 kA) y casco Mapuche. Una protección facial sirve si está clasificada por cualquiera de las dos rutas de ensayo —ATPV en cal/cm² por ASTM F2178 o IEC 61482-1-1, o clase en kA por IEC 61482-1-2 o GS-ET-29—; el tinte del visor no es el criterio, el marcado sí. De categoría 2 para arriba una pantalla sola deja cuello y garganta expuestos y pide balaclava al lado: el capuchón ya los cubre. Las gafas antivaho protegen del impacto y no tienen clasificación de arco: no lo reemplazan. Además, guantes clase 00 con cobertor, calzado dieléctrico, herramienta aislada y nadie más dentro de la zona de trabajo.</div>';
   h+='<ol class="pasos">'+
@@ -7128,7 +8497,13 @@ function vistaEquipos(){
      '</ul></div>';
   h+='<div class="cita"><b>Referencia.</b> AEA 90364-7-771, Anexo 771-J.1: transcripción de los puntos 1 y 2 del Capítulo 14 del Anexo VI del Decreto Reglamentario 351/79 de la Ley 19587. Tensión de seguridad, 1.1.2 · bloqueo, 1.1.3 · consignación, 1.1.4 · distancias de seguridad, 1.1.5 · material de seguridad, 2.1.2 · ejecución de trabajos sin tensión, 2.1.3. La clase 00 de los guantes y el marcado de 1000 V de las herramientas salen de las normas de producto, no de la AEA.</div>';
   h+='</div>';
-  app.innerHTML=h; pintarNav();
+  app.innerHTML=h;
+  app.querySelectorAll('.chip[data-id], .xref[data-id]').forEach(function(b){ b.onclick=function(){ ir('ficha', this.dataset.id); }; });
+  app.querySelectorAll('.xref[data-calc]').forEach(function(b){ b.onclick=function(){ ir('calc', this.dataset.calc); }; });
+  app.querySelectorAll('[data-guia]').forEach(function(b){ b.onclick=function(){ ir('guia', this.dataset.guia); }; });
+  app.querySelectorAll('[data-ancla]').forEach(function(b){ b.onclick=function(){ var d=document.getElementById(this.dataset.ancla); if(d) d.scrollIntoView(); }; });
+  if(ST.manAbierto){ var dm=document.getElementById('man-'+ST.manAbierto); if(dm) dm.scrollIntoView(); }
+  pintarNav();
 }
 
 /* ---------- criterios ---------- */
@@ -7153,7 +8528,9 @@ var CRITERIOS=[
  ['Grados de electrificación, local u oficina','Mínimo hasta 30 m² y 4,5 kVA · Medio hasta 75 m² y 7,8 kVA · Elevado hasta 150 m² y 12,2 kVA · Superior por encima. Manda el criterio más exigente entre superficie y DPMS. Si el inmueble fue proyectado como vivienda, rigen los valores de vivienda.','Tabla 771.8.IV y 771.8.3.1'],
  ['Circuitos mínimos','Vivienda y local comercial: 2 / 3 / 5 / 6 circuitos según el grado. Locales de otras características: 3 / 4 / 6 / 8, y en todos los grados al menos dos circuitos de iluminación en diferenciales distintos.','Tablas 770.7.II, 771.8.II, 771.8.V y 771.8.X'],
  ['Continuidad de PE','Ensayo con fuente de menos de 12 V; se recomienda corriente mínima de 0,2 A. El criterio de 1 Ω es práctico, no reglamentario.','771.23.3.3 y 770.19.5.1'],
- ['Corriente de fuga','El límite de 50 % de IΔn es práctico, no reglamentario. Por encima de ese valor cualquier transitorio completa el disparo.','Criterio de campo'],
+ ['Corriente de fuga','El límite de 50 % de IΔn es práctico, no reglamentario: por encima de ese valor cualquier transitorio completa el disparo. Como referencia de norma, BS 7671 pide que la fuga acumulada aguas abajo de un diferencial no pase del 30 % de su IΔn. La AEA no fija un valor.','Criterio de campo · BS 7671:2018, 531.3.2, basada en IEC 60364-5-53'],
+ ['Factor de potencia','Edenor y Edesur cobran recargo por debajo de 0,95 a los residenciales trifásicos, generales y alumbrado público con más de 300 kWh por bimestre, contando sólo la reactiva inductiva de 50 Hz; los residenciales monofásicos están exentos. El tramo de 0,85 a 0,95 se cobra hoy al 10 %; lo que esté por debajo de 0,85, completo. La AEA no fija el factor de potencia: para la caída de tensión usa cos φ = 0,85 a falta de dato.','Res. ENRE 628/2024 y 76/2025 · AEA 90364-7-771, 771.19.7'],
+ ['Tipo de banco de capacitores','THD de tensión hasta 3 % y no lineales hasta 10 %: estándar · de 3 a 5 % o de 10 a 20 %: reforzado · más de 5 %, no lineales de más de 20 % (o de más de 15 % con más de 3 % de THD) o resonancia a menos de ±10 % de la 5ª, 7ª, 11ª o 13ª: reactores del 7 % · más de 8 % o de 50 %: filtro. En consorcios con acometida común, reactores obligatorios desde 7 %. Capacitores de 440 V, y de 480 V con reactor.','Schneider, WEG y EPCOS, criterio de fabricantes · Res. ENRE 628/2024, art. 4'],
  ['Termografía','Contra un componente igual y de carga parecida: ΔT de 1 a 3 °C investigar · de 4 a 15 °C reparar programado · más de 15 °C reparar de inmediato. Contra la temperatura ambiente: de 1 a 10 °C investigar · de 11 a 20 °C reparar programado · de 21 a 40 °C vigilar hasta poder corregir · más de 40 °C reparar de inmediato. La medición sólo vale con el circuito al 40 % de su corriente nominal o más; con menos carga, ΔT a plena carga ≈ ΔT medido × (In / I medida)². Límite del conductor: 70 °C en PVC y 90 °C en XLPE sobre la vaina.','Criterio práctico de mantenimiento. La AEA no fija umbrales termográficos ni incluye la termografía entre las verificaciones de 771.23.3.3 y 770.19.3. Los 70 y 90 °C del conductor sí son reglamentarios, Tabla 771.16.I'],
  ['Protección por circuito','Cada circuito derivado lleva su propio interruptor automático con apertura por sobrecarga y cortocircuito.','771.20.5.2 b)'],
  ['Antes de restablecer','La actuación sin causa conocida de las protecciones obliga a una revisión detallada de la instalación antes de reponer el servicio.','771.23.6 y 770.19.6'],
@@ -7246,7 +8623,7 @@ function vistaAjustes(){
      '<input type="file" id="impof" accept="application/json,.json" hidden>'+
      '<div id="impoPanel"></div></div>';
   h+='<div class="aj"><b>Instalarla en la pantalla de inicio</b><p>Desde el menú del navegador, «Agregar a pantalla de inicio». Queda con ícono propio, abre sin barra de direcciones y sigue funcionando sin señal.</p></div>';
-  h+='<div class="pie"><b>Diagnóstico en obra — AEA 90364.</b> '+F.length+' fichas de falla, '+CALC.length+' cálculos y '+CRITERIOS.length+' criterios de aceptación. Un solo archivo, sin servidor y sin conexión.</div>';
+  h+='<div class="pie"><b>Diagnóstico en obra — AEA 90364.</b> '+F.length+' fichas de falla, '+CALC.length+' cálculos, '+GUIAS_ORDEN.length+' guías paso a paso y '+CRITERIOS.length+' criterios de aceptación. Un solo archivo, sin servidor y sin conexión.</div>';
   h+='</div>';
   app.innerHTML=h;
   app.querySelectorAll('[data-tema]').forEach(function(b){
@@ -7324,7 +8701,7 @@ var NAVS=[
   {k:'criterios', t:'Criterios', i:'criterios'}
 ];
 function pintarNav(){
-  var actual = (ST.vista==='ficha') ? 'inicio' : (ST.vista==='calc' ? 'calculo' : ST.vista);
+  var actual = (ST.vista==='ficha' || ST.vista==='guia') ? 'inicio' : (ST.vista==='calc' ? 'calculo' : ST.vista);
   var h='';
   NAVS.forEach(function(n){
     h+='<button data-nav="'+n.k+'"'+(actual===n.k?' aria-current="page"':'')+'>'+ICONOS[n.i]+
@@ -7346,6 +8723,7 @@ function render(){
   else if(ST.vista==='equipos') vistaEquipos();
   else if(ST.vista==='criterios') vistaCriterios();
   else if(ST.vista==='ajustes') vistaAjustes();
+  else if(ST.vista==='guia') vistaGuia();
   else vistaInicio();
 }
 function preparar(vista, arg){
@@ -7367,8 +8745,12 @@ function preparar(vista, arg){
     try{ r=c.ev(vals); }catch(e){ r=null; }
     ST.veredicto=r; ST.vals=vals; ST.firmaCalc=firmaValores();
     for(var j=0;j<ST.registro.length;j++) if(ST.registro[j].id===c.id && ST.registro[j].k==='C') ST.editando=j;
+  } else if(vista==='guia'){
+    if(!GUIAS[arg]){ ST.vista='inicio'; return; }
+    ST.guia=arg; ST.vista='guia';
   } else {
     ST.vista=vista;
+    ST.manAbierto = (vista==='equipos' && arg) ? arg : null;
     if(vista==='inicio'){ ST.triage=null; ST.filtro=''; }
   }
 }
