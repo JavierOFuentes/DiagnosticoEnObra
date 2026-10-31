@@ -6200,6 +6200,9 @@ var CANOS770 = {
     {n:'Ø50', s:1418, c:{6:15, 10:10, 16:7, 25:4, 35:3, 50:2, 70:2}}]
 };
 var TABLA770_CANO = {acero:'Tabla 770.12.XIII', rig:'Tabla 770.12.XIV', curv:'Tabla 770.12.XV'};
+/* Medida mínima de obra para caños rígidos IRAM 62386-21 (RSP): Ø22 (7/8”), por decisión del proyectista.
+   K3 informa el caño que pide la norma y, si es menor, adopta éste. */
+var MIN_CANO_OBRA = 'Ø22';
 /* Tabla 771.12.IX, encabezado: diámetro exterior máximo y sección total del conductor */
 var COND_D = {1.5:3.50, 2.5:4.20, 4:4.80, 6:6.30, 10:7.60, 16:8.80, 25:11.00, 35:12.50, 50:14.50, 70:17.00};
 var COND_A = {1.5:9.62, 2.5:13.85, 4:18.10, 6:31.17, 10:45.36, 16:60.82, 25:95.03, 35:122.72, 50:165.13, 70:226.98};
@@ -6773,6 +6776,23 @@ ev:function(v){
       li.push('Los '+f(area,1)+' mm² de conductores superan el 35 % del caño más grande de la tabla ('+CANOS[CANOS.length-1].n+'). Hay que repartir en más de una canalización.');
     }
   }
+  /* medida mínima de obra (RSP 22): decisión del proyectista, no exigencia de la norma */
+  var porNorma = null;
+  if(elegido && es770 && sist==='rig'){
+    var iN = CANOS.indexOf(elegido), iM = -1;
+    for(var kk=0; kk<CANOS.length; kk++){ if(CANOS[kk].n===MIN_CANO_OBRA){ iM=kk; break; } }
+    if(iM>=0 && iN<iM){
+      porNorma = elegido; elegido = CANOS[iM];
+      ocup = area/elegido.s*100;
+      t = 'Se adopta '+elegido.n+' · por norma alcanza '+porNorma.n+(mezcla?' (estimado)':'');
+      for(var q=0; q<li.length; q++){ if(li[q].indexOf('Ocupación resultante:')===0) li[q] = li[q].replace('Ocupación resultante:', 'Ocupación en el '+porNorma.n+' de la norma:'); }
+      li.unshift('Caño mínimo según la norma: '+porNorma.n+'.');
+      li.push('Se adopta '+elegido.n+' (RSP 22, 7/8”) como medida mínima, por decisión del proyectista: la norma admite el '+porNorma.n+'.');
+      li.push('Ocupación en el '+elegido.n+' adoptado: '+f(ocup,1)+' % de su sección interna ('+f(elegido.s,0)+' mm²).');
+    } else if(iM>=0 && iN===iM){
+      li.push('Coincide con la medida mínima que adopta el proyectista ('+MIN_CANO_OBRA+', RSP 22).');
+    }
+  }
   li.push(v.tipo==='secc'
     ? 'Para circuitos principales o seccionales el diámetro interno mínimo es 15 mm (RL 19, RS 19'+(es770?', RSP 20 o RP 20':'')+') y 200 mm² para otras formas.'
     : 'Para circuitos terminales el diámetro interno mínimo es 13 mm (RL 16, RS 16'+(es770?', RSP 16 o RP 16':'')+') y 150 mm² para otras formas.');
@@ -6791,20 +6811,22 @@ ev:function(v){
                txt:c.c[s1]+'+PE'});
     });
     graf = gBarras({barras:bs, alto:15, iz:56, lim:{v:nreq, lbl:'hacen falta '+nreq},
-      ley:[{c:GC.ok,t:'el que corresponde'},{c:GC.gris,t:'también entra'},{c:'#D7DEE4',t:'no alcanza'}]});
+      ley:[{c:GC.ok,t:porNorma?'el adoptado (decisión del proyectista)':'el que corresponde'},{c:GC.gris,t:'también entra'},{c:'#D7DEE4',t:'no alcanza'}]});
   } else {
     CANOS.forEach(function(c){
       bs.push({lbl:c.n, val:c.s*0.35, color: c===elegido ? GC.ok : (area<=c.s*0.35 ? GC.gris : '#D7DEE4'),
                txt:f(c.s*0.35,0)+' mm²'});
     });
     graf = gBarras({barras:bs, alto:15, iz:56, lim:{v:area, lbl:'hacen falta '+f(area,0)+' mm²'},
-      ley:[{c:GC.ok,t:'el que corresponde'},{c:GC.gris,t:'también entra'},{c:'#D7DEE4',t:'no alcanza'}]});
+      ley:[{c:GC.ok,t:porNorma?'el adoptado (decisión del proyectista)':'el que corresponde'},{c:GC.gris,t:'también entra'},{c:'#D7DEE4',t:'no alcanza'}]});
   }
-  return {e:e, t:t, d:'', kpis:[
+  var kp = [
     {k:'Área de conductores', v:f(area,1), u:'mm²'},
     ocup!==null?{k:'Ocupación', v:f(ocup,1), u:'%', e:ocup>40?'mal':'ok'}:{k:'Ocupación', v:'—', u:''},
-    {k:'Caño', v:elegido?elegido.n.replace(' ',''):'—', u:''}
-  ], svg:graf, li:li};
+    {k:porNorma?'Caño adoptado':'Caño', v:elegido?elegido.n.replace(' ',''):'—', u:''}
+  ];
+  if(porNorma) kp.push({k:'Por norma', v:porNorma.n.replace(' ',''), u:''});
+  return {e:e, t:t, d:'', kpis:kp, svg:graf, li:li};
 },
 cita:'AEA 90364-7-770 Ed. 2026, 770.12.3.13.4 y Tablas 770.12.XIII (acero), 770.12.XIV (rígido IRAM 62386-21) y 770.12.XV (curvable IRAM 62386-22, con el diámetro inmediato mayor si no es liso por dentro, 770.12.3.3.5 e); 770.12.3.13.2 (agrupamiento). AEA 90364-7-771, 771.12.IX — máxima cantidad de conductores por canalización, con el diámetro exterior y la sección total de cada conductor; y el criterio general de la misma cláusula: para los casos no previstos en las tablas, el área ocupada incluida la aislación no debe superar el 35 % de la sección interna del caño.'
 },
