@@ -493,6 +493,60 @@ html[data-tema="oscuro"] .ver .pedido{background:rgba(0,0,0,.25)}
 .resp{background:var(--sup2);border:1px solid var(--line);border-radius:var(--s1);
   padding:var(--s3) var(--s4);margin-top:var(--s2);font-size:calc(14px * var(--fs))}
 .resp b{display:block;margin-bottom:4px}
+/* ---------- obra: tableros, circuitos y protocolo ---------- */
+.obra-cur{margin-top:var(--s4)}
+.circ-sel{margin-bottom:var(--s3);padding-bottom:var(--s3);border-bottom:1px dashed rgba(0,0,0,.3)}
+.circ-sel label{display:block;font-size:calc(14.5px * var(--fs));font-weight:600;margin-bottom:5px}
+.circ-sel .ayuda{display:block;font-weight:400;font-size:calc(13px * var(--fs));color:#5C4A00;margin-top:2px}
+.prec{font-size:calc(13px * var(--fs));color:#5C4A00;margin:6px 0 0;line-height:1.4}
+.inst-card{background:var(--sup);border:1px solid var(--line);border-left:4px solid var(--cel);
+  border-radius:var(--s1);padding:var(--s3) var(--s4);margin-top:var(--s2)}
+.inst-card.tab{border-left-color:var(--amar-b)}
+.inst-card .h{font-weight:700;display:flex;gap:var(--s2);align-items:baseline;flex-wrap:wrap}
+.inst-card .h small{font-weight:400;color:var(--ink2);font-size:calc(13px * var(--fs))}
+.inst-card .m{font-family:var(--mono);font-size:calc(13px * var(--fs));color:var(--ink2);margin-top:3px;word-break:break-word}
+.inst-card .acc{display:flex;gap:var(--s2);margin-top:var(--s2);flex-wrap:wrap}
+.inst-card .acc button{background:none;border:1px solid var(--line);border-radius:var(--s1);
+  padding:6px 12px;min-height:38px;font-size:calc(14px * var(--fs));font-weight:600;cursor:pointer;color:var(--ink)}
+.inst-card .acc button.peligro{border-color:var(--mal);color:var(--mal)}
+.inst-card .medir{margin-top:var(--s3)}
+.inst-card details{margin-top:var(--s2)}
+.inst-card details summary{cursor:pointer;font-weight:600;font-size:calc(14px * var(--fs));padding:6px 0}
+.est{display:inline-block;font-family:var(--mono);font-weight:700;font-size:calc(12.5px * var(--fs));
+  padding:2px 8px;border-radius:var(--s1);border:1px solid var(--line);color:var(--ink2);background:var(--sup2);white-space:nowrap}
+.est.ok{color:var(--ok);background:var(--ok-bg);border-color:var(--ok)}
+.est.ojo{color:var(--ojo);background:var(--ojo-bg);border-color:var(--ojo)}
+.est.mal{color:var(--mal);background:var(--mal-bg);border-color:var(--mal)}
+.prot-res td,.prot-res th{text-align:center;white-space:nowrap}
+.prot-res td:first-child,.prot-res th:first-child{text-align:left;white-space:normal}
+.prot-c > summary .mn b{display:flex;gap:var(--s2);align-items:center;flex-wrap:wrap}
+.prot-blq{margin-top:var(--s3)}
+.prot-blq h4{font-size:calc(15px * var(--fs));margin:0 0 var(--s2)}
+.prot-ver{margin-top:var(--s2);font-size:calc(14px * var(--fs));line-height:1.45;padding:8px 10px;
+  border-radius:var(--s1);border:1px solid var(--line);background:var(--sup2)}
+.prot-ver.ok{border-color:var(--ok);background:var(--ok-bg)} .prot-ver.mal{border-color:var(--mal);background:var(--mal-bg)}
+.prot-ver.ojo{border-color:var(--ojo);background:var(--ojo-bg)}
+.prot-ver b{display:block}
+.prot-ver ul{margin:4px 0 0;padding-left:18px}
+.corr{background:var(--sup);border:1px solid var(--line);border-left:4px solid var(--mal);
+  border-radius:var(--s1);padding:var(--s3) var(--s4);margin-top:var(--s2)}
+.corr.ojo{border-left-color:var(--ojo)}
+.corr .h{font-weight:700}
+.corr .d{font-size:calc(13.5px * var(--fs));color:var(--ink2);margin-top:2px}
+.corr .sol li{padding-top:6px;padding-bottom:6px}
+.prot-print table{width:100%;border-collapse:collapse;font-size:10.5px;line-height:1.3;margin-top:6px}
+.prot-print th,.prot-print td{border:1px solid #888;padding:3px 4px;text-align:center;vertical-align:middle}
+.prot-print th{background:#eee;font-weight:700}
+.prot-print td.iz,.prot-print th.iz{text-align:left}
+.prot-print h3{font-size:13px;margin:12px 0 2px}
+.prot-print .firma{display:flex;gap:40px;margin-top:36px;font-size:11px}
+.prot-print .firma div{flex:1;border-top:1px solid #000;padding-top:4px;text-align:center}
+.prot-print .notas{font-size:10px;margin-top:8px;line-height:1.35}
+@media print{
+  .prot-c,.inst-card,.prot-res-w,.corr .acc{break-inside:avoid}
+  .prot-print table{break-inside:auto}
+  .prot-print tr{break-inside:avoid}
+}
 </style>
 </head>
 <body>
@@ -6431,14 +6485,15 @@ var ST = {
   vista:'inicio', falla:null, calc:null, valores:{}, veredicto:null, vals:null,
   registro:[], archivo:[], t0:null, filtro:'', triage:null,
   favoritos:[], recientes:[], guardados:{}, plegadas:{},
-  obra:{cliente:'', dir:'', tipo:'', inst:'', mat:'', obs:'', reglam:'', fecha:hoyISO()},
+  obra:obraVacia(),
   ajustes:{tema:'auto', fs:1, wake:false},
-  editando:null, firmaCalc:null, filtroCrit:'', manAbierto:null, guia:null
+  editando:null, firmaCalc:null, filtroCrit:'', manAbierto:null, guia:null,
+  edit:null, borrador:null, precargados:[]
 };
 (function(){
   var d=leerAlm();
   if(d){
-    if(d.obra) ST.obra=Object.assign(ST.obra, d.obra);
+    if(d.obra) ST.obra=normalizarObra(Object.assign(ST.obra, d.obra));
     if(d.registro) ST.registro=d.registro;
     if(d.archivo) ST.archivo=d.archivo;
     if(d.t0) ST.t0=d.t0;
@@ -7943,6 +7998,9 @@ function pintarResultados(){
         });
         h += '</div>';
       }
+      h += '<div class="rot">Obra en curso</div><div class="calc-lista obra-cur">'+
+           '<button class="calc-b" data-ir="instalacion"><span class="n"><b>'+esc(ST.obra.cliente||'Tableros y circuitos')+'</b><i>'+esc(resumenInst())+'</i></span><span class="fl">›</span></button>'+
+           '<button class="calc-b" data-ir="protocolo"><span class="n"><b>Protocolo de ensayos</b><i>'+esc(resumenProt())+'</i></span><span class="fl">›</span></button></div>';
       h += '<div class="rot">Guías paso a paso</div><div class="calc-lista guias">';
       for(var gi=0;gi<GUIAS_ORDEN.length;gi++) h += botonGuiaInicio(GUIAS_ORDEN[gi]);
       h += '</div>';
@@ -8006,6 +8064,7 @@ function pintarResultados(){
   });
   cont.querySelectorAll('[data-id]').forEach(function(b){ b.onclick=function(){ ir('ficha', this.dataset.id); }; });
   cont.querySelectorAll('[data-guia]').forEach(function(b){ b.onclick=function(){ ir('guia', this.dataset.guia); }; });
+  cont.querySelectorAll('[data-ir]').forEach(function(b){ b.onclick=function(){ ir(this.dataset.ir); }; });
 }
 function itemHTML(x, q){
   return '<li><button class="item" data-id="'+x.id+'"><span class="cod">'+x.id+'</span>'+
@@ -8055,6 +8114,7 @@ function vistaFicha(){
   if(x.med){
     h += '<div class="bloque"><h3>Valores medidos <small>completá lo que tengas</small></h3><div class="medir">';
     h += '<h4>Cargá las lecturas del instrumento</h4>';
+    h += htmlSelCirc();
     h += pintarCampos(x.med.campos, ST.valores, 'c_');
     h += '<button class="btn-eval" id="evaluar">Diagnosticar</button>';
     h += '<button class="limpiar" id="limpiar">Borrar lo cargado</button>';
@@ -8101,9 +8161,12 @@ function vistaFicha(){
   var lp=document.getElementById('limpiar');
   if(lp) lp.onclick=function(){
     ST.valores={}; ST.veredicto=null; ST.vals=null;
-    delete ST.guardados[x.id]; guardar(); vistaFicha();
+    delete ST.guardados[claveValores('F', x)];
+    if(ST.obra.cAct) ST.valores=cargarValores('F', x);
+    guardar(); vistaFicha();
   };
   var gb=document.getElementById('guardar'); if(gb) gb.onclick=guardarRegistro;
+  ligarSelCirc('F', x);
   pintarSalida();
   pintarNav();
 }
@@ -8131,8 +8194,8 @@ function guardarValores(){
      (ST.vista==='calc' && ST.calc && tieneReglam(ST.calc.campos))){
     ST.obra.reglam = ST.valores.reglam || '';
   }
-  if(ST.vista==='ficha' && ST.falla){ ST.guardados[ST.falla.id]=JSON.parse(JSON.stringify(ST.valores)); guardar(); }
-  else if(ST.vista==='calc' && ST.calc){ ST.guardados['calc:'+ST.calc.id]=JSON.parse(JSON.stringify(ST.valores)); guardar(); }
+  if(ST.vista==='ficha' && ST.falla){ ST.guardados[claveValores('F', ST.falla)]=JSON.parse(JSON.stringify(ST.valores)); guardar(); }
+  else if(ST.vista==='calc' && ST.calc){ ST.guardados[claveValores('C', ST.calc)]=JSON.parse(JSON.stringify(ST.valores)); guardar(); }
 }
 function diagnosticar(){
   var x=ST.falla, vals=evaluarCampos(x.med.campos, ST.valores), r=null;
@@ -8154,7 +8217,9 @@ function guardarRegistro(){
     k: esFicha?'F':'C', id:x.id, t:x.t, fam: esFicha?nombreFam(x.fam):'Cálculo de obra',
     e:v.e, ver:v.t, lect:lecturas(campos, ST.vals), ts:Date.now(), hora:horaDe(Date.now())
   };
-  if(ST.editando!==null && ST.registro[ST.editando] && ST.registro[ST.editando].id===x.id){
+  var ca=circActivo();
+  if(ca) item.circ={id:ca.id, n:ca.n, tab:ca.tab};
+  if(ST.editando!==null && ST.registro[ST.editando] && ST.registro[ST.editando].id===x.id && circDeRegistro(ST.registro[ST.editando])===(ST.obra.cAct||'')){
     item.ts=ST.registro[ST.editando].ts; item.hora=ST.registro[ST.editando].hora;
     ST.registro[ST.editando]=item;
     toast('Actualizado en el informe');
@@ -8192,7 +8257,7 @@ function vistaCalc(){
   var h='<div class="ficha"><div class="migas">'+esc(c.id)+' · Cálculo de obra</div><h2>'+esc(c.t)+'</h2>'+
         '<div class="sint">'+esc(c.s)+'</div>';
   h+='<div class="bloque"><h3>Datos <small>se recalcula solo</small></h3><div class="medir">';
-  h+=pintarCampos(c.campos, ST.valores, 'k_');
+  h+=htmlSelCirc()+pintarCampos(c.campos, ST.valores, 'k_');
   h+='<button class="limpiar" id="limpiar">Borrar lo cargado</button></div>';
   h+='<div id="salida"><div id="salidaVer"></div>'+
      '<button class="btn-reg" id="guardar" hidden>Guardar en el informe</button></div></div>';
@@ -8235,9 +8300,12 @@ function vistaCalc(){
   var lp=document.getElementById('limpiar');
   if(lp) lp.onclick=function(){
     ST.valores={}; ST.veredicto=null; ST.vals=null;
-    ST.firmaCalc=null; delete ST.guardados['calc:'+c.id]; guardar(); vistaCalc();
+    ST.firmaCalc=null; delete ST.guardados[claveValores('C', c)];
+    if(ST.obra.cAct) ST.valores=cargarValores('C', c);
+    guardar(); vistaCalc();
   };
   var gb=document.getElementById('guardar'); if(gb) gb.onclick=guardarRegistro;
+  ligarSelCirc('C', c);
   ligarAparatos(ST.valores, recalcularCalc);
   ST.firmaCalc=firmaValores();
   pintarSalidaCalc();
@@ -8306,9 +8374,14 @@ function vistaInforme(){
       {id:'mat', lbl:'Matrícula'},
       {id:'obs', lbl:'Observaciones'}
      ], ST.obra, 'o_')+'</div></div>';
+  h+='<div class="bloque no-print"><h3>Tableros, circuitos y protocolo</h3><div class="calc-lista">'+
+     '<button class="calc-b" data-ir="instalacion"><span class="n"><b>Tableros y circuitos</b><i>'+esc(resumenInst())+'</i></span><span class="fl">›</span></button>'+
+     '<button class="calc-b" data-ir="protocolo"><span class="n"><b>Protocolo de ensayos</b><i>'+esc(resumenProt())+'</i></span><span class="fl">›</span></button></div></div>';
+  var qc=queCorregir();
 
   if(!n){
     h += '<p class="vacio">Todavía no guardaste ninguna verificación. Cargá los valores en una ficha o en un cálculo, diagnosticá y tocá «Guardar en el informe».</p>';
+    h+=htmlQueCorregir(qc);
   } else {
     var r=resumen();
     h+='<div class="bloque"><h3>Resumen</h3>';
@@ -8326,12 +8399,13 @@ function vistaInforme(){
     h+='<div class="bloque"><h3>Registros</h3>';
     for(var i=0;i<n;i++){
       var x=ST.registro[i];
-      h += '<div class="reg-item '+x.e+'"><div class="h">'+esc(x.id)+' · '+esc(x.t)+'<time>'+esc(x.hora)+'</time></div>';
+      h += '<div class="reg-item '+x.e+'"><div class="h">'+esc(x.id)+' · '+esc(x.t)+(x.circ?' · '+esc(etiquetaCirc(x.circ)):'')+'<time>'+esc(x.hora)+'</time></div>';
       h += '<div class="v '+x.e+'">'+esc(x.ver)+'</div>';
       if(x.lect && x.lect.length) h += '<div class="m">'+esc(x.lect.join(' · '))+'</div>';
       h += '<div class="acc"><button data-abrir="'+i+'">Abrir</button><button data-borrar="'+i+'">Quitar</button></div></div>';
     }
     h+='</div>';
+    h+=htmlQueCorregir(qc);
     h+='<div class="acciones"><button class="pri" id="copiar">Copiar informe</button>'+
        '<button id="compartir">Compartir</button>'+
        '<button id="imprimir">Imprimir o PDF</button>'+
@@ -8367,6 +8441,7 @@ function vistaInforme(){
     b.onclick=function(){
       var it=ST.registro[parseInt(this.dataset.abrir,10)];
       if(!it) return;
+      ST.obra.cAct=(it.circ && buscarCirc(it.circ.id)) ? it.circ.id : '';
       if(it.k==='F') ir('ficha', it.id); else ir('calc', it.id);
     };
   });
@@ -8385,6 +8460,7 @@ function vistaInforme(){
       ST.archivo.splice(parseInt(this.dataset.archdel,10),1); guardar(); vistaInforme();
     };
   });
+  app.querySelectorAll('[data-ir]').forEach(function(b){ b.onclick=function(){ ir(this.dataset.ir); }; });
   var cp=document.getElementById('copiar'); if(cp) cp.onclick=function(){ copiarTexto(textoInforme()); };
   var sh=document.getElementById('compartir'); if(sh) sh.onclick=compartirInforme;
   var im=document.getElementById('imprimir'); if(im) im.onclick=function(){ window.print(); };
@@ -8394,7 +8470,7 @@ function vistaInforme(){
   if(bo) bo.onclick=function(){
     if(!confirm('¿Borrar todos los registros de esta intervención? Los datos de la obra también se limpian.')) return;
     ST.registro=[]; ST.t0=null; ST.editando=null;
-    ST.obra={cliente:'', dir:'', tipo:'', inst:'', mat:'', obs:'', reglam:'', fecha:hoyISO()};
+    ST.obra=obraVacia();
     guardar(); vistaInforme(); pintarNav();
   };
   pintarNav();
@@ -8422,12 +8498,12 @@ function cerrarIntervencion(){
   ST.archivo.push({obra:JSON.parse(JSON.stringify(ST.obra)), registro:ST.registro.slice(), cerrada:Date.now()});
   if(ST.archivo.length>20) ST.archivo.shift();
   ST.registro=[]; ST.t0=null; ST.editando=null;
-  ST.obra={cliente:'', dir:'', tipo:'', inst:'', mat:'', obs:'', reglam:'', fecha:hoyISO()};
+  ST.obra=obraVacia();
   guardar(); vistaInforme(); pintarNav();
   toast('Archivada. Podés arrancar la próxima');
 }
 function textoInforme(fuente){
-  var obra = fuente?fuente.obra:ST.obra, reg = fuente?fuente.registro:ST.registro;
+  var obra = fuente?normalizarObra(JSON.parse(JSON.stringify(fuente.obra||{}))):ST.obra, reg = fuente?fuente.registro:ST.registro;
   var t='INFORME DE INTERVENCIÓN — Diagnóstico en obra AEA 90364\n';
   t+='='.repeat(58)+'\n';
   if(obra.cliente) t+='Cliente: '+obra.cliente+'\n';
@@ -8441,12 +8517,14 @@ function textoInforme(fuente){
   for(var i=0;i<reg.length;i++){
     var x=reg[i];
     if(r[x.e]!==undefined) r[x.e]++; else r.info++;
-    t+=(i+1)+'. ['+x.hora+'] '+x.id+' — '+x.t+'\n';
+    t+=(i+1)+'. ['+x.hora+'] '+x.id+' — '+x.t+(x.circ?' — '+etiquetaCirc(x.circ):'')+'\n';
     t+='   Resultado: '+(x.e==='mal'?'NO CUMPLE / CORREGIR':(x.e==='ojo'?'REVISAR':(x.e==='ok'?'CUMPLE':'DATO')))+' — '+x.ver+'\n';
     if(x.lect && x.lect.length) t+='   '+x.lect.join('\n   ')+'\n';
     t+='\n';
   }
   t+='RESUMEN: '+r.ok+' cumplen · '+r.ojo+' a revisar · '+r.mal+' a corregir · '+r.info+' informativos\n';
+  var tp=textoProtocolo(obra); if(tp) t+='\n'+tp;
+  t+=textoQueCorregir(queCorregir(obra, reg));
   if(obra.obs) t+='\nObservaciones: '+obra.obs+'\n';
   t+='\nCriterios: AEA 90364-7-770 (Ed. 2026) / 7-771 / 7-701 / 7-718. UL = 24 V.\n';
   t+='Borrador de obra. No reemplaza al protocolo de medición firmado.\n';
@@ -8506,7 +8584,9 @@ function leerRespaldo(texto){
   var d=null;
   try{ d=JSON.parse(texto); }catch(e){ return {error:'El archivo no es un JSON válido.'}; }
   if(!d || typeof d!=='object') return {error:'El archivo no tiene el formato esperado.'};
+  if(d.app==='planillaAEA') return {error:'Ese archivo es la obra exportada por la Planilla de Cargas: se importa en Informe › Tableros y circuitos.'};
   if(d.app && d.app!=='diagAEA') return {error:'El respaldo es de otra aplicación.'};
+  if(d.tipo==='protocolo') return {error:'Ese archivo es el protocolo exportado para la planilla, no un respaldo de la app.'};
   if(d.formato && d.formato>RESP_FORMATO) return {error:'El respaldo viene de una versión más nueva de la app (formato '+String(d.formato).slice(0,4)+'). Actualizá la app antes de importarlo.'};
   var n = (d.datos && typeof d.datos==='object') ? d.datos : d;
   if(!n.registro && !n.archivo && !n.valores && !n.favoritos && !n.obra)
@@ -8516,7 +8596,7 @@ function leerRespaldo(texto){
 function aplicarRespaldo(n, modo){
   function arr(x){ return Array.isArray(x)?x:[]; }
   if(modo==='reemplazar'){
-    ST.obra = Object.assign({cliente:'', dir:'', tipo:'', inst:'', mat:'', obs:'', reglam:'', fecha:hoyISO()}, n.obra||{});
+    ST.obra = normalizarObra(Object.assign(obraVacia(), n.obra||{}));
     ST.registro = arr(n.registro);
     ST.archivo = arr(n.archivo).slice(-20);
     ST.t0 = n.t0 || null;
@@ -8547,6 +8627,12 @@ function aplicarRespaldo(n, modo){
     if(n.obra){
       var o=n.obra, c;
       for(c in o){ if(Object.prototype.hasOwnProperty.call(o,c) && !ST.obra[c] && o[c]) ST.obra[c]=o[c]; }
+      if(Array.isArray(o.circ) && o.circ.length && !ST.obra.circ.length){
+        ST.obra.tab=Array.isArray(o.tab)?o.tab:[]; ST.obra.circ=o.circ;
+        if(o.prot && typeof o.prot==='object') ST.obra.prot=o.prot;
+        if(!ST.obra.origen && o.origen) ST.obra.origen=o.origen;
+      }
+      normalizarObra(ST.obra);
     }
   }
   guardar();
@@ -8969,7 +9055,10 @@ function vistaAjustes(){
     fr.onload=function(){
       var p=document.getElementById('impoPanel');
       if(!p) return;
-      var r=leerRespaldo(String(fr.result));
+      var crudo=String(fr.result), dp=null;
+      try{ dp=JSON.parse(crudo); }catch(e){ dp=null; }
+      if(dp && dp.app==='planillaAEA'){ panelImportarPlanilla(p, crudo, file.name, function(){ ir('instalacion'); }); return; }
+      var r=leerRespaldo(crudo);
       if(r.error){ p.innerHTML='<div class="resp"><b>No se pudo leer el respaldo</b>'+esc(r.error)+'</div>'; return; }
       var n=r.datos;
       var nreg=(n.registro||[]).length, narc=(n.archivo||[]).length,
@@ -9000,10 +9089,811 @@ function vistaAjustes(){
     if(!confirm('¿Borrar la intervención en curso, el archivo y los favoritos de este teléfono?')) return;
     try{ localStorage.removeItem(CLAVE); }catch(e){}
     ST.registro=[]; ST.archivo=[]; ST.favoritos=[]; ST.recientes=[]; ST.guardados={}; ST.t0=null;
-    ST.obra={cliente:'', dir:'', tipo:'', inst:'', mat:'', obs:'', reglam:'', fecha:hoyISO()};
+    ST.obra=obraVacia();
     vistaAjustes(); pintarNav(); toast('Listo, quedó vacío');
   };
   pintarNav();
+}
+
+
+/* ============================================================
+   OBRA: TABLEROS, CIRCUITOS Y PROTOCOLO DE ENSAYOS
+   La instalación se carga a mano (relevamiento de una instalación
+   existente, para mantenimiento) o se importa de la Planilla de
+   Cargas (botón «Exportar a la app»). Todo lo que sigue funciona
+   igual en los dos casos: la planilla es optativa.
+   ============================================================ */
+function obraVacia(){
+  return {cliente:'', dir:'', tipo:'', inst:'', mat:'', obs:'', reglam:'', fecha:hoyISO(),
+          tab:[], circ:[], prot:{rp:'', c:{}, ra:{}, vis:{}, modoVis:''}, cAct:'', origen:null};
+}
+function normalizarObra(o){
+  var b=obraVacia(), k;
+  if(!o || typeof o!=='object') o={};
+  for(k in b){
+    if(Object.prototype.hasOwnProperty.call(b,k) && k!=='origen' && (o[k]===undefined || o[k]===null)) o[k]=b[k];
+  }
+  if(!Array.isArray(o.tab)) o.tab=[];
+  if(!Array.isArray(o.circ)) o.circ=[];
+  if(!o.prot || typeof o.prot!=='object') o.prot=b.prot;
+  ['c','ra','vis'].forEach(function(q){ if(!o.prot[q] || typeof o.prot[q]!=='object') o.prot[q]={}; });
+  if(typeof o.cAct!=='string') o.cAct='';
+  if(o.cAct && !buscarCirc(o.cAct, o)) o.cAct='';
+  return o;
+}
+function buscarCirc(id, o){
+  var l=((o||ST.obra).circ)||[];
+  for(var i=0;i<l.length;i++) if(l[i].id===id) return l[i];
+  return null;
+}
+function circActivo(){ return ST.obra.cAct ? buscarCirc(ST.obra.cAct) : null; }
+function idNuevo(p){ return p+Date.now().toString(36)+Math.floor(Math.random()*1e6).toString(36); }
+function etiquetaCirc(c){ return c ? (c.n||'Circuito')+(c.tab?' · '+c.tab:'') : ''; }
+function fSec(v){ var n=num(v); return n===null ? '' : f(n, (n%1)?1:0); }
+function cantCond(c){ return c.sis==='3F+N' ? 4 : (c.sis==='3F' ? 3 : 2); }
+function resumenCirc(c){
+  var p=[];
+  if(c.secc) p.push(cantCond(c)+'×'+fSec(c.secc)+' mm²'+(c.pe==='0' ? ' sin PE' : (c.pe ? ' + PE '+fSec(c.pe) : '')));
+  if(c.in) p.push((c.pol?c.pol+'P ':'')+fSec(c.in)+' A'+(c.curva?' curva '+c.curva:''));
+  if(String(c.idn)==='0') p.push('sin diferencial');
+  else if(c.idn) p.push('ID '+c.idn+' mA'+(c.idTipo?' tipo '+c.idTipo:'')+(c.idRet&&c.idRet!=='gen'?' '+c.idRet:''));
+  if(c.lon) p.push(fSec(c.lon)+' m');
+  return p.join(' · ');
+}
+function resumenInst(){
+  var o=ST.obra;
+  if(!o.tab.length && !o.circ.length) return 'Sin cargar: a mano en un relevamiento, o desde la Planilla de Cargas';
+  return o.tab.length+' tablero'+(o.tab.length===1?'':'s')+' · '+o.circ.length+' circuito'+(o.circ.length===1?'':'s')+
+         (o.origen && o.origen.archivo ? ' · de la planilla' : '');
+}
+
+/* ---------- precarga de fichas y cálculos con los datos del circuito ---------- */
+var OPC_SECC=[['1','1 mm²'],['1.5','1,5 mm²'],['2.5','2,5 mm²'],['4','4 mm²'],['6','6 mm²'],['10','10 mm²'],['16','16 mm²'],
+              ['25','25 mm²'],['35','35 mm²'],['50','50 mm²'],['70','70 mm²'],['95','95 mm²'],['120','120 mm²']];
+/* Campo de la ficha o del cálculo → dato del circuito. Sólo datos de proyecto o del tablero:
+   las lecturas del instrumento nunca se precargan. */
+var PRECARGA={
+  D1:{idn:'idn'}, D2:{idn:'idn', clase:'idTipo', ret:'idRet'}, D5:{idn:'idn'}, D6:{idn:'idn'},
+  I1:{lon:'lon'}, I3:{idn:'idn'}, T5:{idn:'idn'}, G6:{idn:'idn'}, L2:{idn:'idn'}, L4:{inp:'in', idn:'idn0'}, L5:{idn:'idn'},
+  P1:{inp:'in', iz:'iz'}, P3:{inp:'in'}, P5:{ib:'ib', inp:'in', iz0:'iz0', nc:'nagr'}, P6:{icc:'icc'}, P7:{inp:'in', iz:'iz'},
+  C1:{lg:'lon', sec:'secc'}, C4:{iz0:'iz0', nc:'nagr'}, R5:{l:'lon', s:'secc'},
+  K1:{sis:'sisK', i:'ib', l:'lon', s:'secc', lim:'duLim'}, K2:{s:'secc', car:'car', ta:'ta', ncirc:'nagr', ib:'ib', 'in':'in'},
+  K10:{lon:'lon'}, K11:{sis:'sisK', l:'lon', s:'secc'}
+};
+function valorCirc(c, k){
+  if(k==='sisK') return c.sis==='1F+N' ? 'mono' : ((c.sis==='3F+N'||c.sis==='3F') ? 'tri' : null);
+  if(k==='car') return (c.sis==='1F+N'||c.sis==='2F') ? '2' : ((c.sis==='3F+N'||c.sis==='3F') ? '3' : null);
+  if(k==='idn') return (c.idn!==undefined && c.idn!==null && String(c.idn)!=='' && String(c.idn)!=='0') ? String(c.idn) : null;
+  if(k==='idn0') return (c.idn!==undefined && c.idn!==null && String(c.idn)!=='') ? String(c.idn) : null;
+  var v=c[k];
+  return (v===undefined || v===null || String(v).trim()==='') ? null : String(v);
+}
+function precargar(xid, campos, valores, c){
+  var m=PRECARGA[xid], hechos=[], i, cp, v, o, ok, n;
+  if(!m || !c) return hechos;
+  for(i=0;i<campos.length;i++){
+    cp=campos[i];
+    if(!Object.prototype.hasOwnProperty.call(m, cp.id)) continue;
+    if(valores[cp.id]!==undefined && valores[cp.id]!==null && String(valores[cp.id])!=='') continue;
+    v=valorCirc(c, m[cp.id]);
+    if(v===null) continue;
+    if(cp.tipo==='sel'){
+      ok=false; n=num(v);
+      for(o=0;o<cp.opts.length;o++){
+        if(String(cp.opts[o][0])===v || (n!==null && num(cp.opts[o][0])===n)){ v=String(cp.opts[o][0]); ok=true; break; }
+      }
+      if(!ok) continue;
+    } else if(cp.tipo==='bool' || cp.tipo==='aparatos'){
+      continue;
+    } else {
+      n=num(v); if(n===null) continue; v=String(n);
+    }
+    valores[cp.id]=v;
+    hechos.push(cp.lbl.replace(/\s*\(opcional[^)]*\)/i,''));
+  }
+  return hechos;
+}
+function claveValores(k, x){ var b=(k==='F') ? x.id : 'calc:'+x.id; return ST.obra.cAct ? b+'@'+ST.obra.cAct : b; }
+function cargarValores(k, x){
+  var campos=(k==='F') ? ((x.med && x.med.campos) || []) : (x.campos || []);
+  var key=claveValores(k, x);
+  var v=ST.guardados[key] ? JSON.parse(JSON.stringify(ST.guardados[key])) : {};
+  if(tieneReglam(campos)) v.reglam = ST.obra.reglam || '';
+  ST.precargados = precargar(x.id, campos, v, circActivo());
+  return v;
+}
+function circDeRegistro(it){ return (it && it.circ && it.circ.id) ? it.circ.id : ''; }
+function buscarEditando(k, id){
+  var ca=ST.obra.cAct||'', r=null;
+  for(var i=0;i<ST.registro.length;i++){
+    var it=ST.registro[i];
+    if(it && it.id===id && it.k===k && circDeRegistro(it)===ca) r=i;
+  }
+  return r;
+}
+function htmlSelCirc(){
+  var l=ST.obra.circ;
+  if(!l.length) return '';
+  var h='<div class="circ-sel no-print"><label for="selCirc">Circuito de la obra'+
+        '<span class="ayuda">Precarga los datos de ese circuito y guarda las lecturas aparte para cada uno</span></label>'+
+        '<select class="entrada" id="selCirc"><option value="">— Sin circuito —</option>';
+  l.forEach(function(c){
+    h+='<option value="'+esc(c.id)+'"'+(c.id===ST.obra.cAct?' selected':'')+'>'+esc(etiquetaCirc(c)+(c.des?' — '+c.des:''))+'</option>';
+  });
+  h+='</select>';
+  if(ST.obra.cAct && ST.precargados && ST.precargados.length)
+    h+='<p class="prec">Precargado del circuito: '+esc(ST.precargados.join(' · '))+'. Si en obra encontrás otra cosa, corregilo acá.</p>';
+  return h+'</div>';
+}
+function ligarSelCirc(k, x){
+  var s=document.getElementById('selCirc');
+  if(!s) return;
+  s.onchange=function(){
+    ST.obra.cAct=this.value; guardar();
+    ST.valores=cargarValores(k, x);
+    ST.veredicto=null; ST.vals=null;
+    ST.editando=buscarEditando(k, x.id);
+    if(k==='F'){ vistaFicha(); return; }
+    var vals=evaluarCampos(x.campos, ST.valores), r=null;
+    try{ r=x.ev(vals); }catch(e){ r=null; }
+    ST.veredicto=r; ST.vals=vals; ST.firmaCalc=firmaValores();
+    vistaCalc();
+  };
+}
+
+/* ---------- tableros y circuitos: carga a mano ---------- */
+function camposTab(actual){
+  var opts=[['Medidor','Medidor (acometida)']];
+  ST.obra.tab.forEach(function(t){ if(t.n!==actual) opts.push([t.n, t.n]); });
+  return [
+    {id:'n', lbl:'Nombre', ayuda:'TP, TS1, TS cocina…'},
+    {id:'ub', lbl:'Ubicación'},
+    {id:'de', lbl:'Alimentado desde', tipo:'sel', opts:opts},
+    {id:'obs', lbl:'Observaciones'}
+  ];
+}
+function camposCirc(){
+  var tabs=ST.obra.tab.map(function(t){ return [t.n, t.n+(t.ub?' — '+t.ub:'')]; });
+  return {
+    base:[
+      {id:'n', lbl:'Nombre o sigla', ayuda:'Como figura en el proyecto o en el rótulo del tablero: IUG-1, TUG-2, Aire del dormitorio…'},
+      {id:'tab', lbl:'Tablero del que sale', tipo:'sel', opts:tabs},
+      {id:'des', lbl:'Qué alimenta', ayuda:'Ambientes o equipo'},
+      {id:'sis', lbl:'Sistema', tipo:'sel', opts:[['1F+N','Monofásico, fase y neutro'],['2F','Bifásico, dos fases'],['3F+N','Trifásico con neutro'],['3F','Trifásico sin neutro']]},
+      {id:'in', lbl:'Calibre del interruptor In', u:'A'},
+      {id:'curva', lbl:'Curva del interruptor', tipo:'sel', opts:[['B','B'],['C','C'],['D','D']]},
+      {id:'pol', lbl:'Polos del interruptor', tipo:'sel', opts:[['1','1 polo'],['2','2 polos'],['3','3 polos'],['4','4 polos']]},
+      {id:'idn', lbl:'IΔn del diferencial que lo protege', ayuda:'El propio del circuito o el general del tablero', tipo:'sel',
+       opts:[['10','10 mA'],['20','20 mA'],['30','30 mA'],['100','100 mA'],['300','300 mA'],['500','500 mA'],['0','No tiene diferencial']]},
+      {id:'idTipo', lbl:'Tipo de diferencial', ayuda:'Según la forma de onda, marcado en el frente', tipo:'sel', opts:[['AC','AC'],['A','A'],['F','F'],['B','B']]},
+      {id:'idRet', lbl:'Característica de tiempo del diferencial', tipo:'sel', opts:[['gen','General, sin retardo'],['G','G — retardo hasta 10 ms'],['S','S — selectivo']]},
+      {id:'secc', lbl:'Sección de fase y neutro', tipo:'sel', opts:OPC_SECC},
+      {id:'pe', lbl:'Sección del conductor de protección', tipo:'sel', opts:OPC_SECC.concat([['0','No tiene PE']])},
+      {id:'lon', lbl:'Longitud hasta la boca más alejada', u:'m'},
+      {id:'obs', lbl:'Observaciones'}
+    ],
+    mas:[
+      {id:'ib', lbl:'Corriente de proyecto IB', u:'A'},
+      {id:'iz', lbl:'Corriente admisible corregida Iz', u:'A'},
+      {id:'icc', lbl:'Icc presunta máxima en el tablero', u:'kA'},
+      {id:'du', lbl:'Caída de tensión calculada, acumulada', u:'%'},
+      {id:'duLim', lbl:'Límite de caída que le corresponde', tipo:'sel', opts:[['3','3 %'],['5','5 %']]}
+    ]
+  };
+}
+function vistaInstalacion(){
+  ST.vista='instalacion'; btnVolver.hidden=false;
+  var o=ST.obra, ed=ST.edit||null;
+  tituloBarra.innerHTML='Tableros y circuitos<span>'+esc(resumenInst())+'</span>';
+  var h='<div class="ficha"><h2>Tableros y circuitos de la obra</h2>';
+  h+='<div class="sint">Con los circuitos cargados, las fichas y los cálculos se precargan con los datos de cada uno y el protocolo de ensayos se arma solo. En un relevamiento para mantenimiento se cargan a mano con lo que se ve en el tablero; si la obra tiene proyecto, se importan de la Planilla de Cargas.</div>';
+
+  h+='<div class="bloque"><h3>Importar de la Planilla de Cargas <small>optativo</small></h3>'+
+     '<p style="font-size:calc(14.5px * var(--fs))">En la planilla, botón «Exportar a la app»: deja un archivo .json al lado de la planilla. Pasalo al teléfono y elegilo acá. Las mediciones ya cargadas se conservan en los circuitos que mantienen su nombre y su tablero.</p>'+
+     '<div class="acciones"><button class="pri" id="impPl">Elegir el archivo de la planilla</button></div>'+
+     '<input type="file" id="impPlF" accept="application/json,.json" hidden><div id="impPlPanel"></div>';
+  if(o.origen && o.origen.archivo) h+='<div class="info">Importado de «'+esc(o.origen.archivo)+'»'+(o.origen.obra?' (obra «'+esc(o.origen.obra)+'»)':'')+
+     (o.origen.exportado?', exportado el '+esc(fechaAR(String(o.origen.exportado).slice(0,10))):'')+'.</div>';
+  h+='</div>';
+
+  h+='<div class="bloque"><h3>Tableros <small>'+o.tab.length+'</small></h3>';
+  o.tab.forEach(function(t){
+    var nc=o.circ.filter(function(c){ return c.tab===t.n; }).length;
+    if(ed && ed.tipo==='tab' && ed.id===t.n){ h+=htmlFormTab(); return; }
+    h+='<div class="inst-card tab"><div class="h">'+esc(t.n)+(t.ub?' <small>'+esc(t.ub)+'</small>':'')+'</div>'+
+       '<div class="m">Alimentado desde '+esc(t.de||'—')+' · '+nc+' circuito'+(nc===1?'':'s')+(t.obs?' · '+esc(t.obs):'')+'</div>'+
+       '<div class="acc"><button data-edtab="'+esc(t.n)+'">Editar</button><button class="peligro" data-deltab="'+esc(t.n)+'">Borrar</button></div></div>';
+  });
+  if(ed && ed.tipo==='tab' && ed.id==='+') h+=htmlFormTab();
+  h+='<div class="acciones"><button id="addTab">Agregar tablero</button></div></div>';
+
+  h+='<div class="bloque"><h3>Circuitos <small>'+o.circ.length+'</small></h3>';
+  if(!o.tab.length) h+='<p class="vacio">Cargá primero el tablero del que salen los circuitos.</p>';
+  o.circ.forEach(function(c){
+    if(ed && ed.tipo==='circ' && ed.id===c.id){ h+=htmlFormCirc(); return; }
+    h+='<div class="inst-card"><div class="h">'+esc(c.n||'Sin nombre')+' <small>'+esc(c.tab||'sin tablero')+'</small></div>'+
+       '<div class="m">'+esc(resumenCirc(c)||'Sin datos')+'</div>'+
+       (c.obs?'<div class="m">'+esc(c.obs)+'</div>':'')+
+       '<div class="acc"><button data-edcirc="'+esc(c.id)+'">Editar</button><button class="peligro" data-delcirc="'+esc(c.id)+'">Borrar</button></div></div>';
+  });
+  if(ed && ed.tipo==='circ' && ed.id==='+') h+=htmlFormCirc();
+  h+='<div class="acciones"><button id="addCirc"'+(o.tab.length?'':' disabled')+'>Agregar circuito</button>'+
+     '<button class="pri" id="irProt">Protocolo de ensayos</button></div></div>';
+  h+='</div>';
+  app.innerHTML=h;
+
+  if(ed) ligarCampos(ST.borrador, null);
+  var bi=document.getElementById('impPl'), fi=document.getElementById('impPlF');
+  if(bi && fi) bi.onclick=function(){ fi.value=''; fi.click(); };
+  if(fi) fi.onchange=function(){
+    var file=this.files && this.files[0];
+    if(!file) return;
+    var fr=new FileReader();
+    fr.onload=function(){ panelImportarPlanilla(document.getElementById('impPlPanel'), String(fr.result), file.name, vistaInstalacion); };
+    fr.onerror=function(){ var p=document.getElementById('impPlPanel'); if(p) p.innerHTML='<div class="resp"><b>No se pudo abrir el archivo</b>Probá de nuevo o elegí otro.</div>'; };
+    fr.readAsText(file);
+  };
+  app.querySelectorAll('[data-edtab]').forEach(function(b){
+    b.onclick=function(){ var t=o.tab.filter(function(x){ return x.n===b.dataset.edtab; })[0]; if(!t) return;
+      ST.edit={tipo:'tab', id:t.n}; ST.borrador=JSON.parse(JSON.stringify(t)); vistaInstalacion(); };
+  });
+  app.querySelectorAll('[data-deltab]').forEach(function(b){
+    b.onclick=function(){
+      var n=b.dataset.deltab, nc=o.circ.filter(function(c){ return c.tab===n; }).length;
+      if(nc){ toast('Tiene '+nc+' circuito'+(nc===1?'':'s')+': borralos o pasalos a otro tablero primero'); return; }
+      if(!confirm('¿Borrar el tablero '+n+'?')) return;
+      o.tab=o.tab.filter(function(t){ return t.n!==n; });
+      o.tab.forEach(function(t){ if(t.de===n) t.de=''; });
+      guardar(); vistaInstalacion();
+    };
+  });
+  app.querySelectorAll('[data-edcirc]').forEach(function(b){
+    b.onclick=function(){ var c=buscarCirc(b.dataset.edcirc); if(!c) return;
+      ST.edit={tipo:'circ', id:c.id}; ST.borrador=JSON.parse(JSON.stringify(c)); vistaInstalacion(); };
+  });
+  app.querySelectorAll('[data-delcirc]').forEach(function(b){
+    b.onclick=function(){
+      var c=buscarCirc(b.dataset.delcirc); if(!c) return;
+      var tiene=o.prot.c[c.id] && (hayDatos(o.prot.c[c.id].pe||{})||hayDatos(o.prot.c[c.id].ais||{})||hayDatos(o.prot.c[c.id].id||{}));
+      if(!confirm('¿Borrar el circuito '+etiquetaCirc(c)+'?'+(tiene?' También se borran sus mediciones del protocolo.':''))) return;
+      o.circ=o.circ.filter(function(x){ return x.id!==c.id; });
+      delete o.prot.c[c.id];
+      if(o.cAct===c.id) o.cAct='';
+      guardar(); vistaInstalacion();
+    };
+  });
+  var at=document.getElementById('addTab');
+  if(at) at.onclick=function(){
+    var n=o.tab.length ? 'TS'+o.tab.length : 'TP';
+    while(o.tab.some(function(t){ return t.n===n; })) n=n+'b';
+    ST.edit={tipo:'tab', id:'+'}; ST.borrador={n:n, ub:'', de:(o.tab.length?o.tab[0].n:'Medidor'), obs:''}; vistaInstalacion();
+  };
+  var ac=document.getElementById('addCirc');
+  if(ac) ac.onclick=function(){
+    if(!o.tab.length) return;
+    var ult=o.circ.length ? o.circ[o.circ.length-1].tab : o.tab[0].n;
+    ST.edit={tipo:'circ', id:'+'}; ST.borrador={id:'', n:'', tab:ult, des:'', sis:'1F+N', obs:''}; vistaInstalacion();
+  };
+  var ip=document.getElementById('irProt'); if(ip) ip.onclick=function(){ ir('protocolo'); };
+  var gs=document.getElementById('edGuardar'); if(gs) gs.onclick=guardarEdicion;
+  var gc=document.getElementById('edCancelar'); if(gc) gc.onclick=function(){ ST.edit=null; ST.borrador=null; vistaInstalacion(); };
+  var fm=document.getElementById('edForm'); if(fm) fm.scrollIntoView({block:'center'});
+  pintarNav();
+}
+function htmlFormTab(){
+  return '<div class="inst-card tab" id="edForm"><div class="h">'+(ST.edit.id==='+'?'Tablero nuevo':'Editar tablero '+esc(ST.edit.id))+'</div>'+
+         '<div class="medir">'+pintarCampos(camposTab(ST.edit.id), ST.borrador, 'tb_')+'</div>'+
+         '<div class="acc"><button id="edGuardar">Guardar</button><button id="edCancelar">Cancelar</button></div></div>';
+}
+function htmlFormCirc(){
+  var cc=camposCirc();
+  return '<div class="inst-card" id="edForm"><div class="h">'+(ST.edit.id==='+'?'Circuito nuevo':'Editar '+esc(ST.borrador.n||'circuito'))+'</div>'+
+         '<div class="medir">'+pintarCampos(cc.base, ST.borrador, 'ci_')+
+         '<details'+(cc.mas.some(function(x){ return ST.borrador[x.id]; })?' open':'')+'><summary>Más datos (optativos, para las fichas y los cálculos)</summary>'+
+         pintarCampos(cc.mas, ST.borrador, 'cm_')+'</details></div>'+
+         '<div class="acc"><button id="edGuardar">Guardar</button><button id="edCancelar">Cancelar</button></div></div>';
+}
+function guardarEdicion(){
+  var o=ST.obra, ed=ST.edit, b=ST.borrador, k;
+  if(!ed || !b) return;
+  for(k in b){ if(Object.prototype.hasOwnProperty.call(b,k) && typeof b[k]==='string') b[k]=b[k].trim(); }
+  if(ed.tipo==='tab'){
+    if(!b.n){ toast('Poné el nombre del tablero'); return; }
+    if(o.tab.some(function(t){ return t.n===b.n && t.n!==ed.id; })){ toast('Ya hay un tablero con ese nombre'); return; }
+    if(b.de===b.n) b.de='';
+    if(ed.id==='+') o.tab.push({n:b.n, ub:b.ub||'', de:b.de||'', obs:b.obs||''});
+    else {
+      o.tab.forEach(function(t){ if(t.n===ed.id){ t.n=b.n; t.ub=b.ub||''; t.de=b.de||''; t.obs=b.obs||''; } });
+      if(ed.id!==b.n){
+        o.circ.forEach(function(c){ if(c.tab===ed.id) c.tab=b.n; });
+        o.tab.forEach(function(t){ if(t.de===ed.id) t.de=b.n; });
+      }
+    }
+  } else {
+    if(!b.n){ toast('Poné el nombre o la sigla del circuito'); return; }
+    if(!b.tab){ toast('Elegí el tablero del que sale'); return; }
+    if(o.circ.some(function(c){ return c.n===b.n && c.tab===b.tab && c.id!==b.id; })){ toast('Ya hay un circuito con ese nombre en ese tablero'); return; }
+    if(ed.id==='+'){ b.id=idNuevo('c'); o.circ.push(b); }
+    else o.circ=o.circ.map(function(c){ return c.id===b.id ? b : c; });
+  }
+  ST.edit=null; ST.borrador=null;
+  guardar(); vistaInstalacion(); toast('Guardado');
+}
+
+/* ---------- importación del archivo de la Planilla de Cargas ---------- */
+function leerObraPlanilla(texto){
+  var d=null;
+  try{ d=JSON.parse(texto); }catch(e){ return {error:'El archivo no es un JSON válido.'}; }
+  if(!d || typeof d!=='object' || d.app!=='planillaAEA') return {error:'El archivo no viene de la Planilla de Cargas (botón «Exportar a la app»).'};
+  if(d.formato && d.formato>1) return {error:'El archivo viene de una versión más nueva de la planilla. Actualizá la app antes de importarlo.'};
+  if(!Array.isArray(d.tableros) || !Array.isArray(d.circuitos)) return {error:'El archivo no trae tableros ni circuitos.'};
+  return {datos:d};
+}
+function panelImportarPlanilla(p, texto, nombre, alTerminar){
+  if(!p) return;
+  var r=leerObraPlanilla(texto);
+  if(r.error){ p.innerHTML='<div class="resp"><b>No se pudo leer el archivo</b>'+esc(r.error)+'</div>'; return; }
+  var d=r.datos, o=ST.obra, ob=d.obra||{};
+  p.innerHTML='<div class="resp"><b>'+esc(nombre)+'</b>'+
+    (ob.nombre?'Obra «'+esc(ob.nombre)+'» · ':'')+d.tableros.length+' tablero'+(d.tableros.length===1?'':'s')+' · '+
+    d.circuitos.length+' circuito'+(d.circuitos.length===1?'':'s')+(ob.reglam?' · '+esc(REG_NOMBRE[ob.reglam]||ob.reglam):'')+
+    (d.exportado?'<br>Exportado el '+esc(fechaAR(String(d.exportado).slice(0,10))):'')+
+    (o.circ.length?'<br><b style="display:inline">Reemplaza los '+o.circ.length+' circuitos cargados.</b> Las mediciones del protocolo se conservan en los que tienen el mismo nombre y el mismo tablero.':'')+
+    '<div class="acciones"><button class="pri" id="impPlSi">Importar</button><button id="impPlNo">Cancelar</button></div></div>';
+  var si=document.getElementById('impPlSi'), no=document.getElementById('impPlNo');
+  if(si) si.onclick=function(){ aplicarObraPlanilla(d, nombre); toast('Obra importada de la planilla'); if(alTerminar) alTerminar(); };
+  if(no) no.onclick=function(){ p.innerHTML=''; };
+}
+function aplicarObraPlanilla(d, nombre){
+  var o=ST.obra, viejos={}, vivos={}, k;
+  function s(x){ return (x===undefined || x===null) ? '' : String(x).trim(); }
+  function n(x){ var v=num(x); return v===null ? '' : String(v); }
+  o.circ.forEach(function(c){ viejos[(c.tab||'')+'|'+(c.n||'')]=c.id; });
+  o.tab=d.tableros.map(function(t){ return {n:s(t.id||t.n), ub:s(t.ub), de:s(t.de), obs:s(t.des)}; })
+                  .filter(function(t){ return t.n; });
+  o.circ=d.circuitos.map(function(c){
+    var icc=num(c.icc);
+    var nc={id:'', n:s(c.n), tab:s(c.tab), des:s(c.des), sis:s(c.sis), 'in':n(c['in']), curva:s(c.curva), pol:n(c.pol),
+            idn:n(c.idn), idTipo:s(c.idTipo), idRet:s(c.idRet)||(c.idn!==undefined && c.idn!==null ? 'gen' : ''),
+            secc:n(c.secc), pe:n(c.pe), lon:n(c.lon), ib:n(c.ib), iz:n(c.iz), iz0:n(c.iz0), nagr:n(c.nagr), ta:n(c.ta),
+            du:n(c.du), duLim:n(c.duLim), icc:(icc===null?'':String(Math.round(icc/10)/100)), tipoCarga:s(c.tipo), obs:''};
+    nc.id=viejos[nc.tab+'|'+nc.n] || idNuevo('c');
+    vivos[nc.id]=1;
+    return nc;
+  }).filter(function(c){ return c.n; });
+  for(k in o.prot.c){ if(Object.prototype.hasOwnProperty.call(o.prot.c,k) && !vivos[k]) delete o.prot.c[k]; }
+  if(o.cAct && !vivos[o.cAct]) o.cAct='';
+  var ob=d.obra||{};
+  if(!o.cliente) o.cliente=s(ob.comitente)||s(ob.nombre);
+  if(!o.dir) o.dir=[s(ob.domicilio), s(ob.localidad)].filter(function(x){ return x; }).join(', ');
+  if(ob.reglam==='770' || ob.reglam==='771') o.reglam=ob.reglam;
+  if(!o.inst) o.inst=s(ob.proyectista);
+  if(!o.mat) o.mat=s(ob.matricula);
+  o.origen={archivo:nombre||'', exportado:s(d.exportado), obra:s(ob.nombre)};
+  normalizarObra(o);
+  guardar();
+}
+
+/* ---------- protocolo de ensayos ---------- */
+function hayDatos(o){
+  for(var k in o){
+    if(!Object.prototype.hasOwnProperty.call(o,k)) continue;
+    var v=o[k];
+    if(v===true || v===false) return true;
+    if(v!==null && v!==undefined && typeof v!=='object' && String(v).trim()!=='') return true;
+  }
+  return false;
+}
+function protC(id, obra){
+  var p=(obra||ST.obra).prot.c;
+  if(!p[id] || typeof p[id]!=='object') p[id]={pe:{}, ais:{}, id:{}, obs:''};
+  ['pe','ais','id'].forEach(function(q){ if(!p[id][q] || typeof p[id][q]!=='object') p[id][q]={}; });
+  return p[id];
+}
+function evalFicha(id, valores){
+  var x=buscarFalla(id);
+  if(!x || !x.med) return null;
+  var vals=evaluarCampos(x.med.campos, valores);
+  try{ return x.med.ev(vals); }catch(e){ return null; }
+}
+function boolONull(v){ return (v===true || v===false) ? v : null; }
+/* Cada bloque del protocolo usa el evaluador de su ficha: el criterio es el mismo de la ficha. */
+function evalBloque(c, q, obra){
+  obra=obra||ST.obra;
+  var p=((obra.prot.c||{})[c.id]||{})[q]||{};
+  if(q==='pe'){
+    if(!hayDatos({rm:p.rm})) return null;
+    return evalFicha('T3', {rp:(obra.prot.rp||''), rm:p.rm, pto:'boca'});
+  }
+  if(q==='ais'){
+    if(!hayDatos({a:p.rln, b:p.rlpe, c:p.rnpe})) return null;
+    return evalFicha('I1', {reglam:obra.reglam||'', ue:p.ue||'500', rln:p.rln, rlpe:p.rlpe, rnpe:p.rnpe, lon:c.lon||''});
+  }
+  if(q==='id'){
+    if(String(c.idn)==='0' && !p.idn){
+      var es770=(obra.reglam==='770');
+      return {e:es770?'mal':'ojo', t:'Circuito sin diferencial', d:'',
+              li:[es770 ? 'La 7-770 Ed. 2026 exige diferencial de 30 mA como máximo en los circuitos terminales (770.18.3.5).'
+                        : 'Verificar para este circuito la exigencia de protección diferencial de 771.18.3.5.'], sinId:true};
+    }
+    if(!hayDatos({a:p.t1, b:p.t5, c:p.med, d:p.boton})) return null;
+    var idn=p.idn || ((c.idn && String(c.idn)!=='0') ? String(c.idn) : '');
+    return evalFicha('D2', {reglam:obra.reglam||'', idn:idn, clase:p.clase||c.idTipo||'', ret:p.ret||c.idRet||'',
+                            med:boolONull(p.med), t1:p.t1, t5:p.t5, boton:boolONull(p.boton)});
+  }
+  return null;
+}
+var PESO={mal:3, ojo:2, ok:1, info:0};
+function peor(lista){
+  var e='';
+  lista.forEach(function(r){ if(r && PESO[r.e]!==undefined && (e==='' || PESO[r.e]>PESO[e])) e=r.e; });
+  return e;
+}
+function estadoCirc(c, obra){ return peor([evalBloque(c,'pe',obra), evalBloque(c,'ais',obra), evalBloque(c,'id',obra)]); }
+function txtEst(e){ return e==='ok' ? 'OK' : (e==='ojo' ? 'REVISAR' : (e==='mal' ? 'NO' : (e==='info' ? 'DATO' : '—'))); }
+function idnMayor(obra){
+  var m=0;
+  (obra||ST.obra).circ.forEach(function(c){ var n=num(c.idn); if(n!==null && n>m) m=n; });
+  return ['10','30','100','300','500','1000'].indexOf(String(m))>=0 ? String(m) : '';
+}
+function camposRa(){
+  return buscarFalla('T1').med.campos.filter(function(c){ return c.id!=='reglam'; });
+}
+function evalRa(obra){
+  obra=obra||ST.obra;
+  var r=obra.prot.ra||{};
+  if(!hayDatos({a:r.r1, b:r.r2, c:r.r3})) return null;
+  return evalFicha('T1', {reglam:obra.reglam||'', r1:r.r1, r2:r.r2, r3:r.r3, idn:r.idn||idnMayor(obra)});
+}
+function modoVis(obra){
+  obra=obra||ST.obra;
+  var m=obra.prot.modoVis;
+  if(m==='inicial' || m==='periodica') return m;
+  return (obra.tipo==='Verificación inicial (recepción)') ? 'inicial' : 'periodica';
+}
+function camposVis(obra){
+  if(modoVis(obra)==='inicial') return buscarFalla('R2').med.campos.slice();
+  return buscarFalla('R6').med.campos.filter(function(c){ return c.id!=='reglam' && !/^m\d$/.test(c.id); });
+}
+function evalVis(obra){
+  obra=obra||ST.obra;
+  var v=obra.prot.vis||{}, vals={}, campos=camposVis(obra), alguno=false;
+  campos.forEach(function(c){ vals[c.id]=v[c.id]; if(c.tipo==='bool' && (v[c.id]===true||v[c.id]===false)) alguno=true; });
+  if(!alguno) return null;
+  if(modoVis(obra)==='inicial') return evalFicha('R2', vals);
+  vals.reglam=obra.reglam||'';
+  var hay={pe:false, ais:false, id:false};
+  obra.circ.forEach(function(c){ var p=(obra.prot.c||{})[c.id]; if(!p) return;
+    if(hayDatos({a:(p.pe||{}).rm})) hay.pe=true;
+    if(hayDatos({a:(p.ais||{}).rln, b:(p.ais||{}).rlpe, c:(p.ais||{}).rnpe})) hay.ais=true;
+    if(hayDatos({a:(p.id||{}).t1, b:(p.id||{}).t5})) hay.id=true; });
+  vals.m1=hay.pe?true:null; vals.m2=hay.ais?true:null; vals.m3=evalRa(obra)?true:null; vals.m4=hay.id?true:null;
+  return evalFicha('R6', vals);
+}
+function htmlVerProt(r, falta){
+  if(!r) return falta ? '<div class="prot-ver">'+esc(falta)+'</div>' : '';
+  var h='<div class="prot-ver '+r.e+'"><b>'+esc(r.t)+'</b>'+(r.d?'<div>'+r.d+'</div>':'');
+  if(r.e!=='ok' && r.li && r.li.length){ h+='<ul>'; r.li.slice(0,3).forEach(function(x){ h+='<li>'+xref(x)+'</li>'; }); h+='</ul>'; }
+  return h+'</div>';
+}
+function htmlVerBloque(c, q){
+  var r=evalBloque(c, q), p=protC(c.id)[q];
+  if(!r && q==='id' && hayDatos({a:p.t1, b:p.t5, c:p.med, d:p.boton})) return htmlVerProt(null, 'Falta el IΔn del diferencial para evaluar el ensayo.');
+  if(!r && q==='ais' && hayDatos({a:p.rln, b:p.rlpe, c:p.rnpe})) return htmlVerProt(null, 'Falta la tensión de ensayo.');
+  return htmlVerProt(r);
+}
+function resumenProt(obra){
+  obra=obra||ST.obra;
+  if(!obra.circ.length) return 'Primero los tableros y circuitos';
+  var r={ok:0, ojo:0, mal:0}, con=0;
+  obra.circ.forEach(function(c){ var e=estadoCirc(c, obra); if(e){ con++; if(r[e]!==undefined) r[e]++; } });
+  if(!con) return obra.circ.length+' circuito'+(obra.circ.length===1?'':'s')+' sin mediciones todavía';
+  return con+' de '+obra.circ.length+' con mediciones · '+r.ok+' OK · '+r.ojo+' a revisar · '+r.mal+' no cumplen';
+}
+function htmlResumenProt(o){
+  var h='<table class="tabla prot-res"><thead><tr><th scope="col">Circuito</th><th scope="col">PE</th><th scope="col">Aislación</th><th scope="col">Diferencial</th></tr></thead><tbody>';
+  o.circ.forEach(function(c){
+    h+='<tr><td>'+esc(etiquetaCirc(c))+'</td>';
+    ['pe','ais','id'].forEach(function(q){ var r=evalBloque(c,q,o), e=r?r.e:''; h+='<td><span class="est '+e+'">'+txtEst(e)+'</span></td>'; });
+    h+='</tr>';
+  });
+  var ra=evalRa(o), vi=evalVis(o);
+  h+='<tr><td>Puesta a tierra</td><td colspan="3"><span class="est '+(ra?ra.e:'')+'">'+txtEst(ra?ra.e:'')+'</span></td></tr>';
+  h+='<tr><td>Inspección visual</td><td colspan="3"><span class="est '+(vi?vi.e:'')+'">'+txtEst(vi?vi.e:'')+'</span></td></tr>';
+  return h+'</tbody></table>';
+}
+function camposDe(fichaId, excluir){
+  return buscarFalla(fichaId).med.campos.filter(function(c){ return excluir.indexOf(c.id)<0; });
+}
+function htmlProtCirc(c, i){
+  var p=protC(c.id), e=estadoCirc(c), pre='pc'+i+'_';
+  var vid={idn:p.id.idn||((c.idn && String(c.idn)!=='0')?String(c.idn):''), clase:p.id.clase||c.idTipo||'', ret:p.id.ret||c.idRet||'',
+           med:p.id.med, t1:p.id.t1, t5:p.id.t5, boton:p.id.boton};
+  var vais={ue:p.ais.ue||'500', rln:p.ais.rln, rlpe:p.ais.rlpe, rnpe:p.ais.rnpe};
+  var h='<details class="man prot-c" id="pc-'+esc(c.id)+'"><summary><span class="mn"><b>'+esc(etiquetaCirc(c))+
+        ' <span class="est '+e+'" data-est="'+esc(c.id)+'">'+txtEst(e)+'</span></b><i>'+esc(resumenCirc(c)||c.des||'')+'</i></span>'+
+        '<span class="car" aria-hidden="true">›</span></summary><div class="man-c">';
+  h+='<div class="prot-blq"><h4>Continuidad del PE <small>criterio de la ficha T3</small></h4><div class="medir" data-pc="'+esc(c.id)+'|pe">'+
+     pintarCampos([{id:'rm', lbl:'Resistencia barra de PE – boca más alejada del circuito', u:'Ω'}], p.pe, pre+'pe_')+'</div>'+
+     '<div id="pv-'+esc(c.id)+'-pe">'+htmlVerBloque(c,'pe')+'</div></div>';
+  h+='<div class="prot-blq"><h4>Aislación <small>criterio de la ficha I1</small></h4><div class="medir" data-pc="'+esc(c.id)+'|ais">'+
+     pintarCampos(camposDe('I1',['reglam','lon']), vais, pre+'ai_')+'</div>'+
+     '<div id="pv-'+esc(c.id)+'-ais">'+htmlVerBloque(c,'ais')+'</div></div>';
+  h+='<div class="prot-blq"><h4>Diferencial que lo protege <small>criterio de la ficha D2</small></h4>'+
+     (String(c.idn)==='0'?'<div class="info">El circuito figura sin diferencial. Si en obra tiene uno, cargá su IΔn acá y ensayalo.</div>':'')+
+     '<div class="medir" data-pc="'+esc(c.id)+'|id">'+pintarCampos(camposDe('D2',['reglam']), vid, pre+'id_')+'</div>'+
+     '<div id="pv-'+esc(c.id)+'-id">'+htmlVerBloque(c,'id')+'</div></div>';
+  h+='<div class="prot-blq"><div class="medir" data-pc="'+esc(c.id)+'|obs">'+
+     pintarCampos([{id:'obs', lbl:'Observaciones del circuito'}], p, pre+'ob_')+'</div></div>';
+  return h+'</div></details>';
+}
+function instrumentosProt(){
+  var n=[], vistos={};
+  ['T3','I1','D2','T1'].forEach(function(id){
+    var x=buscarFalla(id);
+    if(x && x.eq) x.eq.forEach(function(e){ if(e && e.n && !vistos[e.n]){ vistos[e.n]=1; n.push(e.n); } });
+  });
+  return n;
+}
+function criteriosProt(reg){
+  if(reg==='770') return 'Reglamentación AEA 90364-7-770, Ed. 2026. Continuidad del PE: 770.23.5.1 (criterio práctico de 1 Ω). Aislación: 770.23.5.2 y Tabla 770.23.I. Diferenciales: 770.23.5.4 y Tabla 770.23.II. Puesta a tierra: 770.3.2, Ra ≤ 100 Ω.';
+  if(reg==='771') return 'Reglamentación AEA 90364-7-771. Continuidad del PE: 771.23.3.3 c) (criterio práctico de 1 Ω). Aislación: 771.23.5.1 y Tabla 771.23.I. Diferenciales: tiempos de la ficha D2 (Tabla 771.18.I e IEC 61008 / 61009). Puesta a tierra: 771.3.3.1, Ra ≤ 40 Ω.';
+  return 'Sin reglamentación elegida: cada ensayo aplica el más exigente de los criterios de la 7-770 Ed. 2026 y la 7-771.';
+}
+function nC(x, d){ var v=num(x); return v===null ? '' : f(v, d); }
+function htmlProtPrintCuerpo(o){
+  var h='<table><thead><tr><th class="iz">Tablero</th><th class="iz">Circuito</th><th class="iz">Qué alimenta</th>'+
+        '<th>PE<br>Ω</th><th>L–N<br>MΩ</th><th>L–PE<br>MΩ</th><th>N–PE<br>MΩ</th><th>Ue<br>V</th>'+
+        '<th>Diferencial</th><th>×½</th><th>×1<br>ms</th><th>×5<br>ms</th><th>TEST</th><th>Resultado</th></tr></thead><tbody>';
+  o.circ.forEach(function(c){
+    var p=protC(c.id, o), e=estadoCirc(c, o);
+    var idn=p.id.idn || ((c.idn && String(c.idn)!=='0') ? String(c.idn) : '');
+    var dif=String(c.idn)==='0' && !p.id.idn ? 'sin ID' : (idn ? idn+' mA'+((p.id.clase||c.idTipo)?' '+(p.id.clase||c.idTipo):'')+(((p.id.ret||c.idRet)&&(p.id.ret||c.idRet)!=='gen')?' '+(p.id.ret||c.idRet):'') : '');
+    var rm=num(p.pe.rm), rp=num(o.prot.rp), pe=(rm===null) ? '' : f(Math.max(0, rm-(rp||0)), 2);
+    h+='<tr><td class="iz">'+esc(c.tab)+'</td><td class="iz">'+esc(c.n)+'</td><td class="iz">'+esc(c.des||'')+'</td>'+
+       '<td>'+pe+'</td><td>'+nC(p.ais.rln,1)+'</td><td>'+nC(p.ais.rlpe,1)+'</td><td>'+nC(p.ais.rnpe,1)+'</td>'+
+       '<td>'+(hayDatos({a:p.ais.rln,b:p.ais.rlpe,c:p.ais.rnpe}) ? esc(p.ais.ue||'500') : '')+'</td>'+
+       '<td>'+esc(dif)+'</td><td>'+(p.id.med===true?'disparó':(p.id.med===false?'no':''))+'</td>'+
+       '<td>'+nC(p.id.t1,0)+'</td><td>'+nC(p.id.t5,0)+'</td><td>'+(p.id.boton===true?'sí':(p.id.boton===false?'no':''))+'</td>'+
+       '<td>'+txtEst(e)+'</td></tr>';
+    if(p.obs) h+='<tr><td class="iz" colspan="14">Observaciones '+esc(c.n)+': '+esc(p.obs)+'</td></tr>';
+  });
+  h+='</tbody></table>';
+  var ra=o.prot.ra||{}, rra=evalRa(o);
+  h+='<h3>Puesta a tierra</h3><table><tbody><tr><td class="iz">Lecturas (Ω)</td><td>'+[nC(ra.r1,2),nC(ra.r2,2),nC(ra.r3,2)].filter(function(x){ return x; }).join(' · ')+
+     '</td><td class="iz">Resultado</td><td>'+(rra?esc(rra.t):'—')+'</td></tr></tbody></table>';
+  var vis=o.prot.vis||{}, cv=camposVis(o).filter(function(c){ return c.tipo==='bool'; }), rv=evalVis(o);
+  h+='<h3>Inspección visual'+(modoVis(o)==='inicial'?' inicial':' periódica')+'</h3><table><tbody>';
+  cv.forEach(function(c){ h+='<tr><td class="iz">'+esc(c.lbl)+'</td><td>'+(vis[c.id]===true?'Conforme':(vis[c.id]===false?'No conforme':'—'))+'</td></tr>'; });
+  if(modoVis(o)!=='inicial' && vis.anio) h+='<tr><td class="iz">Año de la última inspección o de la puesta en servicio</td><td>'+esc(vis.anio)+'</td></tr>';
+  h+='<tr><td class="iz"><b>Resultado</b></td><td>'+(rv?esc(rv.t):'—')+'</td></tr></tbody></table>';
+  var notas=[];
+  var ins=instrumentosProt(); if(ins.length) notas.push('Instrumentos: '+ins.join(' · ')+'.');
+  if(o.prot.rp) notas.push('Resistencia de las puntas descontada en la continuidad del PE: '+nC(o.prot.rp,2)+' Ω.');
+  notas.push(criteriosProt(o.reglam));
+  if(o.reglam!=='771'){
+    var t3=evalFicha('T3', {rp:'0', rm:'0.1', pto:'boca'});
+    if(t3 && t3.li) t3.li.forEach(function(x){ if(String(x).indexOf('0,2 A')>=0) notas.push('Continuidad: '+String(x).replace(/<[^>]+>/g,'')); });
+  }
+  h+='<div class="notas">'+notas.map(esc).join('<br>')+'</div>';
+  h+='<div class="firma"><div>Firma y aclaración</div><div>Matrícula '+esc(o.mat||'')+'</div><div>Fecha '+esc(fechaAR(o.fecha||hoyISO()))+'</div></div>';
+  return h;
+}
+function htmlProtPrint(o){
+  var f2=[];
+  if(o.cliente) f2.push(['Cliente', o.cliente]);
+  if(o.dir) f2.push(['Domicilio', o.dir]);
+  f2.push(['Fecha', fechaAR(o.fecha||hoyISO())]);
+  if(o.reglam && REG_NOMBRE[o.reglam]) f2.push(['Reglamentación', REG_NOMBRE[o.reglam]]);
+  if(o.tipo) f2.push(['Tipo de intervención', o.tipo]);
+  if(o.inst) f2.push(['Instalador', o.inst+(o.mat?' — Matrícula '+o.mat:'')]);
+  var h='<div class="solo-print prot-print"><div class="encab-print"><b>Protocolo de ensayos — AEA 90364</b>'+
+        '<span>Diagnóstico en obra · mediciones circuito por circuito con el criterio de la ficha de cada ensayo</span></div>'+
+        '<table class="tobra">';
+  f2.forEach(function(r){ h+='<tr><th>'+esc(r[0])+'</th><td>'+esc(r[1])+'</td></tr>'; });
+  return h+'</table><div id="protPrint0">'+htmlProtPrintCuerpo(o)+'</div></div>';
+}
+function vistaProtocolo(){
+  ST.vista='protocolo'; btnVolver.hidden=false;
+  var o=ST.obra, n=o.circ.length;
+  tituloBarra.innerHTML='Protocolo de ensayos<span>'+(o.cliente?esc(o.cliente)+' · ':'')+n+' circuito'+(n===1?'':'s')+'</span>';
+  var h='<div class="ficha" id="protRaiz">';
+  if(n) h+=htmlProtPrint(o);
+  h+='<div class="no-print"><h2>Protocolo de ensayos</h2>';
+  h+='<div class="sint">Mediciones circuito por circuito con el criterio de cada ficha: continuidad del PE (T3), aislación (I1) y diferencial (D2), más la puesta a tierra (T1) y la inspección visual (R2 o R6). Sirve para la recepción de una obra nueva y para la verificación periódica o el mantenimiento de una instalación existente.</div>';
+  h+='<div class="bloque"><h3>Reglamentación y tipo de intervención</h3><div class="medir" data-pc="|obra">'+
+     pintarCampos([CAMPO_REGLAM, {id:'modoVis', lbl:'Inspección visual', tipo:'sel', opts:[['inicial','Inicial, antes de la puesta en servicio (a a k)'],['periodica','Periódica o de mantenimiento']]}],
+                  {reglam:o.reglam, modoVis:modoVis(o)}, 'po_')+'</div></div>';
+  if(!n){
+    h+='<p class="vacio">Cargá primero los tableros y circuitos de la obra: a mano, con lo que se ve en el tablero, o importados de la Planilla de Cargas.</p>'+
+       '<div class="acciones"><button class="pri" data-ir="instalacion">Tableros y circuitos</button></div></div></div>';
+    app.innerHTML=h; ligarProtocolo(); pintarNav(); return;
+  }
+  if(o.reglam!=='771') h+='<div class="nota">Con la 7-770 Ed. 2026 la continuidad del PE se ensaya con 0,2 A como mínimo (770.23.5.1). El Fluke 117 y el UT-511 no aseguran esa corriente: sirven para comparar y diagnosticar (ficha T3).</div>';
+  h+='<div class="bloque"><h3>Resumen</h3><div class="tabla-w prot-res-w" id="protRes">'+htmlResumenProt(o)+'</div></div>';
+  h+='<div class="bloque"><h3>Datos comunes</h3><div class="medir" data-pc="|comun">'+
+     pintarCampos([{id:'rp', lbl:'Resistencia de las puntas del instrumento', ayuda:'Se descuenta de cada lectura de continuidad del PE', u:'Ω'}], o.prot, 'pr_')+'</div></div>';
+  h+='<div class="bloque"><h3>Circuitos <small>tocá uno para cargar sus mediciones</small></h3>';
+  o.circ.forEach(function(c, i){ h+=htmlProtCirc(c, i); });
+  h+='</div>';
+  var vra={r1:o.prot.ra.r1, r2:o.prot.ra.r2, r3:o.prot.ra.r3, idn:o.prot.ra.idn||idnMayor(o)};
+  h+='<div class="bloque"><h3>Puesta a tierra <small>criterio de la ficha T1</small></h3><div class="medir" data-pc="|ra">'+
+     pintarCampos(camposRa(), vra, 'pra_')+'</div><div id="pv--ra">'+htmlVerProt(evalRa(o))+'</div></div>';
+  h+='<div class="bloque"><h3>Inspección visual <small>criterio de la ficha '+(modoVis(o)==='inicial'?'R2':'R6')+'</small></h3><div class="medir" data-pc="|vis">'+
+     pintarCampos(camposVis(o), o.prot.vis, 'pvi_')+'</div><div id="pv--vis">'+htmlVerProt(evalVis(o))+'</div></div>';
+  h+='<div class="acciones"><button class="pri" id="protImp">Imprimir o PDF</button><button id="protExp">Exportar para la planilla</button>'+
+     '<button data-ir="instalacion">Tableros y circuitos</button></div>';
+  h+='<div class="nota">«Exportar para la planilla» deja un archivo .json: en la Planilla de Cargas, el botón «Importar mediciones» lo pasa a la hoja Protocolo de ensayos, que entra en el legajo. Sin planilla, «Imprimir o PDF» saca el protocolo directo desde el teléfono.</div>';
+  h+='</div></div>';
+  app.innerHTML=h;
+  ligarProtocolo();
+  pintarNav();
+}
+function ligarProtocolo(){
+  var o=ST.obra, raiz=document.getElementById('protRaiz');
+  if(raiz) raiz.addEventListener('click', function(ev){
+    var b=ev.target && ev.target.closest ? ev.target.closest('.xref[data-id]') : null;
+    if(b){ ir('ficha', b.getAttribute('data-id')); }
+  });
+  app.querySelectorAll('[data-pc]').forEach(function(box){
+    var a=box.getAttribute('data-pc').split('|'), id=a[0], q=a[1], obj;
+    if(q==='obra') obj={};
+    else if(q==='comun') obj=o.prot;
+    else if(q==='ra') obj=o.prot.ra;
+    else if(q==='vis') obj=o.prot.vis;
+    else if(q==='obs') obj=protC(id);
+    else obj=protC(id)[q];
+    function cambio(campo, valor){
+      if(q==='obra'){
+        if(campo==='reglam'){ o.reglam=valor||''; }
+        if(campo==='modoVis'){ o.prot.modoVis=valor||''; }
+        guardar(); vistaProtocolo(); return;
+      }
+      obj[campo]=valor;
+      refrescarProt(id, q);
+    }
+    box.querySelectorAll('[data-c]').forEach(function(el){
+      el.addEventListener('input', function(){ if(q!=='obra') cambio(this.dataset.c, this.value); });
+      el.addEventListener('change', function(){ cambio(this.dataset.c, this.value); guardar(); });
+      el.addEventListener('blur', function(){ guardar(); });
+    });
+    box.querySelectorAll('[data-b]').forEach(function(el){
+      el.onclick=function(){
+        var k=this.dataset.b, val=this.dataset.v==='1';
+        obj[k]=(obj[k]===val) ? null : val;
+        box.querySelectorAll('[data-b="'+k+'"]').forEach(function(bt){ bt.setAttribute('aria-pressed', String(obj[k]===(bt.dataset.v==='1'))); });
+        guardar(); refrescarProt(id, q);
+      };
+    });
+  });
+  app.querySelectorAll('[data-ir]').forEach(function(b){ b.onclick=function(){ ir(this.dataset.ir); }; });
+  var pi=document.getElementById('protImp'); if(pi) pi.onclick=function(){ window.print(); };
+  var pe=document.getElementById('protExp'); if(pe) pe.onclick=exportarProtocolo;
+}
+function refrescarProt(id, q){
+  var o=ST.obra, c=id ? buscarCirc(id) : null, el;
+  if(c && (q==='pe' || q==='ais' || q==='id')){ el=document.getElementById('pv-'+id+'-'+q); if(el) el.innerHTML=htmlVerBloque(c, q); }
+  if(q==='comun') o.circ.forEach(function(cc){ var e2=document.getElementById('pv-'+cc.id+'-pe'); if(e2) e2.innerHTML=htmlVerBloque(cc,'pe'); });
+  if(q==='ra'){ el=document.getElementById('pv--ra'); if(el) el.innerHTML=htmlVerProt(evalRa(o)); }
+  el=document.getElementById('pv--vis'); if(el) el.innerHTML=htmlVerProt(evalVis(o));
+  o.circ.forEach(function(cc){
+    var b=app.querySelector('[data-est="'+cc.id+'"]');
+    if(b){ var e=estadoCirc(cc); b.className='est '+e; b.textContent=txtEst(e); }
+  });
+  el=document.getElementById('protRes'); if(el) el.innerHTML=htmlResumenProt(o);
+  el=document.getElementById('protPrint0'); if(el) el.innerHTML=htmlProtPrintCuerpo(o);
+}
+/* JSON sólo con caracteres ASCII: la planilla lo lee sin depender de la codificación. */
+function jsonAscii(x){
+  return JSON.stringify(x, null, 1).replace(/[\u007f-￿]/g, function(ch){ return '\\u'+('0000'+ch.charCodeAt(0).toString(16)).slice(-4); });
+}
+function datosProtocolo(obra){
+  obra=obra||ST.obra;
+  var out={app:'diagAEA', tipo:'protocolo', formato:1, exportado:new Date().toISOString(),
+    obra:{cliente:obra.cliente||'', dir:obra.dir||'', fecha:obra.fecha||'', reglam:obra.reglam||'', tipo:obra.tipo||'',
+          inst:obra.inst||'', mat:obra.mat||'', obs:obra.obs||'', obraPlanilla:(obra.origen && obra.origen.obra) || ''},
+    criterios:criteriosProt(obra.reglam), instrumentos:instrumentosProt(), rp:num(obra.prot.rp),
+    tableros:obra.tab.map(function(t){ return {n:t.n, ub:t.ub||'', de:t.de||''}; }), circuitos:[]};
+  obra.circ.forEach(function(c){
+    var p=protC(c.id, obra), rpe=evalBloque(c,'pe',obra), rai=evalBloque(c,'ais',obra), rid=evalBloque(c,'id',obra);
+    var hayAis=hayDatos({a:p.ais.rln, b:p.ais.rlpe, c:p.ais.rnpe});
+    out.circuitos.push({n:c.n, tab:c.tab, des:c.des||'',
+      pe:{rm:num(p.pe.rm), e:rpe?rpe.e:'', t:rpe?rpe.t:''},
+      ais:{ue:hayAis?num(p.ais.ue||'500'):null, rln:num(p.ais.rln), rlpe:num(p.ais.rlpe), rnpe:num(p.ais.rnpe), e:rai?rai.e:'', t:rai?rai.t:''},
+      id:{idn:num(p.id.idn||c.idn), tipo:p.id.clase||c.idTipo||'', ret:p.id.ret||c.idRet||'', med:boolONull(p.id.med),
+          t1:num(p.id.t1), t5:num(p.id.t5), boton:boolONull(p.id.boton), e:rid?rid.e:'', t:rid?rid.t:''},
+      obs:p.obs||'', e:estadoCirc(c, obra)});
+  });
+  var ra=obra.prot.ra||{}, rra=evalRa(obra);
+  out.ra={r1:num(ra.r1), r2:num(ra.r2), r3:num(ra.r3), idn:num(ra.idn||idnMayor(obra)), e:rra?rra.e:'', t:rra?rra.t:''};
+  var vis=obra.prot.vis||{}, rv=evalVis(obra);
+  out.visual={modo:modoVis(obra), anio:num(vis.anio), e:rv?rv.e:'', t:rv?rv.t:'',
+    items:camposVis(obra).filter(function(c){ return c.tipo==='bool'; }).map(function(c){ return {k:c.id, t:c.lbl, v:boolONull(vis[c.id])}; })};
+  return out;
+}
+function exportarProtocolo(){
+  var txt;
+  try{ txt=jsonAscii(datosProtocolo()); }catch(e){ toast('No se pudo armar el archivo'); return; }
+  var base=(ST.obra.cliente||'obra').replace(/[^\wáéíóúñÁÉÍÓÚÑ ]/g,'').replace(/\s+/g,'-').toLowerCase();
+  var nombre='protocolo-'+base+'-'+(ST.obra.fecha||hoyISO())+'.json';
+  try{
+    var b=new Blob([txt], {type:'application/json;charset=utf-8'});
+    var u=URL.createObjectURL(b), a=document.createElement('a');
+    a.href=u; a.download=nombre; document.body.appendChild(a); a.click();
+    setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(u); }, 1500);
+    toast('Descargado: '+nombre);
+  }catch(e){ mostrarTexto(txt); }
+}
+function textoProtocolo(obra){
+  var con=obra.circ.filter(function(c){ return estadoCirc(c, obra); });
+  var ra=evalRa(obra), vi=evalVis(obra);
+  if(!con.length && !ra && !vi) return '';
+  var t='PROTOCOLO DE ENSAYOS ('+resumenProt(obra)+')\n';
+  con.forEach(function(c){
+    var p=protC(c.id, obra), partes=[], r;
+    r=evalBloque(c,'pe',obra); if(r) partes.push('PE '+nC(p.pe.rm,2)+' Ω '+txtEst(r.e));
+    r=evalBloque(c,'ais',obra); if(r) partes.push('aislación '+[nC(p.ais.rln,1),nC(p.ais.rlpe,1),nC(p.ais.rnpe,1)].filter(function(x){ return x; }).join(' / ')+' MΩ a '+(p.ais.ue||'500')+' V '+txtEst(r.e));
+    r=evalBloque(c,'id',obra); if(r) partes.push((r.sinId?'sin diferencial':'diferencial ×1 '+nC(p.id.t1,0)+' ms ×5 '+nC(p.id.t5,0)+' ms')+' '+txtEst(r.e));
+    t+='- '+etiquetaCirc(c)+': '+partes.join(' · ')+'\n';
+    if(p.obs) t+='   '+p.obs+'\n';
+  });
+  if(ra) t+='- Puesta a tierra: '+ra.t+' ('+txtEst(ra.e)+')\n';
+  if(vi) t+='- Inspección visual '+(modoVis(obra)==='inicial'?'inicial':'periódica')+': '+vi.t+' ('+txtEst(vi.e)+')\n';
+  return t;
+}
+
+/* ---------- qué corregir: las soluciones de cada ficha que no cumplió ---------- */
+function queCorregir(obra, reg){
+  obra=obra||ST.obra; reg=reg||ST.registro;
+  var g={}, orden=[], sinId=[];
+  function add(id, e, donde){
+    var x=buscarFalla(id);
+    if(!x || !x.sol || !x.sol.length) return;
+    if(!g[id]){ g[id]={x:x, e:e, donde:[]}; orden.push(id); }
+    if(e==='mal') g[id].e='mal';
+    if(donde && g[id].donde.indexOf(donde)<0) g[id].donde.push(donde);
+  }
+  reg.forEach(function(it){ if(it && it.k==='F' && (it.e==='mal' || it.e==='ojo')) add(it.id, it.e, it.circ ? etiquetaCirc(it.circ) : ''); });
+  (obra.circ||[]).forEach(function(c){
+    [['pe','T3'],['ais','I1'],['id','D2']].forEach(function(q){
+      var r=evalBloque(c, q[0], obra);
+      if(!r || (r.e!=='mal' && r.e!=='ojo')) return;
+      if(r.sinId){ sinId.push({c:c, e:r.e}); return; }
+      add(q[1], r.e, etiquetaCirc(c));
+    });
+  });
+  var ra=evalRa(obra); if(ra && (ra.e==='mal' || ra.e==='ojo')) add('T1', ra.e, 'puesta a tierra');
+  var vi=evalVis(obra); if(vi && (vi.e==='mal' || vi.e==='ojo')) add(modoVis(obra)==='inicial' ? 'R2' : 'R6', vi.e, 'inspección visual');
+  var l=orden.map(function(id){ return g[id]; });
+  if(sinId.length){
+    var e=sinId.some(function(s){ return s.e==='mal'; }) ? 'mal' : 'ojo';
+    l.push({x:{id:'—', t:'Circuitos sin diferencial', sol:[obra.reglam==='770'
+      ? 'Instalar protección diferencial de 30 mA como máximo: la 7-770 Ed. 2026 la exige en los circuitos terminales (770.18.3.5). Con tipo A como mínimo, porque los AC no se admiten (770.18.3.5).'
+      : 'Verificar la exigencia de protección diferencial de 771.18.3.5 para cada uno y, donde corresponda, instalar un diferencial de 30 mA como máximo.']},
+      e:e, donde:sinId.map(function(s){ return etiquetaCirc(s.c); })});
+  }
+  l.sort(function(a,b){ return (a.e==='mal'?0:1)-(b.e==='mal'?0:1); });
+  return l;
+}
+function htmlQueCorregir(items){
+  if(!items.length) return '';
+  var h='<div class="bloque"><h3>Qué corregir <small>de lo que no cumplió o quedó a revisar</small></h3>';
+  items.forEach(function(it){
+    h+='<div class="corr'+(it.e==='ojo'?' ojo':'')+'"><div class="h">'+(it.x.id!=='—'?esc(it.x.id)+' · ':'')+esc(it.x.t)+'</div>'+
+       '<div class="d">'+(it.e==='mal'?'No cumple':'A revisar')+(it.donde.length?': '+esc(it.donde.join(', ')):'')+'</div><ul class="sol">';
+    it.x.sol.forEach(function(s){ h+='<li>'+esc(s)+'</li>'; });
+    h+='</ul></div>';
+  });
+  return h+'</div>';
+}
+function textoQueCorregir(items){
+  if(!items.length) return '';
+  var t='\nQUÉ CORREGIR\n';
+  items.forEach(function(it){
+    t+='- '+(it.x.id!=='—'?it.x.id+' ':'')+it.x.t+' — '+(it.e==='mal'?'no cumple':'a revisar')+(it.donde.length?': '+it.donde.join(', '):'')+'\n';
+    it.x.sol.forEach(function(s){ t+='   · '+s+'\n'; });
+  });
+  return t;
 }
 
 /* ---------- navegación ---------- */
@@ -9023,7 +9913,8 @@ var NAVS=[
   {k:'criterios', t:'Criterios', i:'criterios'}
 ];
 function pintarNav(){
-  var actual = (ST.vista==='ficha' || ST.vista==='guia') ? 'inicio' : (ST.vista==='calc' ? 'calculo' : ST.vista);
+  var actual = (ST.vista==='ficha' || ST.vista==='guia') ? 'inicio' : (ST.vista==='calc' ? 'calculo' :
+               ((ST.vista==='instalacion' || ST.vista==='protocolo') ? 'informe' : ST.vista));
   var h='';
   NAVS.forEach(function(n){
     h+='<button data-nav="'+n.k+'"'+(actual===n.k?' aria-current="page"':'')+'>'+ICONOS[n.i]+
@@ -9046,6 +9937,8 @@ function render(){
   else if(ST.vista==='criterios') vistaCriterios();
   else if(ST.vista==='ajustes') vistaAjustes();
   else if(ST.vista==='guia') vistaGuia();
+  else if(ST.vista==='instalacion') vistaInstalacion();
+  else if(ST.vista==='protocolo') vistaProtocolo();
   else vistaInicio();
 }
 function preparar(vista, arg){
@@ -9054,21 +9947,19 @@ function preparar(vista, arg){
     var x=buscarFalla(arg);
     if(!x){ ST.vista='inicio'; return; }
     ST.falla=x; ST.vista='ficha';
-    ST.valores = ST.guardados[x.id] ? JSON.parse(JSON.stringify(ST.guardados[x.id])) : {};
-    if(x.med && tieneReglam(x.med.campos)) ST.valores.reglam = ST.obra.reglam || '';
+    ST.valores = cargarValores('F', x);
     ST.veredicto=null; ST.vals=null;
     marcarReciente(x.id);
-    for(var i=0;i<ST.registro.length;i++) if(ST.registro[i].id===x.id && ST.registro[i].k==='F') ST.editando=i;
+    ST.editando = buscarEditando('F', x.id);
   } else if(vista==='calc'){
     var c=buscarCalc(arg);
     if(!c){ ST.vista='calculo'; return; }
     ST.calc=c; ST.vista='calc';
-    ST.valores = ST.guardados['calc:'+c.id] ? JSON.parse(JSON.stringify(ST.guardados['calc:'+c.id])) : {};
-    if(tieneReglam(c.campos)) ST.valores.reglam = ST.obra.reglam || '';
+    ST.valores = cargarValores('C', c);
     var vals=evaluarCampos(c.campos, ST.valores), r=null;
     try{ r=c.ev(vals); }catch(e){ r=null; }
     ST.veredicto=r; ST.vals=vals; ST.firmaCalc=firmaValores();
-    for(var j=0;j<ST.registro.length;j++) if(ST.registro[j].id===c.id && ST.registro[j].k==='C') ST.editando=j;
+    ST.editando = buscarEditando('C', c.id);
   } else if(vista==='guia'){
     if(!GUIAS[arg]){ ST.vista='inicio'; return; }
     ST.guia=arg; ST.vista='guia';
@@ -9076,6 +9967,7 @@ function preparar(vista, arg){
     ST.vista=vista;
     ST.manAbierto = (vista==='equipos' && arg) ? arg : null;
     if(vista==='inicio'){ ST.triage=null; ST.filtro=''; }
+    if(vista==='instalacion'){ ST.edit=null; ST.borrador=null; }
   }
 }
 function ir(vista, arg){
