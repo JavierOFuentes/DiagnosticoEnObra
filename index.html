@@ -675,6 +675,7 @@ var FAMILIAS = [
   {id:'cal',  n:'Caída de tensión y calentamiento'},
   {id:'can',  n:'Canalizaciones y cableado'},
   {id:'car',  n:'Cargas y aparatos'},
+  {id:'aut',  n:'Automatizaciones y tableros de comando'},
   {id:'tab',  n:'Tableros y locales comerciales'},
   {id:'loc',  n:'Rubros y equipos de local comercial'},
   {id:'eme',  n:'Emergencia y pública concurrencia (7-718)'},
@@ -4987,6 +4988,580 @@ cita:'AEA 90364-7-718 (2008), 718.556.10.2: verificación mensual de iluminació
 });
 
 /* ============================================================
+   Automatizaciones y tableros de comando — familia "aut"
+   Tanques y cisternas, presurizadoras, achique, portones, palier,
+   iluminación exterior, termotanques, domótica y contactores.
+   AEA 90364-7-771: 771.7.6 c), 771.8.5 k) y l), 771.17.3, 771.18.2,
+   771.18.3.5, 771.20.4, 771-B.2, 771-B.8, 771-B.9 · 7-770 Ed. 2026:
+   770.17.3, 770.18.3.5, 770.20.6.4 · 7-701: 701.55.7.
+   Lo que viene de IEC (contactores, colores) va marcado como catálogo.
+   ============================================================ */
+function _autIP(ubic, ext){
+  if(ubic==='int') return ext ? 55 : 54;
+  if(ubic==='moj') return 44;
+  return 41;
+}
+function _autIPtxt(ubic, ext){
+  if(ubic==='int') return ext ? 'IP55 e IK10 (771-B.8.3.3)' : 'IP54 (770.20.6.4 · 771-B.3)';
+  if(ubic==='moj') return 'IP4X por las personas (771.20.4) y X4 por el agua (771-B.2): IP44, con la maniobra preferentemente afuera del local';
+  if(ubic==='hum') return 'IP41 o IP31D, con el gabinete sellado y el material IPX1 (771.20.4 · 771-B.1)';
+  return 'IP41 o IP31D (770.20.6.4 · 771.20.4)';
+}
+
+F.push({
+id:'M1', fam:'aut', t:'La bomba de tanque o cisterna no arranca o no corta',
+sint:'El tanque se vacía y la bomba no arranca, o arranca y no corta y el tanque rebalsa. A veces anda sólo en manual, o arranca y al rato se para.',
+causas:['Guardamotor o relé térmico disparado: sobrecarga, falta de fase o regulación más baja que la chapa','Flotante del tanque trabado, con el contrapeso corrido o con el cable cortado','Electrodos sucios o con sarro, o relé de nivel desajustado','Corte por falta de agua en la cisterna actuando bien: falta agua','Bobina del contactor cortada, o tensión de comando que no alcanza en la punta del cable','Selector en 0 o en manual, o protección del comando abierta','Bomba trabada o descebada: arranca, calienta y dispara'],
+eq:_eq('f117v','f117cont','ut204','ut511'),
+pasos:[
+ 'Con el selector en Automático, ver qué pide el comando: el piloto o el contactor dicen si el control de nivel manda arrancar.',
+ 'Medir la tensión del circuito de comando en el tablero y en la punta de los flotantes o electrodos. En el tanque y en la cisterna tiene que ser MBTS: 24 V como máximo, con transformador de seguridad y nada a tierra.',
+ 'Puentear en el tablero los bornes del flotante del tanque, del lado de MBTS: si arranca, la falla está en el flotante o en su cable.',
+ 'Medir con la pinza la corriente de la bomba en marcha y compararla con la de chapa; en trifásica, las tres fases.',
+ 'Si el guardamotor o el relé térmico está disparado, anotar la regulación y compararla con la corriente de chapa antes de rearmar.',
+ 'Con la bomba desconectada, medir la aislación del motor y su cable con el UT-511 a 500 V.'
+],
+med:{campos:[
+ {id:'ucom', lbl:'Tensión del comando de flotantes o electrodos', ayuda:'En tanques y cisternas: MBTS de 24 V como máximo (771.8.5 l)', u:'V'},
+ {id:'fseg', lbl:'¿El comando sale de un transformador de seguridad IEC 61558-2-6, con el secundario sin poner a tierra?', tipo:'bool'},
+ {id:'disp', lbl:'¿El guardamotor o el relé térmico está disparado?', tipo:'bool'},
+ {id:'ireg', lbl:'Regulación del guardamotor o del relé térmico', u:'A'},
+ {id:'ich', lbl:'Corriente nominal de chapa de la bomba', u:'A'},
+ {id:'imed', lbl:'Corriente medida en marcha (la fase más cargada)', u:'A'},
+ {id:'ais', lbl:'Aislación del motor con su cable (500 V)', u:'MΩ'},
+ CAMPO_REGLAM
+], ev:function(v){
+ var li=[], e='ok', d='', hay=false, rg=false, lim=aislMin(v.reglam,500);
+ var mal=function(m){ e='mal'; li.push(m); }, ojo=function(m){ if(e!=='mal') e='ojo'; li.push(m); };
+ if(v.ucom!==null){ hay=true; d+='Comando a <span class="num">'+f(v.ucom,0)+' V</span>. ';
+   if(v.ucom>24){ rg=true; mal('El comando de los flotantes está a '+f(v.ucom,0)+' V: no es MBTS. Los circuitos de comando de flotantes, señalizaciones y alarmas de los tanques cisterna y elevado van en muy baja tensión sin puesta a tierra (771.8.5 l). Cambiar a un transformador de seguridad 220/12 o 24 V IEC 61558-2-6 y a flotantes de comando o electrodos con relé de nivel (ficha M4).'); }
+   else li.push('El comando está en muy baja tensión. Para que sea MBTS, además, la fuente tiene que ser de seguridad y nada del secundario puede ir a tierra (771.18.2).'); }
+ if(v.fseg===false){ hay=true; rg=true; mal('La fuente del comando no es de seguridad o tiene el secundario a tierra: así no es MBTS y la 771.18.2 lo trata como MBTF. Las fuentes de muy baja tensión llevan transformador de primario y secundario independientes, sin autotransformadores (771.8.5 k).'); }
+ if(v.ais!==null){ hay=true; d+='Aislación <span class="num">'+f(v.ais,2)+' MΩ</span>. ';
+   if(v.ais<lim){ rg=true; mal('Aislación del motor con su cable por debajo de '+f(lim,1)+' MΩ ('+citaAisl(v.reglam,500)+'): humedad en el bobinado, sello gastado o cable dañado. La bomba sale de servicio hasta repararla.'); }
+   else li.push('La aislación del motor con su cable está bien ('+f(lim,1)+' MΩ como mínimo, '+citaAisl(v.reglam,500)+').'); }
+ if(v.ireg!==null && v.ich!==null && v.ich>0){ hay=true;
+   var rr=v.ireg/v.ich;
+   d+='Regulación <span class="num">'+f(v.ireg,1)+' A</span> con chapa de <span class="num">'+f(v.ich,1)+' A</span>. ';
+   if(rr>1.02) ojo('El relé está regulado por encima de la corriente de chapa: el motor queda sin la protección dedicada contra la sobrecarga que pide la 771.17.3.2. Se regula a la corriente de chapa (criterio de los fabricantes; ver la ficha G8).');
+   else if(rr<0.98) ojo('El relé está regulado por debajo de la chapa: dispara sin falla. Llevarlo a la corriente de chapa (ficha G8).'); }
+ if(v.imed!==null && v.ich!==null && v.ich>0){ hay=true;
+   var rc=v.imed/v.ich; d+='Corriente <span class="num">'+f(v.imed,1)+' A</span> = <span class="num">'+f(rc*100,0)+' %</span> de la chapa. ';
+   if(rc>1.15) mal('La bomba toma '+f(rc*100,0)+' % de su corriente nominal: está trabada, con un rodamiento gastado o con la tensión baja. El relé va a seguir disparando hasta resolverlo.');
+   else if(rc>1.0) ojo('La bomba trabaja apenas por encima de su corriente nominal: revisar la tensión en bornes y la parte mecánica.');
+   else if(rc<0.4) ojo('Corriente muy baja para la bomba en marcha: puede estar descebada o girando en vacío (cisterna vacía o válvula de pie que pierde).'); }
+ if(v.disp===true){ hay=true; li.push('Antes de rearmar el guardamotor: medir la aislación, revisar las tres fases si es trifásica (ficha B3) y verificar que el motor gire libre. Rearmar sobre una falla quema el motor (ficha G7).'); }
+ if(!hay) return null;
+ li.push('El circuito de comando tiene que tener su propia protección contra cortocircuitos, independiente de la principal (771.17.3.1 · 771.20.4).');
+ return {e:e, t:e==='mal'?'Hay que corregir el comando o la bomba':(e==='ojo'?'Revisar la regulación o la carga de la bomba':'El comando y la bomba están bien'), d:d, li:li, pel:rg};
+}},
+sol:['Pasar el comando de flotantes a MBTS: transformador de seguridad 220/12 o 24 V IEC 61558-2-6, flotantes de comando o electrodos con relé de nivel, secundario sin poner a tierra.','Regular el guardamotor o el relé térmico a la corriente de chapa de la bomba.','Reemplazar el flotante trabado o limpiar los electrodos, y revisar el corte por falta de agua de la cisterna.','Reparar o cambiar la bomba con aislación baja o que toma más corriente que la nominal.','Dejar la protección del circuito de comando separada de la principal.'],
+cita:'AEA 90364-7-771: 771.8.5 l) (los circuitos de comando de flotantes, señalizaciones y alarmas de los tanques cisterna y elevado y de los ambientes mojados se alimentan con MBTS), 771.8.5 k) y 771.18.2 (fuente de seguridad IEC 61558-2-6, 24 V como máximo, nada a tierra; sin autotransformadores), 771.17.3.1 y 771.17.3.2 (protección específica del motor y falta de fase), 771.20.4 (protección exclusiva del circuito de comando). 7-770 Ed. 2026: 770.17.3. Aislación: Tablas 770.23.I y 771.23.I. Regulación del relé a la corriente nominal del motor: criterio de los fabricantes (Cuaderno de aplicaciones técnicas nº 6 de ABB).'
+},
+{
+id:'M2', fam:'aut', t:'La bomba arranca y para seguido',
+sint:'Presurizadora o bomba de tanque que arranca y corta cada pocos segundos o minutos, aunque nadie use agua. Termina disparando el térmico o quemando el motor.',
+causas:['Tanque hidroneumático sin precarga de aire o con la membrana rota','Presostato con poca diferencia entre la presión de arranque y la de parada','Válvula de retención o de pie que pierde: la presión baja sola','Pérdida en la instalación: canilla, depósito de inodoro o cañería','En tanque elevado: flotante o electrodos con muy poco recorrido entre arranque y parada','Bomba sobredimensionada para el consumo'],
+eq:_eq('ut204','f117v'),
+pasos:[
+ 'Con todas las canillas cerradas, contar cuántas veces arranca la bomba en 10 minutos.',
+ 'Cerrar la llave de salida de la bomba: si la presión igual cae y la bomba vuelve a arrancar, pierde la retención o la válvula de pie.',
+ 'Con la bomba parada y el tanque hidroneumático sin presión de agua, medir la precarga de aire en su válvula y compararla con la que pide el fabricante.',
+ 'Revisar el ajuste del presostato o, en tanques elevados, la distancia entre los niveles de arranque y de parada.',
+ 'Buscar canillas y depósitos de inodoro que pierdan.'
+],
+med:{campos:[
+ {id:'arr', lbl:'Arranques contados en 10 minutos, sin consumo', u:''},
+ {id:'arrmax', lbl:'Arranques por hora que admite el motor (catálogo de la bomba)', u:''},
+ {id:'cae', lbl:'¿Con la salida cerrada, la presión cae y la bomba vuelve a arrancar?', tipo:'bool'},
+ {id:'pre', lbl:'¿El tanque hidroneumático tiene la precarga que pide el fabricante?', tipo:'bool'}
+], ev:function(v){
+ var li=[], e='ok', d='', hay=false;
+ if(v.arr!==null){ hay=true; var ph=v.arr*6; d='Ritmo de <span class="num">'+f(ph,0)+'</span> arranques por hora sin consumo. ';
+   if(v.arr>0){ e='ojo'; li.push('Sin consumo, la bomba no debería arrancar: hay una pérdida, la retención no cierra o el tanque no tiene aire.'); }
+   if(v.arrmax!==null && v.arrmax>0){
+     if(ph>v.arrmax){ e='mal'; li.push('Arranca más veces por hora ('+f(ph,0)+') de las que admite el motor ('+f(v.arrmax,0)+'): el bobinado se recalienta en cada arranque y el térmico termina disparando, o el motor se quema.'); }
+     else li.push('El ritmo de arranques está dentro de lo que admite el motor según su catálogo.');
+   } else if(v.arr>0) li.push('Cargá los arranques por hora que admite el motor (catálogo) para saber si el ritmo lo daña.'); }
+ if(v.cae===true){ hay=true; if(e!=='mal') e='ojo'; li.push('La presión cae con la salida cerrada: pierde la válvula de retención o la de pie. Cambiarla antes de tocar el presostato.'); }
+ if(v.pre===false){ hay=true; if(e!=='mal') e='ojo'; li.push('Sin la precarga de aire el tanque no amortigua: cada consumo chico hace arrancar la bomba. Cargar el aire con la bomba parada y sin presión de agua, al valor del fabricante; si no la mantiene, la membrana está rota.'); }
+ if(!hay) return null;
+ li.push('Los arranques por hora y la precarga son datos del fabricante, no de la AEA. La protección del motor contra sobrecarga sí es exigible desde 0,75 kW (771.17.3.1 · 770.17.3.1).');
+ return {e:e, t:e==='mal'?'El motor arranca más de lo que admite':(e==='ojo'?'Hay una pérdida o falta aire en el tanque':'La bomba no cicla'), d:d, li:li};
+}},
+sol:['Cambiar la válvula de retención o de pie que pierde.','Cargar la precarga del tanque hidroneumático o cambiar la membrana.','Ajustar el presostato con la diferencia que pide el fabricante.','Separar los niveles de arranque y parada del tanque elevado.','Reparar las pérdidas de la instalación.'],
+cita:'Diagnóstico hidráulico y mecánico. Los arranques por hora admitidos y la precarga del tanque son datos del fabricante de la bomba. AEA 90364-7-771, 771.17.3.1 y 7-770 Ed. 2026, 770.17.3.1: protección específica del motor desde 0,75 kW.'
+},
+{
+id:'M3', fam:'aut', t:'El diferencial dispara con la bomba sumergible o de achique',
+sint:'El diferencial salta cuando arranca la bomba del pozo o del sótano, o cuando sube el agua. A veces aguanta días y salta con la lluvia.',
+causas:['Empalme del cable de la bomba dentro del pozo o la cámara, sin manguito estanco','Cable de la bomba con la vaina dañada por el roce o por la manipulación','Motor con humedad en el bobinado: sello mecánico gastado','Caja de conexión en el pozo sin el grado de protección que corresponde','Fugas sumadas de varios equipos en el mismo diferencial'],
+eq:_eq('ut511','ut251','ut582','f117cont'),
+pasos:[
+ 'Desconectar la bomba en el tablero: si el diferencial deja de saltar, la falla está en la bomba, su cable o sus empalmes.',
+ 'Con la bomba desconectada del circuito, medir desde el tablero la aislación de la bomba con su cable, con el UT-511 a 500 V.',
+ 'Medir la fuga permanente con la pinza UT-251A abrazando juntos los conductores activos del circuito de la bomba (fase y neutro, o las tres fases y el neutro).',
+ 'Revisar los empalmes y la caja de conexión del pozo: el pozo y la cámara son lugares mojados.',
+ 'Probar el diferencial con el UT-582+ (ficha D2).'
+],
+med:{campos:[
+ {id:'ais', lbl:'Aislación de la bomba con su cable (500 V)', u:'MΩ'},
+ {id:'fuga', lbl:'Fuga permanente del circuito de la bomba', u:'mA'},
+ {id:'idn', lbl:'IΔn del diferencial', u:'mA'},
+ {id:'emp', lbl:'¿Hay empalmes del cable dentro del pozo o la cámara?', tipo:'bool'},
+ CAMPO_REGLAM
+], ev:function(v){
+ var li=[], e='ok', d='', hay=false, rg=false, lim=aislMin(v.reglam,500);
+ if(v.ais!==null){ hay=true; d+='Aislación <span class="num">'+f(v.ais,2)+' MΩ</span>. ';
+   if(v.ais<lim){ e='mal'; rg=true; li.push('La aislación de la bomba con su cable está por debajo de '+f(lim,1)+' MΩ ('+citaAisl(v.reglam,500)+'): ahí está la fuga. Separar el cable de la bomba y medir cada uno para saber si es el motor o el cable (ficha I2).'); }
+   else li.push('La aislación está bien: buscar la causa en la fuga repartida del diferencial o en los empalmes con agua.'); }
+ if(v.fuga!==null && v.idn!==null && v.idn>0){ hay=true; var p=v.fuga/v.idn*100;
+   d+='Fuga <span class="num">'+f(v.fuga,1)+' mA</span> = <span class="num">'+f(p,0)+' %</span> de IΔn. ';
+   if(p>50){ e='mal'; li.push('La fuga pasa del 50 % de IΔn: un diferencial puede disparar desde ahí (no debe disparar a ½ IΔn y debe hacerlo antes de IΔn). Con esa fuga, salta en cualquier momento.'); }
+   else if(p>30){ if(e!=='mal') e='ojo'; li.push('La fuga está entre el 30 y el 50 % de IΔn: cualquier fuga transitoria la hace disparar. Bajarla o repartir los circuitos (cálculo K15).'); }
+   else li.push('La fuga permanente está debajo del 30 % de IΔn.'); }
+ if(v.emp===true){ hay=true; if(e!=='mal') e='ojo'; li.push('Un empalme dentro del pozo o la cámara es el punto débil. Una instalación subterránea accesible se considera lugar mojado (771-B.2): cañerías vinculadas a las cajas con estanqueidad IP54 y aparatos IPX4 como mínimo. Lo mejor es llevar el cable de la bomba entero hasta una caja fuera del pozo.'); }
+ if(!hay) return null;
+ li.push('El diferencial de 30 mA no se puede sacar para que la bomba ande: la 771.18.3.5 lo exige en los circuitos ACU, APM y OCE, entre otros, y sólo admite prescindir de él en un ACU cuyo arranque estrella-triángulo lo haga disparar, con las condiciones a), b) y c) de esa cláusula. En vivienda, además, no se admite el tipo AC (770.18.3.5).');
+ return {e:e, t:e==='mal'?'La fuga está en la bomba o en su cable':(e==='ojo'?'Hay una condición que favorece el disparo':'La bomba no explica el disparo'), d:d, li:li, pel:rg};
+}},
+sol:['Reparar o cambiar la bomba o el cable con aislación baja.','Rehacer los empalmes fuera del pozo, o con manguito estanco si no hay otra opción.','Llevar la caja de conexión a un grado de protección adecuado al lugar mojado.','Repartir los circuitos para que ningún diferencial cargue más del 30 % de su IΔn de fuga permanente.'],
+cita:'AEA 90364-7-771: 771-B.2 (las instalaciones subterráneas accesibles se consideran lugares mojados; cañerías vinculadas a las cajas con estanqueidad IP54; luminarias, motores y aparatos IPX4), 771.18.3.5 (diferencial de 30 mA no retardado en IUG, IUE, TUG, TUE, MBTF, ATE, APM, ACU, ITE y OCE; excepción del ACU con arranque estrella-triángulo). 7-770 Ed. 2026: 770.18.3.5 (no se admite el tipo AC). Aislación: Tablas 770.23.I y 771.23.I. Diferenciales: no disparan a ½ IΔn y sí antes de IΔn (IEC 61008 / 61009). Fuga permanente ≤ 30 % de IΔn: BS 7671, 531.3.2, basada en IEC 60364-5-53.'
+},
+{
+id:'M4', fam:'aut', t:'Flotantes o sensores a 220 V en un tanque o lugar mojado',
+sint:'Relevamiento del comando de un tanque, una cisterna, un pozo o un local mojado: flotantes de potencia a 220 V dentro del tanque, comandos alimentados con autotransformador o con el secundario a tierra.',
+causas:['Flotante de potencia a 220 V dentro del tanque, que maniobra la bomba en forma directa','Comando a 220 V que baja al tanque por el mismo caño que la alimentación','Transformador común o autotransformador en lugar de uno de seguridad','Secundario del transformador unido a tierra o al PE','Cable de comando empalmado dentro del tanque'],
+eq:_eq('f117v','f117cont'),
+pasos:[
+ 'Ubicar el comando: qué hay dentro del tanque o cisterna (flotantes, electrodos, sensores) y de dónde se alimentan.',
+ 'Medir la tensión del comando en el tablero y en la punta del tanque.',
+ 'Leer la chapa de la fuente: tiene que ser un transformador de seguridad IEC 61558-2-6 (o una fuente IEC 61558-2-16), no un autotransformador.',
+ 'Sin tensión, verificar con el Fluke en continuidad que ningún borne del secundario esté unido a tierra o al PE.',
+ 'Ver si el cable de comando comparte caño o caja con los de 220 V.'
+],
+med:{campos:[
+ {id:'lug', lbl:'Dónde están los flotantes o sensores', tipo:'sel', opts:[['tanque','Tanque elevado o cisterna'],['pozo','Pozo, cámara o sótano con agua'],['moj','Otro lugar mojado'],['seco','Lugar seco']]},
+ {id:'u', lbl:'Tensión medida del comando', u:'V'},
+ {id:'fte', lbl:'Fuente del comando', tipo:'sel', opts:[['seg','Transformador de seguridad IEC 61558-2-6 o fuente IEC 61558-2-16'],['comun','Transformador común o sin marca'],['auto','Autotransformador'],['red','Sin fuente: 220 V directo']]},
+ {id:'tierra', lbl:'¿Algún punto del secundario está unido a tierra o al PE?', tipo:'bool'},
+ {id:'canal', lbl:'¿El cable de comando comparte caño o caja con los de 220 V?', tipo:'bool'}
+], ev:function(v){
+ var li=[], e='ok', d='', hay=false;
+ var exig = (v.lug==='tanque'||v.lug==='pozo'||v.lug==='moj');
+ var mal=function(m){ e='mal'; li.push(m); }, ojo=function(m){ if(e!=='mal') e='ojo'; li.push(m); };
+ if(v.lug){ hay=true; li.push(exig ? 'En tanques cisterna y elevado y en ambientes mojados, los circuitos de comando se alimentan con MBTS (771.8.5 l).' : 'En lugar seco la MBTS no es obligatoria para el comando; si se usa 220 V, el comando necesita igual su protección propia contra cortocircuitos (771.20.4).'); }
+ if(v.u!==null){ hay=true; d+='Comando a <span class="num">'+f(v.u,0)+' V</span>. ';
+   if(v.u>24 && exig) mal('Con '+f(v.u,0)+' V no es muy baja tensión: no cumple 771.8.5 l). Pasar el comando a MBTS de 12 o 24 V.');
+   else if(v.u>12 && exig) li.push('Donde el cuerpo pueda estar sumergido en agua, la MBTS es de 12 V como máximo (771.18.2 a). En baños, zonas 0 y 1: ver la ficha Z8.'); }
+ if(v.fte){ hay=true;
+   if(v.fte==='red'){ if(exig) mal('Flotante de potencia a 220 V dentro del tanque o en el lugar mojado: es lo que prohíbe 771.8.5 l). Reemplazarlo por un comando en MBTS con relé de nivel o flotante de comando.');
+     else li.push('Comando a 220 V en lugar seco: admitido, con su protección propia contra cortocircuitos (771.20.4).'); }
+   else if(v.fte==='auto') mal('Los autotransformadores no se permiten para las fuentes de muy baja tensión: hace falta un transformador con primario y secundario independientes (771.8.5 k).');
+   else if(v.fte==='comun'){ var m1='Sin la marca IEC 61558-2-6 no hay cómo asegurar que la fuente sea de seguridad: no se puede considerar MBTS (771.18.2 b).'; if(exig) mal(m1); else ojo(m1); }
+   else li.push('La fuente es de seguridad (IEC 61558-2-6).'); }
+ if(v.tierra===true){ hay=true; var m2='En MBTS ni el secundario ni las masas se conectan a tierra ni al conductor de protección de otros circuitos (771.18.2). Con un punto a tierra deja de ser MBTS y la 771.18.2 lo trata como MBTF.'; if(exig) mal(m2); else ojo(m2); }
+ if(v.canal===true){ hay=true; ojo('El cable de MBTS va en una canalización independiente de la de 220 V; si no se puede, en un caño aislante propio, con pantalla puesta a tierra, o aislado para la mayor tensión (771.12.3.13.2 h y su Nota 1).'); }
+ if(!hay) return null;
+ return {e:e, t:e==='mal'?'El comando no es MBTS':(e==='ojo'?'El comando tiene observaciones':'El comando cumple'), d:d, li:li, pel:(e==='mal')};
+}},
+sol:['Instalar un transformador de seguridad 220/12 o 24 V IEC 61558-2-6 con su protección propia en el primario.','Cambiar los flotantes de potencia por flotantes de comando o electrodos con relé de nivel.','Desconectar de tierra cualquier punto del secundario.','Llevar el cable de comando por un caño propio.'],
+cita:'AEA 90364-7-771: 771.8.5 k) (fuentes de muy baja tensión con transformador de primario y secundario independientes, sin autotransformadores) y l) (comandos de flotantes, señalizaciones y alarmas en ambientes mojados, incluidos los de los tanques cisterna y elevado, en MBTS); 771.18.2 (MBTS: 24 V, o 12 V donde el cuerpo pueda estar sumergido; transformador de seguridad IEC 61558-2-6; secundario y masas sin poner a tierra); 771.12.3.13.2 h) (sistemas de distinta tensión en canalizaciones independientes) y 771.20.4 (protección exclusiva del comando).'
+},
+{
+id:'M5', fam:'aut', t:'El portón automático no abre, se detiene o invierte solo',
+sint:'El portón no responde al control, arranca y se detiene, o invierte sin obstáculo. O al revés, lo grave: no se detiene ante un obstáculo.',
+causas:['Fotocélulas desalineadas, sucias o sin alimentación','Final de carrera desajustado o roto','Capacitor de arranque agotado en motores monofásicos','Fuerza o embrague mal regulados en la central','Caída de tensión en el arranque por un circuito largo o con bornes flojos','Portón trabado o con la guía sucia: el motor trabaja forzado','Central dañada o receptor del control remoto con falla'],
+eq:_eq('f117v','f117cont','ut204','ut511'),
+pasos:[
+ 'PRIMERO la seguridad: verificar que las fotocélulas detengan o inviertan el portón y que ante un obstáculo se detenga.',
+ 'Medir la continuidad entre la estructura del portón y la barra de PE del tablero, sin tensión.',
+ 'Medir la tensión en la central en reposo y durante el arranque.',
+ 'Medir la corriente del motor en marcha y compararla con la de chapa.',
+ 'Con el motor desconectado, medir su aislación con el UT-511 a 500 V.',
+ 'Mover el portón a mano con el motor desembragado: si cuesta, el problema es mecánico.'
+],
+med:{campos:[
+ {id:'foto', lbl:'¿Las fotocélulas detienen o invierten el portón?', tipo:'bool'},
+ {id:'obst', lbl:'¿Ante un obstáculo el portón se detiene o invierte?', tipo:'bool'},
+ {id:'rpe', lbl:'Continuidad estructura–barra de PE, descontadas las puntas', u:'Ω'},
+ {id:'ur', lbl:'Tensión en la central en reposo', u:'V'},
+ {id:'ua', lbl:'Tensión en la central durante el arranque', u:'V'},
+ {id:'imed', lbl:'Corriente del motor en marcha', u:'A'},
+ {id:'ich', lbl:'Corriente nominal de chapa', u:'A'},
+ {id:'ais', lbl:'Aislación del motor (500 V)', u:'MΩ'},
+ CAMPO_REGLAM
+], ev:function(v){
+ var li=[], e='ok', d='', hay=false, rg=false, lim=aislMin(v.reglam,500);
+ var mal=function(m){ e='mal'; li.push(m); }, ojo=function(m){ if(e!=='mal') e='ojo'; li.push(m); };
+ if(v.foto===false||v.obst===false){ hay=true; mal('Las seguridades no actúan: el portón puede aplastar a una persona o a un vehículo. Dejarlo fuera de servicio en automático hasta repararlas. Son dispositivos del equipo (norma de producto IEC 60335-2-103) y se regulan con el manual del fabricante.'); }
+ if(v.rpe!==null){ hay=true; d+='Continuidad al PE <span class="num">'+f(v.rpe,2)+' Ω</span> (criterio práctico 1 Ω). ';
+   if(v.rpe>1){ rg=true; mal('La estructura no tiene una puesta a tierra efectiva: es una masa grande y accesible. Unir la estructura, las guías y el motor al conductor de protección sobre metal limpio (771.18.5.7; ver la ficha T3).'); } }
+ if(v.ais!==null){ hay=true; d+='Aislación <span class="num">'+f(v.ais,2)+' MΩ</span>. ';
+   if(v.ais<lim){ rg=true; mal('El motor tiene la aislación por debajo de '+f(lim,1)+' MΩ ('+citaAisl(v.reglam,500)+'): sacarlo de servicio.'); } }
+ if(v.ur!==null && v.ua!==null && v.ur>0){ hay=true; var p=(v.ur-v.ua)/v.ur*100;
+   d+='Caída entre reposo y arranque <span class="num">'+f(p,1)+' %</span>. ';
+   if(p>15){
+     if(v.reglam==='771') mal('La caída en el arranque pasa del 15 % (771.13 b): el motor no llega al par y se detiene a mitad de recorrido sin estar roto. Ver el cálculo K11.');
+     else if(v.reglam==='770') ojo('La caída en el arranque pasa del 15 %: el motor puede no vencer el par y detenerse a mitad de recorrido. La 7-770 Ed. 2026 no fija un valor para el arranque: verificar con los datos del equipo (Tabla 770.19.IV, Nota 2). Ver el cálculo K11.');
+     else ojo('La caída en el arranque pasa del 15 %: la 7-771 lo limita a ese valor (771.13 b) y la 7-770 Ed. 2026 no fija valor para el arranque (Tabla 770.19.IV, Nota 2). Elegí la reglamentación para el veredicto. Ver el cálculo K11.'); }
+   else li.push('La caída en el arranque está dentro del 15 %.');
+   li.push('Medida en la central entre reposo y arranque, la caída incluye la de la red de la distribuidora: si da cerca del límite, separar la parte de la instalación con el cálculo K11.'); }
+ if(v.imed!==null && v.ich!==null && v.ich>0){ hay=true; var rc=v.imed/v.ich;
+   d+='Corriente <span class="num">'+f(rc*100,0)+' %</span> de la chapa. ';
+   if(rc>1.15) ojo('El motor trabaja forzado: guía sucia, ruedas gastadas o portón desbalanceado. Resolver la mecánica antes de cambiar el motor o subir la fuerza de la central.');
+   else if(rc<0.3) ojo('Corriente muy baja para el motor en marcha: capacitor de arranque agotado, final de carrera abierto o central sin salida.'); }
+ if(!hay) return null;
+ li.push('El circuito va con diferencial de 30 mA (771.18.3.5 · 770.18.3.5) y puede ser un APM, que la 771.7.6 c2) nombra para los accionamientos de puertas, portones y cortinas. Cortinas de local: ficha L3.');
+ return {e:e, t:e==='mal'?'El portón no es seguro o tiene una falla eléctrica':(e==='ojo'?'Revisar la alimentación o la mecánica':'Sin fallas en lo medido'), d:d, li:li, pel:rg};
+}},
+sol:['Reparar y probar las fotocélulas y la detección de obstáculos antes de devolver el portón al uso en automático.','Unir la estructura, las guías y el motor al conductor de protección.','Corregir la mecánica (guía, ruedas, balanceo) antes de tocar la fuerza de la central.','Cambiar el capacitor de arranque agotado.','Mejorar la alimentación si la caída en el arranque es excesiva.'],
+cita:'AEA 90364-7-771: 771.7.6 c2) I (APM: accionamientos para puertas, portones y cortinas), 771.18.5.7 (conexión de las masas al conductor de protección), 771.18.3.5 (diferencial de 30 mA), 771.13 b) (15 % durante el arranque). 7-770 Ed. 2026: 770.18.3.5; Tabla 770.19.IV, Nota 2. Fotocélulas, detección de obstáculos y fuerza: norma de producto IEC 60335-2-103 y manual del fabricante. Continuidad de 1 Ω: criterio práctico.'
+},
+{
+id:'M6', fam:'aut', t:'Luces de palier: no encienden, quedan encendidas o cortan antes',
+sint:'El automático de escalera no enciende las luces, las deja prendidas sin que nadie pulse, corta antes de tiempo o las LED quedan tenues o parpadeando apagadas.',
+causas:['Pulsadores luminosos que suman corriente y mantienen actuado el automático','Más carga o más lámparas LED de las que admite el automático','Pulsador trabado o cable del pulsador con la fase equivocada','Automático en posición de encendido permanente','Tiempo mal ajustado o automático dañado','Acople en los retornos largos que mantiene tenues las LED'],
+eq:_eq('f117v','f117loz','ut204'),
+pasos:[
+ 'Ver en qué modo está el automático (temporizado o permanente) y qué tiempo tiene ajustado.',
+ 'Contar los pulsadores luminosos y leer en el automático cuántos admite.',
+ 'Sumar la potencia de las lámparas y compararla con la carga máxima del automático para ese tipo de lámpara.',
+ 'Con las luces apagadas, medir con el Fluke en LoZ la tensión en una boca: si sin LoZ hay tensión y con LoZ desaparece, es acople y no una fase real (ficha A5).',
+ 'Desconectar los pulsadores luminosos y probar: si deja de fallar, sobran pilotos.'
+],
+med:{campos:[
+ {id:'npl', lbl:'Pulsadores luminosos conectados', u:''},
+ {id:'nplmax', lbl:'Pulsadores luminosos que admite el automático (catálogo)', u:''},
+ {id:'carga', lbl:'Potencia de las lámparas conectadas', u:'W'},
+ {id:'cargamax', lbl:'Carga máxima del automático para ese tipo de lámpara (catálogo)', u:'W'},
+ {id:'queda', lbl:'¿Quedan encendidas sin que nadie pulse?', tipo:'bool'},
+ {id:'tenue', lbl:'¿Las LED quedan tenues o parpadean apagadas?', tipo:'bool'},
+ {id:'tset', lbl:'Tiempo ajustado en el automático', u:'s'},
+ {id:'tmed', lbl:'Tiempo medido con el cronómetro', u:'s'}
+], ev:function(v){
+ var li=[], e='ok', d='', hay=false;
+ if(v.npl!==null && v.nplmax!==null){ hay=true; d+='Pulsadores luminosos: <span class="num">'+f(v.npl,0)+'</span> de <span class="num">'+f(v.nplmax,0)+'</span> admitidos. ';
+   if(v.npl>v.nplmax){ e='mal'; li.push('Hay más pulsadores luminosos de los que admite el automático: la corriente de los pilotos lo mantiene actuado o hace titilar las LED. Cambiar algunos por pulsadores comunes o usar un automático que los admita.'); } }
+ if(v.carga!==null && v.cargamax!==null && v.cargamax>0){ hay=true; d+='Carga <span class="num">'+f(v.carga,0)+' W</span> de <span class="num">'+f(v.cargamax,0)+' W</span>. ';
+   if(v.carga>v.cargamax){ e='mal'; li.push('La carga supera la que admite el automático para ese tipo de lámpara: los contactos se sueldan o el automático se daña. Repartir en dos automáticos o maniobrar las lámparas con un contactor (AC-5a, catálogo).'); } }
+ if(v.queda===true){ hay=true; if(e!=='mal') e='ojo'; li.push('Si quedan encendidas: probar sin pulsadores luminosos, buscar un pulsador trabado y verificar que el automático no esté en encendido permanente. En los de 3 hilos, un pulsador conectado a la fase en lugar del retorno lo deja actuado.'); }
+ if(v.tenue===true){ hay=true; if(e!=='mal') e='ojo'; li.push('Las LED tenues o parpadeando apagadas son la corriente de los pilotos o el acople capacitivo de los retornos largos: ver la ficha G3.'); }
+ if(v.tset!==null && v.tmed!==null && v.tset>0){ hay=true; var dt=(v.tmed-v.tset)/v.tset*100; d+='Tiempo medido <span class="num">'+f(v.tmed,0)+' s</span> con <span class="num">'+f(v.tset,0)+' s</span> ajustados. ';
+   if(Math.abs(dt)>20){ if(e!=='mal') e='ojo'; li.push('El tiempo medido difiere del ajustado en '+f(Math.abs(dt),0)+' % (más del 20 %, criterio práctico): reajustar o cambiar el automático.'); } }
+ if(!hay) return null;
+ li.push('Las escaleras y rampas llevan como mínimo una boca de iluminación cada 5 m de longitud o fracción, o en cada descanso (771.8.5 g), y se admite el comando por sensores de presencia (771.8.6.1). El automático es un temporizador de IEC 60669-2-3: la carga y los pilotos que admite salen de su catálogo.');
+ return {e:e, t:e==='mal'?'El automático está sobrecargado':(e==='ojo'?'Hay una causa probable para revisar':'El automático trabaja dentro de su catálogo'), d:d, li:li};
+}},
+sol:['Reemplazar pulsadores luminosos de más por pulsadores comunes.','Repartir la carga o maniobrarla con un contactor.','Cambiar el pulsador trabado y corregir el conexionado de 3 o 4 hilos.','Ajustar el tiempo o reemplazar el automático.'],
+cita:'AEA 90364-7-771: 771.8.5 g) (escaleras y rampas: como mínimo una boca de iluminación cada 5 m de longitud o fracción, o en cada descanso), 771.8.6.1 (comando de la iluminación por sensores de presencia o movimiento). Automático de escalera: IEC 60669-2-3 (norma de producto); carga máxima y pulsadores luminosos admitidos, según el fabricante.'
+},
+{
+id:'M7', fam:'aut', t:'Iluminación exterior con fotocélula o reloj',
+sint:'Las luces del jardín, el frente o el parque encienden de día, no encienden de noche, se apagan a cualquier hora o hacen saltar el diferencial cuando llueve.',
+causas:['Fotocélula tapada, sucia u orientada hacia una luminaria','Reloj sin reserva de marcha que se desfasa con cada corte','Contactor pegado o con la bobina cortada','Cajas, empalmes o tapas de columnas sin el grado de protección que corresponde','Tablero exterior con la puerta abierta o sin juntas'],
+eq:_eq('f117v','ut511','ut582'),
+pasos:[
+ 'Ver qué falla: la fotocélula (tapar con la mano de día y esperar), el reloj (hora y programa) o el contactor (tensión en la bobina).',
+ 'Verificar que el circuito tenga su diferencial de 30 mA y probarlo con el UT-582+.',
+ 'Con el circuito desconectado, medir la aislación del tramo exterior con el UT-511 a 500 V.',
+ 'Revisar el grado de protección del tablero exterior, de las cajas y de las tapas de las columnas.'
+],
+med:{campos:[
+ {id:'falla', lbl:'Qué pasa', tipo:'sel', opts:[['dia','Enciende de día'],['noche','No enciende de noche'],['dif','Salta el diferencial cuando llueve'],['corta','Se apaga a cualquier hora']]},
+ {id:'id30', lbl:'¿El circuito tiene diferencial de 30 mA?', tipo:'bool'},
+ {id:'manual', lbl:'¿Hay un interruptor manual en paralelo con el reloj o la fotocélula?', tipo:'bool'},
+ {id:'ip', lbl:'Grado IP del tablero exterior', tipo:'sel', opts:[['55','IP55 o más'],['54','IP54'],['menor','Menor que IP54'],['nd','No se puede leer']]},
+ {id:'ais', lbl:'Aislación del circuito exterior (500 V)', u:'MΩ'},
+ CAMPO_REGLAM
+], ev:function(v){
+ var li=[], e='ok', d='', hay=false, rg=false, lim=aislMin(v.reglam,500);
+ var mal=function(m){ e='mal'; li.push(m); }, ojo=function(m){ if(e!=='mal') e='ojo'; li.push(m); };
+ if(v.falla){ hay=true;
+   if(v.falla==='dia') li.push('Enciende de día: fotocélula tapada u orientada hacia una luminaria, reloj desfasado después de un corte, o contactor con los contactos soldados.');
+   else if(v.falla==='noche') li.push('No enciende: fotocélula sucia o con el umbral alto, reloj sin programa, bobina del contactor cortada o protección del comando abierta.');
+   else if(v.falla==='dif') li.push('Salta con la lluvia: agua en cajas, empalmes o tapas de columnas. Medir la aislación del tramo exterior y revisar los grados IP (ficha D4).');
+   else li.push('Se apaga a cualquier hora: reloj con el programa corrido o sin reserva de marcha, o fotocélula que ve la luz de otra luminaria.'); }
+ if(v.id30===false){ hay=true; rg=true; mal('En vivienda, todos los circuitos de iluminación exterior llevan diferencial de 30 mA como máximo; también en oficinas y locales sin personal BA4 o BA5 permanente (771-B.8.2.1).'); }
+ if(v.manual===false){ hay=true; ojo('Con reloj o fotocélula se recomienda un interruptor manual que permita encender con independencia de ellos; puede ir dentro del tablero (771-B.8.3.3).'); }
+ if(v.ip){ hay=true;
+   if(v.ip==='55') li.push('El tablero exterior tiene IP55 o más; además tiene que ser IK10, con la puerta entre 0,3 y 2 m (771-B.8.3.3).');
+   else if(v.ip==='nd') ojo('No se puede leer el grado IP: el tablero de iluminación exterior a la intemperie tiene que ser IP55 e IK10 como mínimo (771-B.8.3.3). Pedir el dato del gabinete.');
+   else mal('El tablero de iluminación exterior a la intemperie tiene que ser IP55 e IK10 como mínimo (771-B.8.3.3). Las tapas de acceso de las columnas también, IP55 (771-B.8.2.1).'); }
+ if(v.ais!==null){ hay=true; d+='Aislación <span class="num">'+f(v.ais,2)+' MΩ</span>. ';
+   if(v.ais<lim){ rg=true; mal('Aislación del tramo exterior por debajo de '+f(lim,1)+' MΩ ('+citaAisl(v.reglam,500)+'): agua en algún empalme o caja (ficha I2).'); } }
+ if(!hay) return null;
+ li.push('Los circuitos de iluminación exterior son IUE o ITE, protegidos individualmente con corte multipolar contra sobreintensidades y fugas (771-B.8.3.3). El contactor de lámparas de descarga es AC-5a (catálogo); con LED, se elige por la tabla de lámparas del fabricante.');
+ return {e:e, t:e==='mal'?'La instalación exterior no cumple':(e==='ojo'?'Hay observaciones para corregir':'Sin observaciones'), d:d, li:li, pel:rg};
+}},
+sol:['Reubicar o limpiar la fotocélula y ajustar su umbral.','Cambiar el reloj por uno con reserva de marcha.','Agregar el interruptor manual en paralelo.','Poner diferencial de 30 mA al circuito exterior.','Llevar el tablero exterior a IP55 e IK10 y sellar cajas, empalmes y tapas de columnas.'],
+cita:'AEA 90364-7-771, Anexo 771-B.8: 771-B.8.2.1 (diferencial de 30 mA como máximo en todos los circuitos de iluminación exterior de vivienda y de oficinas y locales sin personal BA4 o BA5 permanente; puertas de columnas IP55) y 771-B.8.3.3 (tableros a la intemperie IP55 e IK10, puerta entre 0,3 y 2 m; IUE e ITE con protección individual multipolar; interruptor manual en paralelo con el reloj o la fotocélula, recomendado). Aislación: Tablas 770.23.I y 771.23.I. Categoría AC-5a: IEC 60947-4-1 (catálogo).'
+},
+{
+id:'M8', fam:'aut', t:'Termotanque eléctrico: no calienta o hace saltar las protecciones',
+sint:'El agua sale fría o tibia, el termotanque hace saltar la térmica o el diferencial, o el contactor del reloj no lo enciende.',
+causas:['Resistencia cortada','Resistencia a masa por el ánodo agotado o la vaina perforada','Termostato o limitador de seguridad disparado','Contactor con la bobina cortada o los contactos soldados','Reloj desprogramado o sin reserva de marcha','Bornes flojos y quemados en la caja del aparato'],
+eq:_eq('f117v','f117cont','ut204','ut511'),
+pasos:[
+ 'Medir la corriente calentando: si es cero con tensión en bornes, la resistencia está cortada o el termostato abierto.',
+ 'Sin tensión, medir la resistencia del elemento y compararla con la que sale de la chapa: R = U² / P.',
+ 'Con el aparato desconectado, medir la aislación entre la resistencia y la cuba con el UT-511 a 500 V.',
+ 'Ver si actuó el limitador de seguridad (rearme manual): si actuó, hay una causa que buscar antes de rearmar.',
+ 'Medir la tensión de la bobina del contactor cuando el reloj manda encender.'
+],
+med:{campos:[
+ {id:'pot', lbl:'Potencia de chapa', u:'W'},
+ {id:'un', lbl:'Tensión de chapa', u:'V'},
+ {id:'abierta', lbl:'Sin tensión, ¿el tester marca OL (abierto) en bornes de la resistencia?', tipo:'bool'},
+ {id:'rmed', lbl:'Resistencia medida en bornes de la resistencia, sin tensión', u:'Ω'},
+ {id:'ais', lbl:'Aislación resistencia–cuba (500 V), con el aparato desconectado', u:'MΩ'},
+ {id:'imed', lbl:'Corriente medida calentando', u:'A'},
+ {id:'lim', lbl:'¿Actuó el limitador de seguridad?', tipo:'bool'},
+ {id:'ficha', lbl:'¿El aparato se conecta con una ficha enchufada en el propio aparato?', tipo:'bool'},
+ CAMPO_REGLAM
+], ev:function(v){
+ var li=[], e='ok', d='', hay=false, rg=false, lim=aislMin(v.reglam,500);
+ var mal=function(m){ e='mal'; li.push(m); }, ojo=function(m){ if(e!=='mal') e='ojo'; li.push(m); };
+ var rn=(v.pot!==null && v.un!==null && v.pot>0) ? v.un*v.un/v.pot : null;
+ if(rn!==null){ d+='Resistencia de chapa <span class="num">'+f(rn,1)+' Ω</span>. '; }
+ if(v.abierta===true){ hay=true; mal('La resistencia está cortada: el tester no ve paso de corriente. Cambiar el elemento calefactor.'); }
+ else if(v.rmed!==null){ hay=true; d+='Medida <span class="num">'+f(v.rmed,1)+' Ω</span>. ';
+   if(rn!==null){ var dv=(v.rmed-rn)/rn*100;
+     if(v.rmed>10*rn) mal('La resistencia está cortada: no hay paso de corriente. Cambiar el elemento calefactor.');
+     else if(dv<-20) ojo('La resistencia mide bastante menos que la de chapa ('+f(dv,0)+' %): puede tener espiras en corto y tomar más corriente.');
+     else li.push('La resistencia medida es coherente con la de chapa ('+(dv>=0?'+':'')+f(dv,0)+' %; en caliente sube un poco).'); } }
+ if(v.ais!==null){ hay=true; d+='Aislación <span class="num">'+f(v.ais,2)+' MΩ</span>. ';
+   if(v.ais<lim){ rg=true; mal('La resistencia está a masa: la aislación da menos que '+f(lim,1)+' MΩ, el mínimo que la Reglamentación pide a la instalación ('+citaAisl(v.reglam,500)+'), tomado acá como referencia práctica para el aparato. Por eso salta el diferencial. Cambiar el elemento y revisar el ánodo.'); } }
+ if(v.imed!==null && v.pot!==null && v.un!==null && v.un>0){ hay=true; var inom=v.pot/v.un;
+   d+='Corriente <span class="num">'+f(v.imed,1)+' A</span> con <span class="num">'+f(inom,1)+' A</span> de chapa. ';
+   if(v.imed<0.1) ojo('No circula corriente: termostato abierto, limitador disparado, resistencia cortada o contactor sin cerrar.');
+   else if(v.imed>1.1*inom) ojo('Toma más de un 10 % por encima de la corriente de chapa: tensión alta o espiras en corto. Verificar la tensión en bornes y la resistencia del elemento.'); }
+ if(v.lim===true){ hay=true; ojo('Actuó el limitador de seguridad: termostato pegado, resistencia sin agua o sarro. No rearmarlo sin encontrar la causa.'); }
+ if(v.ficha===true){ hay=true; mal('El termotanque no puede tener zócalo de conexión: el cable entra al aparato y su conexión no puede ser un dispositivo macho-hembra (701.55.7, cláusula 25.1 de IEC 60335-2-21).'); }
+ if(!hay) return null;
+ li.push('El contactor que maniobra resistencias es AC-1, con Ie igual o mayor que la corriente de chapa (catálogo, IEC 60947-4-1). El circuito va con diferencial de 30 mA (771.18.3.5 · 770.18.3.5).');
+ return {e:e, t:e==='mal'?'El termotanque tiene una falla eléctrica':(e==='ojo'?'Hay una causa probable para revisar':'Sin fallas en lo medido'), d:d, li:li, pel:rg};
+}},
+sol:['Cambiar el elemento calefactor cortado o a masa, y el ánodo de magnesio.','Cambiar el termostato o el limitador que actúa sin causa.','Cambiar el contactor soldado o con la bobina cortada; usar AC-1 con margen.','Conectar el aparato en forma fija, sin ficha en el propio aparato.'],
+cita:'AEA 90364-7-701, 701.55.7 (calentadores acumulativos: IEC 60335-1 e IEC 60335-2-21, elementos calefactores recubiertos, sin zócalo de conexión ni conexión macho-hembra en el aparato). AEA 90364-7-771, 771.18.3.5 y 7-770 Ed. 2026, 770.18.3.5 (diferencial de 30 mA). Aislación: los mínimos de las Tablas 770.23.I y 771.23.I son para la instalación; para el aparato se usan como referencia práctica. Categoría AC-1: IEC 60947-4-1 (catálogo).'
+},
+{
+id:'M9', fam:'aut', t:'Domótica: actuadores que no responden o bus caído',
+sint:'Las escenas no se ejecutan, un actuador no responde o se cae todo el sistema; a veces sólo cuando arranca un equipo grande.',
+causas:['Fuente del bus sobrecargada o dañada','Cable del bus compartiendo caño o caja con los de 220 V','Cortocircuito o mala conexión en el cable del bus','Actuador dañado o sin alimentación de potencia','Programación o direcciones duplicadas'],
+eq:_eq('f117v','f117cont'),
+pasos:[
+ 'Medir la tensión del bus en la fuente y en el actuador que falla.',
+ 'Poner el actuador en manual: si responde, la falla está en el bus o en la programación; si no, en el actuador o en su alimentación.',
+ 'Ver por dónde va el cable del bus: no puede compartir canalización con 220 V sin las medidas de la AEA.',
+ 'Desconectar tramos del bus para encontrar el que lo baja.'
+],
+med:{campos:[
+ {id:'ub', lbl:'Tensión medida en el bus', u:'V'},
+ {id:'ubn', lbl:'Tensión nominal del bus (fabricante)', u:'V'},
+ {id:'comp', lbl:'¿El cable del bus comparte caño o caja con los de 220 V?', tipo:'bool'},
+ {id:'med', lbl:'Si comparte: ¿va en un caño aislante propio, con pantalla a tierra o aislado para la mayor tensión?', tipo:'bool'},
+ {id:'man', lbl:'¿El actuador responde en manual?', tipo:'bool'}
+], ev:function(v){
+ var li=[], e='ok', d='', hay=false;
+ if(v.ub!==null && v.ubn!==null && v.ubn>0){ hay=true; var r=v.ub/v.ubn*100; d+='Bus a <span class="num">'+f(v.ub,1)+' V</span>, <span class="num">'+f(r,0)+' %</span> de la nominal. ';
+   if(r<90){ e='ojo'; li.push('La tensión del bus está baja: fuente sobrecargada, cortocircuito parcial en el cable o demasiados dispositivos en el segmento. Comparar con el rango que da el fabricante.'); }
+   else li.push('La tensión del bus está en su valor.'); }
+ if(v.comp===true){ hay=true;
+   if(v.med===true) li.push('Comparte canalización con alguna de las medidas de la Nota 1 de 771.12.3.13.2 h): está admitido.');
+   else { e='mal'; li.push('El bus y el 220 V tienen que ir en canalizaciones independientes; si no se puede, en un caño aislante propio, con pantalla puesta a tierra o con la aislación de la mayor tensión (771.12.3.13.2 h y Nota 1). Para el bus, la aislación entre circuitos sigue la tabla 17 de IEC 61131-2, salvo indicación del fabricante (Nota 3).'); } }
+ if(v.man===true){ hay=true; li.push('Responde en manual: el actuador y su potencia están bien; buscar en el bus o en la programación.'); }
+ else if(v.man===false){ hay=true; if(e!=='mal') e='ojo'; li.push('No responde ni en manual: revisar la alimentación de potencia del actuador y el actuador.'); }
+ if(!hay) return null;
+ li.push('La 7-770 Ed. 2026 remite la domótica a la AEA 90364-7-780 y pide además cumplir la 770 (770.1). La fuente de muy baja tensión lleva transformador de primario y secundario independientes (771.8.5 k).');
+ return {e:e, t:e==='mal'?'El cableado del bus no cumple':(e==='ojo'?'Hay una causa probable para revisar':'Sin observaciones'), d:d, li:li};
+}},
+sol:['Separar el cable del bus del de 220 V.','Cambiar o repartir la fuente del bus.','Reparar el tramo del bus en cortocircuito.','Reemplazar el actuador que no responde en manual.'],
+cita:'AEA 90364-7-771, 771.12.3.13.2 h) (380/220 V, MBTS o MBTF, señales débiles, datos y control en canalizaciones independientes; Nota 1: medidas alternativas; Nota 3: aislación del bus según IEC 61131-2, tabla 17) y 771.8.5 k). AEA 90364-7-770 Ed. 2026, 770.1: domótica según la 7-780 y además la 770.'
+},
+{
+id:'M10', fam:'aut', t:'El contactor zumba, no cierra o queda pegado',
+sint:'El contactor vibra con ruido, no termina de cerrar, cierra y se abre, o queda cerrado aunque se corte la bobina.',
+causas:['Tensión de bobina baja: comando a distancia con cable largo y fino, o transformador chico','Bobina de tensión distinta de la del comando','Núcleo sucio o con la espira de sombra rota','Contactos soldados por una categoría de empleo insuficiente o por un cortocircuito','Contactor chico para la corriente de la carga'],
+eq:_eq('f117v','ut204'),
+pasos:[
+ 'Leer en el contactor la tensión de bobina (Uc) y la corriente asignada en la categoría que corresponde a la carga.',
+ 'Medir la tensión en los bornes A1–A2 en el momento de mandar cerrar.',
+ 'Medir la corriente de la carga con la pinza.',
+ 'Sin tensión, revisar el núcleo y los contactos.'
+],
+med:{campos:[
+ {id:'uc', lbl:'Tensión nominal de la bobina (Uc)', u:'V'},
+ {id:'umed', lbl:'Tensión medida en A1–A2 al mandar cerrar', u:'V'},
+ {id:'umin', lbl:'Tensión mínima de cierre del fabricante', ayuda:'En % de Uc. Vacía: 85 % (IEC 60947-4-1, según los catálogos)', u:'%'},
+ {id:'carga', lbl:'Qué maniobra', tipo:'sel', opts:[['mot','Motor de jaula: bomba, portón, extractor'],['res','Resistencias: termotanque, calefacción'],['desc','Lámparas de descarga'],['led','Lámparas LED con driver'],['inc','Lámparas incandescentes o halógenas']]},
+ {id:'cat', lbl:'Categoría de empleo en la que se eligió el contactor', tipo:'sel', opts:[['AC-1','AC-1'],['AC-3','AC-3'],['AC-5a','AC-5a'],['AC-5b','AC-5b'],['AC-7a','AC-7a'],['AC-7b','AC-7b'],['nd','No se sabe']]},
+ {id:'ie', lbl:'Corriente asignada del contactor en esa categoría (Ie)', u:'A'},
+ {id:'ic', lbl:'Corriente de la carga', u:'A'},
+ {id:'peg', lbl:'¿Quedó pegado (no abre al cortar la bobina)?', tipo:'bool'}
+], ev:function(v){
+ var li=[], e='ok', d='', hay=false;
+ var mal=function(m){ e='mal'; li.push(m); }, ojo=function(m){ if(e!=='mal') e='ojo'; li.push(m); };
+ if(v.uc!==null && v.umed!==null && v.uc>0){ hay=true; var p=v.umed/v.uc*100, um=(v.umin!==null && v.umin>0)?v.umin:85;
+   d+='Bobina a <span class="num">'+f(p,0)+' %</span> de Uc. ';
+   if(p<um) mal('La bobina recibe '+f(p,0)+' % de su tensión y el mínimo de cierre es '+f(um,0)+' %: zumba o no cierra. Si el comando viene de lejos, ver el cálculo K17; si no, revisar el transformador del comando y los bornes.');
+   else if(p>110) ojo('La bobina recibe más del 110 % de Uc: se recalienta. Revisar que la bobina sea de la tensión del comando.');
+   else li.push('La tensión de la bobina está dentro de su rango de funcionamiento.'); }
+ if(v.carga && v.cat && v.cat!=='nd'){ hay=true;
+   var ok={mot:['AC-3','AC-7b'], res:['AC-1','AC-7a'], desc:['AC-5a'], inc:['AC-5b']}[v.carga];
+   var txt={mot:'AC-3 (o AC-7b en un contactor de uso doméstico)', res:'AC-1 (o AC-7a en un contactor de uso doméstico)', desc:'AC-5a', inc:'AC-5b'}[v.carga];
+   if(v.carga==='led') li.push('Para lámparas LED el contactor se elige con la tabla de cargas de iluminación LED del catálogo: la corriente de conexión de los drivers suelda contactos elegidos sólo por la corriente de régimen.');
+   else if(ok.indexOf(v.cat)<0) ojo('Para esta carga corresponde '+txt+' y el contactor se eligió en '+v.cat+': los contactos se gastan o se sueldan antes de tiempo. Elegir el tamaño en esa columna del catálogo.');
+   else li.push('La categoría de empleo corresponde a la carga.'); }
+ if(v.ie!==null && v.ic!==null){ hay=true; d+='Ie <span class="num">'+f(v.ie,1)+' A</span> con la carga en <span class="num">'+f(v.ic,1)+' A</span>. ';
+   if(v.ic>v.ie) mal('La carga toma más corriente que la asignada del contactor en su categoría: cambiarlo por uno más grande.'); }
+ if(v.peg===true){ hay=true; mal('Contactos soldados: no confiar en el contactor para cortar. Cambiar contactos o contactor y revisar la causa: categoría insuficiente o un cortocircuito sin coordinación con la protección (con coordinación tipo 2 se admite sólo una soldadura leve, fácil de separar).'); }
+ if(!hay) return null;
+ li.push('Los límites de la bobina (0,85 a 1,1 Uc) y las categorías de empleo son de IEC 60947-4-1: datos de producto, no de la AEA.');
+ return {e:e, t:e==='mal'?'El contactor o su comando están mal':(e==='ojo'?'Hay observaciones sobre el contactor':'Sin observaciones'), d:d, li:li};
+}},
+sol:['Subir la sección del cable de comando o acortar el recorrido (cálculo K17).','Cambiar el transformador del comando por uno con más potencia instantánea.','Reemplazar la bobina por una de la tensión del comando.','Elegir el contactor por la categoría de empleo de la carga, con margen de corriente.'],
+cita:'IEC 60947-4-1: límites de funcionamiento de la bobina 0,85 a 1,1 Uc (según la ficha técnica de contactores ABB, «acc. IEC 60947-4-1»); categorías de empleo AC-1, AC-3, AC-5a, AC-5b y AC-7a/7b, Tabla 1 (Cuaderno de aplicaciones técnicas nº 6 de ABB); coordinación tipo 1 y tipo 2. Son normas de producto: la AEA no las transcribe.'
+},
+{
+id:'M11', fam:'aut', t:'Relevamiento de un tablero de comando',
+sint:'Lista de control de un tablero de comando de bomba, presurizadora, portón, palier, iluminación exterior, termotanque o domótica, nuevo o existente. El resultado va al informe.',
+causas:['Comando de flotantes a 220 V dentro del tanque','Circuito de comando colgado de la protección principal, sin protección propia','Motor sin guardamotor ni relé térmico, o con la regulación por encima de la chapa','Motor trifásico sin detección de falta de fase','Circuito sin diferencial de 30 mA','Gabinete sin el grado IP de su ubicación, sin marcado o con aparatos sin identificar'],
+eq:_eq('f117v','f117cont','ut204','glm'),
+pasos:[
+ 'Anotar qué automatiza, si el tablero es armado, comercial o el comando viene incorporado al equipo, y dónde está.',
+ 'Leer el grado IP del gabinete y ver si corresponde a la ubicación.',
+ 'Ver si el circuito de comando tiene su propio interruptor automático o fusible.',
+ 'Medir la tensión del comando de los flotantes o sensores y leer la chapa del transformador.',
+ 'Leer la potencia y la corriente de chapa del motor, la regulación del guardamotor y si detecta la falta de fase.',
+ 'Verificar el diferencial del circuito, la unión de las masas al PE, el marcado del tablero y la identificación de los aparatos.'
+],
+med:{campos:[
+ {id:'tipo', lbl:'Qué automatiza', tipo:'sel', opts:[['bomba','Bomba de tanque o cisterna'],['pres','Presurizadora'],['ach','Bomba de achique o sumergible'],['port','Portón o cortina'],['pal','Luces de palier'],['ext','Iluminación exterior'],['term','Termotanque o calefacción'],['domo','Domótica'],['otra','Otra']]},
+ {id:'ejec', lbl:'Tablero', tipo:'sel', opts:[['arm','Armado por un instalador'],['com','Comercial'],['inc','Comando incorporado al equipo']]},
+ {id:'ubic', lbl:'Ubicación del tablero', tipo:'sel', opts:[['seco','Interior seco'],['hum','Interior húmedo'],['moj','Local mojado'],['int','Intemperie']]},
+ {id:'ip', lbl:'Grado IP del gabinete', tipo:'sel', opts:[['41','IP41 o IP31D'],['44','IP44'],['54','IP54'],['55','IP55 o más'],['menor','Menor que IP41'],['nd','No está marcado']]},
+ {id:'pcom', lbl:'¿El circuito de comando tiene su propia protección contra cortocircuitos?', tipo:'bool'},
+ {id:'sens', lbl:'¿Hay flotantes, electrodos o sensores en un tanque o lugar mojado?', tipo:'bool'},
+ {id:'ucom', lbl:'Tensión del comando de esos sensores', u:'V'},
+ {id:'tseg', lbl:'¿Sale de un transformador de seguridad IEC 61558-2-6, sin nada a tierra?', tipo:'bool'},
+ {id:'kw', lbl:'Potencia del motor, si tiene', u:'kW'},
+ {id:'tri', lbl:'¿El motor es trifásico?', tipo:'bool'},
+ {id:'gm', lbl:'¿Tiene guardamotor o relé térmico?', tipo:'bool'},
+ {id:'ireg', lbl:'Regulación del guardamotor o relé', u:'A'},
+ {id:'ich', lbl:'Corriente de chapa del motor', u:'A'},
+ {id:'ff', lbl:'Si es trifásico, ¿detecta la falta de fase y corta?', tipo:'bool'},
+ {id:'bip', lbl:'Si es monofásico, ¿la maniobra corta fase y neutro?', tipo:'bool'},
+ {id:'id30', lbl:'¿El circuito está protegido por un diferencial de 30 mA?', tipo:'bool'},
+ {id:'pe', lbl:'¿Las masas (motor, gabinete metálico, estructura) están unidas al PE?', tipo:'bool'},
+ {id:'marca', lbl:'¿El tablero está marcado: fabricante o montador responsable, tensión e Icc?', tipo:'bool'},
+ {id:'iden', lbl:'¿Cada aparato está identificado con su función?', tipo:'bool'},
+ {id:'sep', lbl:'¿Los cables de comando y señales van separados de los de 220 V?', tipo:'bool'},
+ CAMPO_REGLAM
+], ev:function(v){
+ var li=[], e='ok', hay=false, rg=false, nmal=0, nojo=0, es770=(v.reglam==='770');
+ var mal=function(m){ e='mal'; nmal++; li.push(m); }, ojo=function(m){ if(e!=='mal') e='ojo'; nojo++; li.push(m); };
+ var ext=(v.tipo==='ext'), inc=(v.ejec==='inc');
+ if(v.ubic && v.ip && !inc){ hay=true;
+   var req=_autIP(v.ubic, ext), tiene={'41':41,'44':44,'54':54,'55':55}[v.ip];
+   if(v.ip==='nd') ojo('El grado IP no está marcado: pedir el dato del gabinete. Para esa ubicación corresponde '+_autIPtxt(v.ubic, ext)+'.');
+   else if(v.ip==='menor' || Math.floor(tiene/10)<Math.floor(req/10) || tiene%10<req%10) mal('El gabinete no alcanza el grado de protección de su ubicación: corresponde '+_autIPtxt(v.ubic, ext)+'.');
+   else li.push('El grado IP corresponde a la ubicación: '+_autIPtxt(v.ubic, ext)+'.'); }
+ if(v.pcom===false && !inc){ hay=true; rg=true; mal('El circuito de comando no tiene protección exclusiva contra cortocircuitos, independiente de la principal: interruptor automático o fusible con capacidad de ruptura adecuada a la Icc del punto (771.17.3.1 · 771.20.4).'); }
+ else if(v.pcom===true && !inc){ hay=true; li.push('El comando tiene su protección propia. Verificar que su capacidad de ruptura alcance la Icc del punto (771.20.4).'); }
+ if(v.sens===true){ hay=true;
+   if(v.ucom!==null && v.ucom>24){ rg=true; mal('Los sensores del tanque o del lugar mojado están a '+f(v.ucom,0)+' V: el comando tiene que ser MBTS (771.8.5 l). Ver la ficha M4.'); }
+   if(v.tseg===false){ rg=true; mal('Sin transformador de seguridad o con un punto a tierra, el comando no es MBTS (771.8.5 k · 771.18.2). Ver la ficha M4.'); }
+   if(v.tseg===true && v.ucom!==null && v.ucom<=24) li.push('El comando de los sensores es MBTS: '+f(v.ucom,0)+' V con transformador de seguridad y nada a tierra (771.8.5 l · 771.18.2).'); }
+ if(v.kw!==null && v.kw>0){ hay=true;
+   if(v.gm===false){ if(v.kw>=0.75){ rg=true; mal('Motor de '+f(v.kw,2)+' kW sin protección específica contra la sobrecarga: desde 0,75 kW es exigible (guardamotor, o relé térmico con contactor). Los fusibles y los interruptores automáticos no son aplicables a esa protección ('+(es770?'770.17.3.1 · ':'')+'771.17.3.1 · 771.17.3.2).'); }
+     else ojo('Motor de '+f(v.kw,2)+' kW: por debajo de 0,75 kW la protección específica es recomendable, no exigible (771.17.3.1).'); }
+   if(v.gm===true && v.ireg!==null && v.ich!==null && v.ich>0){
+     if(v.ireg>v.ich*1.02) ojo('El guardamotor está regulado a '+f(v.ireg,1)+' A con '+f(v.ich,1)+' A de chapa: llevarlo a la corriente de chapa (ficha G8).');
+     else if(v.ireg<v.ich*0.98) ojo('El guardamotor está regulado por debajo de la chapa ('+f(v.ireg,1)+' A con '+f(v.ich,1)+' A): dispara sin falla. Llevarlo a la corriente de chapa (ficha G8).'); } }
+ if(v.tri===true && v.ff===false){ hay=true; rg=true; mal('Motor trifásico sin detección de falta de fase: es obligatoria ('+(es770?'770.17.3.2 · ':'')+'771.17.3.2). Ver la ficha B3.'); }
+ if(v.tri!==true && v.bip===false){ hay=true; mal('La maniobra de un motor monofásico tiene que abrir fase y neutro; la de uno polifásico, todas las fases a la vez (771.17.3.2). Un contactor o guardamotor unipolar no cumple.'); }
+ if(v.id30===false){ hay=true; rg=true; mal('El circuito no tiene diferencial de 30 mA: la 771.18.3.5 lo exige en IUG, IUE, TUG, TUE y en los circuitos de uso específico MBTF, ATE, APM, ACU, ITE y OCE'+(es770?'; en vivienda, tipo A, F o B, nunca AC (770.18.3.5)':'')+'.'); }
+ if(v.pe===false){ hay=true; rg=true; mal('Masas sin unir al conductor de protección: sin eso el diferencial no corta ante una falla de aislación. Todos los tableros, cajas y equipos metálicos van al PE (771.18.5.7 · 771.20.4).'); }
+ if(v.marca===false && !inc){ hay=true; mal('El tablero tiene que estar marcado con «Fabricante responsable» o, si lo armó un instalador, «Montador responsable», más la tensión de utilización y la Icc máxima de cálculo ('+(es770?'770.20.6.9 · ':'')+'771.20.4).'); }
+ if(v.iden===false && !inc){ hay=true; mal('Cada aparato del tablero se identifica con una inscripción que diga su función (771.20.4; ver la ficha B5).'); }
+ if(v.sep===false){ hay=true; mal('Los cables de comando, señales y MBTS van en canalizaciones independientes de los de 220 V, o con las medidas de la Nota 1: caño aislante propio, pantalla puesta a tierra o aislación para la mayor tensión (771.12.3.13.2 h).'); }
+ if(inc){ hay=true; li.push('Con el comando incorporado al equipo, lo que corresponde a la instalación es la alimentación: circuito, diferencial, PE y protecciones. Los sensores que agregue el instalador en zona mojada, en MBTS.'); }
+ if(v.tipo==='domo'){ hay=true; li.push('Domótica: la 7-770 Ed. 2026 la remite a la AEA 90364-7-780 y pide además cumplir la 770 (770.1). Ver la ficha M9.'); }
+ if(!hay) return null;
+ var lab=function(lista, val){ for(var i=0;i<lista.length;i++){ if(lista[i][0]===val) return lista[i][1]; } return ''; };
+ var C=buscarFalla('M11').med.campos, des=[];
+ for(var k=0;k<C.length;k++){ if((C[k].id==='tipo'||C[k].id==='ejec'||C[k].id==='ubic') && v[C[k].id]) des.push(lab(C[k].opts, v[C[k].id])); }
+ return {e:e, t:e==='mal'?(nmal+(nmal>1?' puntos no cumplen':' punto no cumple')):(e==='ojo'?(nojo+(nojo>1?' observaciones':' observación')):'El tablero de comando cumple lo relevado'),
+   d:(des.length?esc(des.join(' · '))+'. ':'')+'Relevamiento de un tablero de comando.', li:li, pel:rg};
+}},
+sol:['Agregar la protección exclusiva del circuito de comando.','Pasar a MBTS los comandos de tanques y lugares mojados.','Instalar guardamotor o relé térmico regulado a la chapa, y detección de falta de fase en los trifásicos.','Poner diferencial de 30 mA al circuito.','Cambiar el gabinete por uno con el IP de su ubicación, marcarlo e identificar los aparatos.'],
+cita:'AEA 90364-7-771: 771.20.4 (protección exclusiva del comando; IP41 o IP31D; marcado «Fabricante responsable» o «Montador responsable», tensión e Icc; identificación de los aparatos), 771.20.3.1 y 771-B.3 (intemperie IP54), 771-B.1 y 771-B.2 (locales húmedos y mojados), 771-B.8.3.3 (iluminación exterior IP55 e IK10), 771.8.5 k) y l) y 771.18.2 (MBTS), 771.17.3.1 y 771.17.3.2 (motores), 771.18.3.5 (diferencial), 771.18.5.7 (masas al conductor de protección), 771.12.3.13.2 h) (canalizaciones independientes). 7-770 Ed. 2026: 770.17.3, 770.18.3.5, 770.20.6.4 y 770.20.6.9.'
+},
+{
+id:'M12', fam:'aut', t:'Mantenimiento y ensayos de un tablero de comando',
+sint:'Rutina de mantenimiento de un tablero de bomba, presurizadora o portón: aislación del motor, corrientes, protecciones, diferencial, MBTS, seguridades y termografía.',
+causas:['Aislación del motor que baja con los años','Corrientes desparejas entre fases','Relé térmico desregulado o trabado','Diferencial que no dispara a tiempo','Bornes flojos que calientan','Seguridades (fotocélulas, corte por falta de agua) que dejaron de actuar'],
+eq:_eq('ut511','ut204','ut582','ir','f117v'),
+pasos:[
+ 'Con el motor desconectado, medir su aislación con su cable con el UT-511 a 500 V.',
+ 'Con la bomba o el motor en marcha, medir la corriente de cada fase y compararla con la chapa.',
+ 'Probar el disparo del guardamotor o del relé con su botón de prueba y verificar la regulación.',
+ 'Probar el diferencial del circuito con el UT-582+ a IΔn.',
+ 'Medir la tensión del comando de MBTS.',
+ 'Probar los niveles, las seguridades y el corte por falta de agua.',
+ 'Hacer la termografía del tablero con carga y reajustar los bornes sin tensión.'
+],
+med:{campos:[
+ {id:'ais', lbl:'Aislación del motor con su cable (500 V)', u:'MΩ'},
+ {id:'ir', lbl:'Corriente en marcha, fase R (o la única)', u:'A'},
+ {id:'is', lbl:'Corriente en marcha, fase S', u:'A'},
+ {id:'it', lbl:'Corriente en marcha, fase T', u:'A'},
+ {id:'ich', lbl:'Corriente de chapa', u:'A'},
+ {id:'ireg', lbl:'Regulación del guardamotor o relé', u:'A'},
+ {id:'test', lbl:'¿El guardamotor o relé disparó con su botón de prueba?', tipo:'bool'},
+ {id:'tid', lbl:'Tiempo de disparo del diferencial a IΔn', u:'ms'},
+ {id:'ucom', lbl:'Tensión del comando de MBTS', u:'V'},
+ {id:'niv', lbl:'¿Arranca y corta en los niveles previstos?', tipo:'bool'},
+ {id:'seg', lbl:'¿Actúan las seguridades: fotocélulas, finales de carrera, corte por falta de agua?', tipo:'bool'},
+ {id:'dt', lbl:'Termografía: ΔT del borne más caliente contra uno igual con carga parecida', u:'°C'},
+ CAMPO_REGLAM
+], ev:function(v){
+ var li=[], e='ok', d='', hay=false, rg=false, lim=aislMin(v.reglam,500);
+ var mal=function(m){ e='mal'; li.push(m); }, ojo=function(m){ if(e!=='mal') e='ojo'; li.push(m); };
+ if(v.ais!==null){ hay=true; d+='Aislación <span class="num">'+f(v.ais,2)+' MΩ</span>. ';
+   if(v.ais<lim){ rg=true; mal('Aislación del motor con su cable menor que '+f(lim,1)+' MΩ ('+citaAisl(v.reglam,500)+'): sacarlo de servicio y repararlo.'); }
+   else li.push('Aislación del motor bien. Anotar el valor: si baja de un mantenimiento al otro, el motor está tomando humedad.'); }
+ var cs=[v.ir,v.is,v.it].filter(function(x){ return x!==null; });
+ if(cs.length){ hay=true; var mx=Math.max.apply(null,cs), mn=Math.min.apply(null,cs);
+   d+='Corriente máxima <span class="num">'+f(mx,1)+' A</span>. ';
+   if(v.ich!==null && v.ich>0 && mx>v.ich) ojo('La corriente en marcha supera la de chapa: revisar la carga mecánica y la tensión en bornes.');
+   if(cs.length===3){ var pr=(v.ir+v.is+v.it)/3, db=pr>0 ? Math.max(Math.abs(v.ir-pr),Math.abs(v.is-pr),Math.abs(v.it-pr))/pr*100 : 0;
+     d+='Desbalance de corrientes <span class="num">'+f(db,0)+' %</span>. ';
+     if(mx>0 && mn<0.05*mx){ rg=true; mal('Una fase casi no lleva corriente: falta de fase. El dispositivo de falta de fase tiene que cortar (770.17.3.2 · 771.17.3.2). Ver la ficha B3.'); }
+     else if(db>10) ojo('Las corrientes están desparejas (más del 10 %, umbral práctico): revisar bornes, contactos del contactor y tensiones de fase. Ver la ficha B1 y la ficha B3.'); } }
+ if(v.ireg!==null && v.ich!==null && v.ich>0 && Math.abs(v.ireg/v.ich-1)>0.02){ hay=true; ojo('La regulación del relé ('+f(v.ireg,1)+' A) no coincide con la chapa ('+f(v.ich,1)+' A): llevarla a la corriente de chapa (ficha G8).'); }
+ if(v.test===false){ hay=true; rg=true; mal('El guardamotor o el relé no dispara con su prueba: cambiarlo. Sin él, el motor queda sin la protección dedicada contra sobrecarga (771.17.3.2).'); }
+ if(v.tid!==null){ hay=true; d+='Diferencial a IΔn: <span class="num">'+f(v.tid,0)+' ms</span>. ';
+   if(v.tid>300){ rg=true; mal('El diferencial tarda más de 300 ms a IΔn: cambiarlo (Tabla 770.23.II · IEC 61008-1 / 61009-1). Para el ensayo completo, ficha D2.'); }
+   else li.push('El diferencial dispara dentro de los 300 ms a IΔn (diferencial general, sin retardo).'); }
+ if(v.ucom!==null){ hay=true; d+='Comando a <span class="num">'+f(v.ucom,0)+' V</span>. ';
+   if(v.ucom>24){ rg=true; mal('El comando mide '+f(v.ucom,0)+' V: no es MBTS (771.8.5 l · 771.18.2). Ver la ficha M4.'); } }
+ if(v.niv===false){ hay=true; mal('No arranca o no corta en los niveles previstos: revisar flotantes o electrodos y el relé de nivel (ficha M1).'); }
+ if(v.seg===false){ hay=true; mal('Alguna seguridad no actúa: dejar el equipo fuera de servicio en automático hasta repararla.'); }
+ if(v.dt!==null){ hay=true; d+='ΔT <span class="num">'+f(v.dt,1)+' °C</span>. ';
+   if(v.dt>15){ rg=true; mal('ΔT de más de 15 °C contra un componente igual: reparar de inmediato (criterio práctico de termografía).'); }
+   else if(v.dt>3) ojo('ΔT de 4 a 15 °C contra un componente igual: reparar en forma programada (criterio práctico).');
+   else if(v.dt>=1) li.push('ΔT de 1 a 3 °C: investigar en el próximo mantenimiento (criterio práctico).');
+   li.push('La comparación termográfica vale con el circuito al 40 % de su corriente nominal o más.'); }
+ if(!hay) return null;
+ return {e:e, t:e==='mal'?'El mantenimiento encontró fallas':(e==='ojo'?'Hay puntos para corregir':'Todo en orden'), d:d, li:li, pel:rg};
+}},
+sol:['Reparar el motor con aislación baja.','Reajustar bornes y cambiar contactos gastados.','Regular el relé a la chapa y cambiar el que no dispara.','Cambiar el diferencial lento.','Reparar seguridades y niveles antes de devolver el equipo al uso en automático.'],
+cita:'Aislación: Tablas 770.23.I y 771.23.I. Diferencial general a IΔn ≤ 300 ms: Tabla 770.23.II (7-770 Ed. 2026) e IEC 61008-1 / 61009-1. Falta de fase: 770.17.3.2 · 771.17.3.2. MBTS: 771.8.5 l). Termografía: criterio práctico de mantenimiento; la AEA no fija umbrales. El 10 % de desbalance de corrientes es un umbral práctico de aviso, no reglamentario.'
+});
+
+/* ============================================================
    AEA 90364-7-701 (Edición 2012) — familia "Baños, cocinas y lavaderos"
    Fichas en el mismo formato que el resto de la app.
    ============================================================ */
@@ -6596,6 +7171,9 @@ var TRIAGE = [
   {t:'Calienta o huele a quemado', s:'Tablero, boca, cable o sin punto visible', ids:['C5','C2','C3','C4'], c:'rojo'},
   {t:'Luces raras', s:'Titilan, bajan, se queman o quedan tenues', ids:['G3','G4','A3','A6'], c:''},
   {t:'Motor que no anda', s:'No arranca, gira al revés, calienta o no toma carga', ids:['G1','G9','G7','G8','G2','B3'], c:''},
+  {t:'Bombas, tanques y cisternas', s:'No arranca, no corta, cicla o salta el diferencial', ids:['M1','M2','M3','M4'], c:''},
+  {t:'Portón, palier y automatismos', s:'Portón, luces de palier, exterior, termotanque, domótica', ids:['M5','M6','M7','M8','M9'], c:''},
+  {t:'Tablero de comando', s:'Relevamiento, mantenimiento y contactores', ids:['M11','M12','M10'], c:''},
   {t:'Recepción de obra', s:'El recorrido completo de la 771.23, en orden', ids:['R1','R2','D2','R3','R4','R5','T3','I1','T1'], c:''},
   {t:'Inspección periódica', s:'Cada 5 años: 4 controles visuales y 3 mediciones', ids:['R6','T3','I1','T1'], c:''},
   {t:'Relevar un local', s:'Habilitación: circuitos, bocas, cables', ids:['N8','N7','L6','B5','B7'], c:''},
@@ -7806,6 +8384,139 @@ ev:function(v){
     li:li};
 },
 cita:'BS 7671:2018, 531.3.2, basada en IEC 60364-5-53: la fuga acumulada aguas abajo de un diferencial no debe pasar del 30 % de su IΔn. AEA 90364-7-771, 771.18.3.5: diferencial de 30 mA como máximo en los circuitos terminales; 771.18.4 b.1): hasta 300 mA para la protección contra contactos indirectos entre tableros, con Ra ≤ 40 Ω. En vivienda con la 7-770 Ed. 2026: 30 mA en los terminales y hasta 300 mA entre tableros, con Ra ≤ 100 Ω (770.18.3.5 y 770.18.4.2). El reparto por el mayor primero es un método de cálculo, no una prescripción.'
+},
+
+/* ---------- K16 · tablero de comando: contactor, relé, protección del comando, MBTS e IP ---------- */
+{
+id:'K16', t:'Tablero de comando', s:'Contactor, guardamotor, protección del comando, MBTS, IP y corriente del alimentador',
+ver:['M11','M1','M4','M10'],
+campos:[
+ {id:'carga', lbl:'Qué maniobra', tipo:'sel', opts:[['mot','Motor: bomba, presurizadora, portón, extractor'],['res','Resistencias: termotanque, calefacción'],['desc','Lámparas de descarga'],['led','Lámparas LED con driver'],['inc','Lámparas incandescentes o halógenas']]},
+ {id:'sis', lbl:'Sistema', tipo:'sel', opts:[['mono','Monofásico — 220 V'],['tri','Trifásico — 380 V']]},
+ {id:'icar', lbl:'Corriente nominal de la carga', ayuda:'Motor: la In de chapa. Resistencias: P / U', u:'A'},
+ {id:'kw', lbl:'Potencia del motor', ayuda:'Decide si la protección específica es exigible (desde 0,75 kW)', u:'kW'},
+ {id:'arr', lbl:'Arranque del motor', tipo:'sel', opts:[['dir','Directo'],['yd','Estrella-triángulo']]},
+ {id:'nm', lbl:'Motores iguales que maniobra el tablero', tipo:'sel', opts:[['1','1'],['2','2, por ejemplo bombas alternadas']]},
+ {id:'sim', lbl:'Con 2 motores: ¿pueden funcionar los dos a la vez?', ayuda:'No, si un enclavamiento lo impide', tipo:'bool'},
+ {id:'sens', lbl:'¿Hay flotantes, electrodos o sensores en un tanque o lugar mojado?', tipo:'bool'},
+ {id:'ucom', lbl:'Tensión del circuito de comando', tipo:'sel', opts:[['12','MBTS 12 V'],['24','MBTS 24 V'],['220','220 V']]},
+ {id:'icc', lbl:'Corriente de cortocircuito presunta en el tablero', ayuda:'La de la hoja Cortocircuito de la planilla', u:'kA'},
+ {id:'ubic', lbl:'Dónde va el tablero', tipo:'sel', opts:[['seco','Interior seco'],['hum','Interior húmedo'],['moj','Local mojado'],['int','Intemperie'],['ext','Intemperie, tablero de iluminación exterior']]}
+],
+ev:function(v){
+  var In=num(v.icar); if(In===null || In<=0) return null;
+  var carga=v.carga||'mot', sis=v.sis||'mono', kW=num(v.kw), icc=num(v.icc);
+  var mot=(carga==='mot'), yd=(mot && v.arr==='yd'), nm=(mot && v.nm==='2') ? 2 : 1;
+  var li=[], e='info', rg=false, kp=[];
+
+  /* contactor */
+  var catT={mot:'AC-3', res:'AC-1', desc:'AC-5a', led:'tabla LED', inc:'AC-5b'}[carga];
+  if(mot && yd){
+    li.push('Contactores (catálogo, IEC 60947-4-1): estrella-triángulo con los contactores de línea y de triángulo en AC-3 para In/√3 = '+f(In/Math.sqrt(3),1)+' A y el de estrella para In/3 = '+f(In/3,1)+' A. Relé térmico en las fases del bobinado regulado a 0,58 × In = '+f(0.58*In,1)+' A; si va en la línea, a '+f(In,1)+' A. Son relaciones de catálogo, no de la AEA.');
+    kp.push({k:'Contactor línea / triángulo', v:'≥ '+f(In/Math.sqrt(3),1), u:'A AC-3'});
+  } else if(mot){
+    li.push('Contactor en AC-3 (o AC-7b si es un contactor de uso doméstico) con Ie ≥ '+f(In,1)+' A en esa columna del catálogo. Guardamotor, o relé térmico más contactor, con '+f(In,1)+' A dentro de su rango de regulación y regulado a la corriente de chapa (catálogo, IEC 60947-4-1).');
+    kp.push({k:'Contactor', v:'≥ '+f(In,1), u:'A AC-3'});
+  } else if(carga==='led'){
+    li.push('Contactor para lámparas LED: se elige con la tabla de cargas LED del catálogo, por la corriente de conexión de los drivers; elegido sólo por los '+f(In,1)+' A de régimen puede soldar los contactos.');
+    kp.push({k:'Contactor', v:'tabla LED', u:''});
+  } else {
+    li.push('Contactor en '+catT+(carga==='res'?' (o AC-7a si es un contactor de uso doméstico)':'')+' con Ie ≥ '+f(In,1)+' A en esa columna del catálogo (IEC 60947-4-1).');
+    kp.push({k:'Contactor', v:'≥ '+f(In,1), u:'A '+catT});
+  }
+  if(mot) kp.push({k:'Relé o guardamotor', v:f(yd?0.58*In:In,1), u:'A'});
+
+  /* protección específica del motor */
+  if(mot){
+    if(kW===null) li.push('Cargá la potencia en kW: desde 0,75 kW la protección específica del motor contra sobrecarga y cortocircuito es exigible; por debajo, recomendable (771.17.3.1).');
+    else if(kW>=0.75) li.push('Motor de '+f(kW,2)+' kW: la maniobra y la protección específicas son EXIGIBLES. Los fusibles y los interruptores automáticos no son aplicables a la protección contra sobrecarga del motor (771.17.3.1 · 771.17.3.2 · 770.17.3).');
+    else li.push('Motor de '+f(kW,2)+' kW: la protección específica es recomendable, no exigible. Sin ella el motor no queda protegido por la protección del circuito (771.17.3.1).');
+    if(sis==='tri') li.push('Motor trifásico: dispositivo que detecte la falta de una fase e interrumpa la alimentación, obligatorio (771.17.3.2 · 770.17.3.2). La maniobra abre las tres fases a la vez.');
+    else li.push('Motor monofásico: la maniobra abre fase y neutro (771.17.3.2): contactor y guardamotor bipolares.');
+    if(nm===2) li.push('Con dos motores, un guardamotor (o relé) y un contactor por motor, y la alternancia con enclavamiento si no deben funcionar juntos.');
+  }
+
+  /* alimentador del tablero */
+  var Ib = mot ? (nm===2 && v.sim===true ? 1.25*In + In : 1.25*In) : In;
+  if(mot){
+    if(nm===2 && v.sim===true) li.push('Alimentador del tablero: IB = 1,25 × '+f(In,1)+' + '+f(In,1)+' = '+f(Ib,1)+' A, porque los dos motores pueden funcionar juntos (771.16.2.5).');
+    else if(nm===2 && v.sim===false) li.push('Alimentador del tablero: IB = 1,25 × '+f(In,1)+' = '+f(Ib,1)+' A, porque un enclavamiento impide que funcionen juntos (771.16.2.5).');
+    else if(nm===2) li.push('Con dos motores, indicá si pueden funcionar a la vez: si sí, IB = 1,25 × In + In = '+f(2.25*In,1)+' A; si un enclavamiento lo impide, IB = '+f(1.25*In,1)+' A (771.16.2.5). Se muestra el caso sin simultaneidad.');
+    else li.push('Alimentador: IB = 1,25 × In = '+f(Ib,1)+' A (771.16.2.5). Sección y caída en régimen y en el arranque: cálculo K11.');
+  } else li.push('Alimentador: IB = '+f(Ib,1)+' A. Verificar sección y caída como en cualquier circuito.');
+  kp.push({k:'IB del alimentador', v:f(Ib,1), u:'A'});
+  li.push('Dentro del tablero, los cables que alimentan cada aparato de maniobra y protección se dimensionan por la corriente asignada del aparato, no por la regulación del relé (771.20.4).');
+
+  /* circuito de comando */
+  li.push('El circuito de comando lleva su propia protección contra cortocircuitos, independiente de la principal: pequeño interruptor automático o fusible'+(icc!==null?' con capacidad de ruptura de '+f(icc,1)+' kA o más':' con capacidad de ruptura adecuada a la Icc del punto')+' (771.17.3.1 · 771.20.4). En MBTS, va en el primario del transformador de seguridad.');
+  if(icc!==null) kp.push({k:'Ruptura del comando', v:'≥ '+f(icc,1), u:'kA'});
+  if(v.sens===true){
+    if(v.ucom==='220'){ e='mal'; rg=true; li.push('Con flotantes, electrodos o sensores en un tanque o lugar mojado, el comando NO puede ser de 220 V: va en MBTS de 24 V como máximo, o 12 V donde el cuerpo pueda estar sumergido (771.8.5 l · 771.18.2 a). Ver la ficha M4.'); }
+    else li.push('Comando de los sensores en MBTS'+(v.ucom?' de '+v.ucom+' V':' (24 V como máximo; 12 V donde el cuerpo pueda estar sumergido)')+': transformador de seguridad IEC 61558-2-6, primario y secundario independientes, sin autotransformadores, y nada del secundario a tierra (771.8.5 k y l · 771.18.2). Cable en canalización independiente de la de 220 V (771.12.3.13.2 h). Si el tendido es largo, verificar la tensión en la bobina con el cálculo K17.');
+    if(e!=='mal') e='ok';
+  } else if(v.sens===false && v.ucom==='220') li.push('Comando a 220 V sin sensores en lugares mojados: admitido, con su protección propia.');
+  var comTxt = v.sens===true ? (e==='mal' ? '220 V, no cumple' : (v.ucom ? 'MBTS '+v.ucom+' V' : 'MBTS ≤ 24 V')) : (v.ucom ? (v.ucom==='220' ? '220 V' : 'MBTS '+v.ucom+' V') : '—');
+  kp.push({k:'Comando', v:comTxt, u:'', e:(e==='mal'?'mal':undefined)});
+
+  /* gabinete */
+  if(v.ubic){
+    var ub = v.ubic==='ext' ? 'int' : v.ubic;
+    li.push('Gabinete: '+_autIPtxt(ub, v.ubic==='ext')+'. Marcado con «Fabricante responsable» o «Montador responsable», la tensión y la Icc máxima de cálculo; cada aparato identificado por su función, en castellano y legible a 1 m (771.20.4).');
+    kp.push({k:'Gabinete', v:'IP'+_autIP(ub, v.ubic==='ext'), u:''});
+  }
+  li.push('Diferencial de 30 mA en el circuito que alimenta el tablero (771.18.3.5 · 770.18.3.5) y todas las masas al conductor de protección (771.18.5.7).');
+  if(e==='info' && v.sens===false) e='ok';
+
+  return {e:e,
+    t: e==='mal' ? 'El comando tiene que ser MBTS' : ('Contactor '+(carga==='led'?'por la tabla LED':(yd?'AC-3 ≥ '+f(In/Math.sqrt(3),1)+' A (línea)':catT+' ≥ '+f(In,1)+' A'))+' · IB '+f(Ib,1)+' A'),
+    d: (mot?'Motor '+(sis==='tri'?'trifásico':'monofásico'):'Carga '+(sis==='tri'?'trifásica':'monofásica'))+' de <span class="num">'+f(In,1)+' A</span>'+(mot&&kW!==null?', <span class="num">'+f(kW,2)+' kW</span>':'')+(nm===2?', dos motores':'')+'.',
+    kpis:kp, li:li, pel:rg};
+},
+cita:'AEA 90364-7-771: 771.16.2.5 (alimentadores de tableros de comando y protección de motores: 125 % de la In del mayor más la In de los demás con su simultaneidad), 771.17.3.1 y 771.17.3.2 (protección específica del motor exigible desde 0,75 kW; falta de fase; fusibles e interruptores automáticos no aplicables a la sobrecarga; maniobra de fase y neutro o de todas las fases), 771.20.4 (protección exclusiva del comando con capacidad de ruptura adecuada; IP41 o IP31D; marcado e identificación; cables de los aparatos por su corriente asignada), 771.8.5 k) y l) y 771.18.2 (MBTS), 771.12.3.13.2 h), 771-B.1, 771-B.2, 771-B.3 y 771-B.8.3.3 (grado IP según el lugar), 771.18.3.5 y 771.18.5.7. 7-770 Ed. 2026: 770.17.3, 770.18.3.5 y 770.20.6.4. Categorías de empleo, regulación del relé y relaciones del estrella-triángulo: IEC 60947-4-1 y catálogos (Cuaderno de aplicaciones técnicas nº 6 de ABB); no son exigencias de la AEA.'
+},
+
+/* ---------- K17 · comando a distancia en MBTS: tensión en la bobina al final del tendido ---------- */
+{
+id:'K17', t:'Comando a distancia en MBTS', s:'Tensión que le llega a la bobina o al relé al final de un tendido de comando largo',
+ver:['M10','M4','M1'],
+campos:[
+ {id:'uc', lbl:'Tensión del comando', tipo:'sel', opts:[['12','12 V CA'],['24','24 V CA']]},
+ {id:'l', lbl:'Longitud del tendido, ida', ayuda:'Del transformador a la bobina o relé más lejano', u:'m'},
+ {id:'s', lbl:'Sección de cada conductor del comando', tipo:'sel', opts:[['1','1 mm²'],['1.5','1,5 mm²'],['2.5','2,5 mm²'],['4','4 mm²']]},
+ {id:'pll', lbl:'Potencia de llamada de la bobina', ayuda:'Catálogo, en VA, al cerrar', u:'VA'},
+ {id:'pm', lbl:'Potencia de mantenimiento de la bobina (opcional)', ayuda:'Catálogo, en VA, cerrada', u:'VA'},
+ {id:'n', lbl:'Bobinas que cierran a la vez', ayuda:'Vacío: 1', u:''},
+ {id:'t', lbl:'Temperatura del conductor', ayuda:'Vacío: 40 °C', u:'°C'},
+ {id:'umin', lbl:'Tensión mínima de cierre', ayuda:'En % de la nominal. Vacío: 85 % (IEC 60947-4-1, según los catálogos)', u:'%'},
+ {id:'utr', lbl:'Tensión en bornes del transformador con carga (opcional)', ayuda:'Vacía: la nominal', u:'V'}
+],
+ev:function(v){
+  var Uc=v.uc?parseFloat(v.uc):null, L=num(v.l), S=v.s?parseFloat(v.s):null, P=num(v.pll), Pm=num(v.pm);
+  if(Uc===null || L===null || L<=0 || S===null || P===null || P<=0) return null;
+  var n=num(v.n); if(n===null || n<1) n=1;
+  var T=num(v.t); if(T===null) T=40;
+  var um=num(v.umin); if(um===null || um<=0 || um>=100) um=85;
+  var U0=num(v.utr); if(U0===null || U0<=0) U0=Uc;
+  var rho=0.01724*(1+0.00393*(T-20));
+  var I=n*P/Uc, du=2*L*rho*I/S, Ub=U0-du, pb=Ub/Uc*100;
+  var Lmax=(U0-um/100*Uc)*S/(2*rho*I);
+  var e = pb>=um ? 'ok' : 'mal', cero = (Ub<=0);
+  var li=[];
+  li.push('Corriente de llamada: I = '+f(n,0)+' × '+f(P,1)+' VA / '+f(Uc,0)+' V = '+f(I,2)+' A.');
+  li.push('ρ del cobre a '+f(T,0)+' °C = 0,01724 × (1 + 0,00393 × ('+f(T,0)+' − 20)) = '+f(rho,5)+' Ω·mm²/m.');
+  li.push('ΔU = 2 · L · ρ · I / S = 2 × '+f(L,0)+' m × '+f(rho,5)+' × '+f(I,2)+' A / '+f(S,1)+' mm² = '+f(du,2)+' V. '+(cero ? 'La caída calculada supera la tensión del comando: con este cable la bobina no puede tomar su corriente de llamada.' : 'En la bobina quedan '+f(Ub,2)+' V = '+f(pb,0)+' % de '+f(Uc,0)+' V; el mínimo de cierre es '+f(um,0)+' %.'));
+  if(e==='mal') li.push('No cierra con seguridad: zumba o no termina de cerrar (ficha M10). Opciones: subir la sección, acortar el tendido, pasar de 12 a 24 V donde el lugar lo admita (24 V salvo que el cuerpo pueda estar sumergido, 771.18.2 a), o usar un relé de nivel, que toma muy poca corriente en los electrodos, con la bobina del contactor dentro del tablero.');
+  li.push(Lmax>0 ? 'Con esta sección y esta carga, el tendido puede tener hasta '+f(Lmax,0)+' m de ida.' : 'Aun con tendido nulo, la tensión del transformador no alcanza el mínimo de cierre.');
+  if(Pm!==null && Pm>0){ var Im=n*Pm/Uc, dum=2*L*rho*Im/S; li.push('Cerrada, con '+f(Pm,1)+' VA de mantenimiento: '+f(Im,2)+' A y '+f(dum,2)+' V de caída; en la bobina quedan '+f(U0-dum,2)+' V.'); }
+  li.push('El cálculo resta las caídas como si estuvieran en fase con la tensión: da un resultado del lado seguro. No incluye la caída propia del transformador: elegirlo por la potencia de llamada del catálogo, no sólo por la de mantenimiento.');
+  li.push('La Tabla 771.13.I fija 2,5 mm² como mínimo para las líneas de los circuitos de uso específico (1,5 mm² las de alimentación a MBTF); para el cableado de comando entre el tablero y los sensores no fija una sección propia.');
+  return {e:e,
+    t: e==='ok' ? 'Cierra: '+f(pb,0)+' % de la tensión nominal en la bobina' : (cero ? 'No alcanza: la caída supera la tensión del comando' : 'No alcanza: '+f(pb,0)+' % en la bobina, mínimo '+f(um,0)+' %'),
+    d: 'Comando de <span class="num">'+f(Uc,0)+' V</span>, <span class="num">'+f(L,0)+' m</span> de ida en <span class="num">'+f(S,1)+' mm²</span>.',
+    kpis:[{k:'Tensión en la bobina', v:cero?'≈ 0':f(Ub,2), u:'V', e:e},{k:'% de la nominal', v:cero?'≈ 0':f(pb,0), u:'%', e:e},{k:'Corriente de llamada', v:f(I,2), u:'A'},{k:'Longitud máxima', v:Lmax>0?f(Lmax,0):'0', u:'m'}],
+    li:li};
+},
+cita:'Cálculo de obra con la resistencia del cobre (ρ a 20 °C = 0,01724 Ω·mm²/m, coeficiente 0,00393 /°C). Tensión mínima de cierre de los contactores: 85 % de Uc (IEC 60947-4-1, según los catálogos). AEA 90364-7-771: 771.18.2 a) (MBTS de 24 V, o 12 V donde el cuerpo pueda estar sumergido), 771.8.5 l) (comandos de tanques y lugares mojados en MBTS), 771.12.3.13.2 h) (canalización independiente) y Tabla 771.13.I (secciones mínimas).'
 }
 
 ];
@@ -8964,7 +9675,12 @@ var CRITERIOS=[
  ['Protecciones de emergencia','Esquema preferido IT con controlador permanente de aislación. NO se aplica diferencial de 30 mA ni corte automático: producirían la desconexión intempestiva de un servicio esencial. Contra contactos directos, aislación y barreras simultáneamente.','718.556.4, 718.556.5.1.1 y .1.2'],
  ['Resistencia al fuego de las canalizaciones','F30 para alarma de incendio, aviso a ocupantes e iluminación de emergencia. F90 para presurización de agua contra incendio, presurización de escaleras, extracción de humo y ascensores de bomberos. En rutas de evacuación, embutido con 15 mm de mortero no combustible.','718.556.6.3.1 y 718.556.6.4.2'],
  ['Suministro complementario','Seguridad 15 % de la potencia contratada, emergencia 25 %, duplicado más del 50 %. Si corresponden los dos, se instala el de emergencia.','718.3.21.2 y Tabla 718.III'],
- ['Verificaciones de emergencia','Mensual: iluminación, señalización, dispositivo de transferencia y grupo electrógeno (1 hora al 50 %). Anual: descarga de baterías. Registros firmados por 10 años y planilla visible a menos de 1 m del tablero seccional general.','718.556.10.2 y .10.3']
+ ['Verificaciones de emergencia','Mensual: iluminación, señalización, dispositivo de transferencia y grupo electrógeno (1 hora al 50 %). Anual: descarga de baterías. Registros firmados por 10 años y planilla visible a menos de 1 m del tablero seccional general.','718.556.10.2 y .10.3'],
+ ['Comandos en tanques y lugares mojados','Los circuitos de comando de flotantes, señalizaciones y alarmas en ambientes mojados, incluidos los de los tanques cisterna y elevado, se alimentan con MBTS: 24 V como máximo, 12 V donde el cuerpo pueda estar sumergido; transformador de seguridad IEC 61558-2-6, con primario y secundario independientes y sin autotransformadores; secundario y masas sin poner a tierra. Cable en canalización independiente de la de 220 V, o con caño aislante propio, pantalla puesta a tierra o aislación para la mayor tensión.','AEA 90364-7-771: 771.8.5 k) y l), 771.18.2 y 771.12.3.13.2 h) con su Nota 1'],
+ ['Protección del circuito de comando','Todo circuito de comando (señalización, comando de motores, etc.) lleva protección exclusiva contra cortocircuitos, independiente de la principal: interruptor automático o fusible con capacidad de ruptura adecuada a la Icc presunta del punto. Motores: maniobra y protección específicas contra sobrecarga y cortocircuito, exigibles desde 0,75 kW; detección de falta de fase en los polifásicos; maniobra de fase y neutro en los monofásicos; fusibles e interruptores automáticos no aplicables a la sobrecarga del motor. Alimentador de un tablero de motores: 125 % de la In del mayor más la In de los demás con su simultaneidad.','AEA 90364-7-771: 771.16.2.5, 771.17.3.1, 771.17.3.2 y 771.20.4 · 7-770 Ed. 2026: 770.17.3.1 y 770.17.3.2'],
+ ['Gabinete del tablero de comando','Interior seco: IP41 o IP31D. Interior húmedo: material IPX1 y gabinete sellado. Local mojado: maniobra y protección preferentemente afuera; adentro, IPX4. Intemperie: IP54. Tablero de iluminación exterior a la intemperie: IP55 e IK10, puerta entre 0,3 y 2 m. Marcado con «Fabricante responsable» o «Montador responsable», tensión de utilización e Icc máxima de cálculo; aparatos identificados por su función, en castellano y legibles a 1 m; todas las masas al conductor de protección.','AEA 90364-7-771: 771.20.4, 771.20.3.1, 771-B.1, 771-B.2, 771-B.3 y 771-B.8.3.3 · 7-770 Ed. 2026: 770.20.6.4 y 770.20.6.9'],
+ ['Contactor y categoría de empleo','AC-1 resistencias y cargas poco inductivas · AC-3 motores de jaula, arranque y paro en marcha · AC-5a lámparas de descarga · AC-5b lámparas incandescentes · AC-7a y AC-7b cargas y motores de aparatos domésticos. La bobina cierra entre 0,85 y 1,1 Uc. Coordinación tipo 1: tras un cortocircuito se admite daño del contactor y del relé, sin riesgo para personas ni instalación; tipo 2: sólo una soldadura leve de contactos, fácil de separar. Estrella-triángulo: contactores de línea y triángulo para 0,58 In, el de estrella para 0,33 In, relé en las fases del bobinado a 0,58 In.','IEC 60947-4-1, Tabla 1, según el Cuaderno de aplicaciones técnicas nº 6 de ABB; límites de la bobina según catálogos «acc. IEC 60947-4-1». Norma de producto y práctica de catálogo: no son exigencias de la AEA.'],
+ ['Colores de pulsadores y pilotos','Parada de emergencia: roja, con fondo amarillo si lo tiene. Marcha: blanca de preferencia (también gris, negra o verde), nunca roja. Parada: negra de preferencia (también gris o blanca), nunca verde. Rearme: azul, blanco, gris o negro. En los indicadores luminosos, el amarillo queda para las condiciones anormales.','IEC 60204-1 (equipamiento eléctrico de máquinas), 10.2.1 y 10.3.2, según la NTP 1098 del INSST. Buena práctica para tableros de comando: la AEA no fija colores de pulsadores.']
 ];
 function vistaCriterios(){
   ST.vista='criterios'; btnVolver.hidden=false;
