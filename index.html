@@ -585,6 +585,66 @@ html[data-tema="oscuro"] .ver .pedido{background:rgba(0,0,0,.25)}
   .tabla.comp{break-inside:auto}
   .tabla.comp tr{break-inside:avoid}
 }
+/* ---------- próxima inspección y mantenimiento ---------- */
+.prox{background:var(--sup);border:1px solid var(--line);border-left:4px solid var(--ok);border-radius:var(--s1);
+  padding:8px 12px;margin-top:var(--s2)}
+.prox.pronto{border-left-color:var(--ojo);background:var(--ojo-bg)}
+.prox.vencida{border-left-color:var(--mal);background:var(--mal-bg)}
+.prox .k{font-size:calc(13px * var(--fs));color:var(--ink2)}
+.prox .v{font-weight:700;font-size:calc(15.5px * var(--fs));margin-top:2px}
+.prox.pronto .v{color:var(--ojo)} .prox.vencida .v{color:var(--mal)}
+.prox .n{font-size:calc(12.5px * var(--fs));color:var(--ink2);margin-top:3px;line-height:1.4}
+.prox .acc,.rec .acc{display:flex;gap:var(--s2);margin-top:var(--s2);flex-wrap:wrap}
+.prox .acc button,.rec .acc button,.fotos-add{background:var(--sup);border:1px solid var(--line);border-radius:var(--s1);
+  padding:6px 10px;font-size:calc(13px * var(--fs));font-weight:600;color:var(--ink);cursor:pointer;min-height:40px}
+.rec .acc{gap:6px}
+.recs{margin:0 0 var(--s4)}
+.recs h3{font-size:calc(16px * var(--fs))}
+.recs h3 small{display:block;font-weight:400;color:var(--ink2);font-size:calc(12.5px * var(--fs));margin-top:1px}
+.rec{background:var(--sup);border:1px solid var(--line);border-left:4px solid var(--ojo);border-radius:var(--s1);
+  padding:8px 12px;margin-top:var(--s2)}
+.rec.vencida{border-left-color:var(--mal)}
+.rec .h{font-weight:700;line-height:1.3}
+.rec .h small{font-weight:400;color:var(--ink2);font-size:calc(13px * var(--fs))}
+.rec .v{font-size:calc(14px * var(--fs));margin-top:2px}
+.rec.pronto .v{color:var(--ojo)} .rec.vencida .v{color:var(--mal)}
+/* ---------- fotos ---------- */
+.fotos{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:var(--s2);margin-top:var(--s2)}
+.foto{margin:0;position:relative;border:1px solid var(--line);border-radius:var(--s1);overflow:hidden;background:var(--sup2)}
+.foto button{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in}
+.foto img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--sup3)}
+.foto img.falta{object-fit:contain}
+.foto figcaption{font-size:calc(12px * var(--fs));color:var(--ink2);padding:3px 6px 4px;line-height:1.3;overflow-wrap:anywhere}
+.foto .term{position:absolute;top:4px;left:4px;font-size:11px;font-weight:700;background:#B3261E;color:#fff;
+  border-radius:3px;padding:1px 5px;pointer-events:none}
+.fotos-add{margin-top:var(--s2)}
+.fotos-ficha{margin-top:var(--s3);padding-top:var(--s3);border-top:1px dashed var(--line)}
+.fotos-ficha h4{font-size:calc(15px * var(--fs))}
+.fotos-ficha h4 small{font-weight:400;color:var(--ink2)}
+.fotos-obra h3 small{font-weight:400}
+.visor{position:fixed;inset:0;z-index:60;background:rgba(5,10,15,.97);display:flex;flex-direction:column}
+.visor .vis-img{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:var(--s2)}
+.visor .vis-img img{max-width:100%;max-height:100%;object-fit:contain}
+.visor .vpie{background:var(--sup);color:var(--ink);padding:var(--s3) var(--s4) calc(var(--s3) + env(safe-area-inset-bottom));
+  border-top:1px solid var(--line)}
+.visor .vpie label{display:block;font-weight:600;font-size:calc(14px * var(--fs));margin-bottom:5px}
+.visor .vpie .entrada{font-family:var(--sans);font-size:calc(16px * var(--fs))}
+.visor .sino{margin-top:var(--s2)}
+.visor .sino button{border-color:var(--ink);background:var(--sup);color:var(--ink)}
+.visor .sino button[aria-pressed="true"]{background:#B3261E;border-color:#B3261E;color:#fff}
+.visor .sino button[aria-pressed="true"]::before{content:'✓ '}
+.visor .acciones{margin-bottom:0}
+.entrada.txt{font-family:var(--sans);font-size:calc(16px * var(--fs))}
+.entrada[type="date"]{min-height:52px}
+@media print{
+  .visor,.fotos-add{display:none!important}
+  .fotos{grid-template-columns:repeat(2,1fr);gap:8px}
+  .foto{break-inside:avoid;border:1px solid #999;background:#fff}
+  .foto img{aspect-ratio:auto;max-height:7.5cm;object-fit:contain;background:#fff}
+  .foto .term{display:none}
+  .foto figcaption{color:#000;font-size:10px}
+  .bloque h3{break-after:avoid}
+}
 </style>
 </head>
 <body>
@@ -7099,7 +7159,7 @@ var ST = {
   registro:[], archivo:[], t0:null, filtro:'', triage:null,
   favoritos:[], recientes:[], guardados:{}, plegadas:{},
   obra:obraVacia(),
-  ajustes:{tema:'auto', fs:1, wake:false},
+  ajustes:{tema:'auto', fs:1, wake:false, mantMeses:''},
   editando:null, firmaCalc:null, filtroCrit:'', manAbierto:null, guia:null,
   edit:null, borrador:null, precargados:[]
 };
@@ -8604,6 +8664,12 @@ function pintarCampos(campos, valores, prefijo, antes){
              '<button type="button" class="apar-add full" data-apadd="'+c.id+'">Agregar al tablero</button>'+
            '</div>'+
            '<div class="apar-sum">'+sumaAparatos(valores[c.id])+'</div></div>';
+    } else if(c.tipo==='txt'){
+      var vt=(valores[c.id]!==undefined && valores[c.id]!==null) ? String(valores[c.id]) : '';
+      h += '<input class="entrada txt" id="'+prefijo+c.id+'" data-c="'+c.id+'" type="text" autocomplete="off" value="'+esc(vt)+'" placeholder="—">';
+    } else if(c.tipo==='fecha'){
+      var vf=(valores[c.id]!==undefined && valores[c.id]!==null) ? String(valores[c.id]) : '';
+      h += '<input class="entrada txt" id="'+prefijo+c.id+'" data-c="'+c.id+'" type="date" value="'+esc(/^\d{4}-\d{2}-\d{2}$/.test(vf) ? vf : '')+'">';
     } else {
       var val=(valores[c.id]!==undefined && valores[c.id]!==null) ? String(valores[c.id]).replace('.',',') : '';
       h += '<div class="uni"><input class="entrada" id="'+prefijo+c.id+'" data-c="'+c.id+
@@ -8715,11 +8781,13 @@ function vistaInicio(){
   if(ST.triage===null && !ST.filtro){
     h += '<section class="hero"><h2>¿Qué está pasando en la instalación?</h2>'+
          '<p>Elegí el síntoma o buscá la falla. Cada ficha te dice qué instrumento usar, cómo configurarlo, qué medir y qué hacer con el resultado.</p></section>';
+    h += htmlRecordatorios();
   }
   h += '<input class="buscar" id="q" type="search" inputmode="search" autocomplete="off" '+
        'aria-label="Buscar una ficha" placeholder="Buscar: neutro, fuga, aislación, motor…" value="'+esc(ST.filtro)+'">';
   h += '<div id="resultados"></div>';
   app.innerHTML = h;
+  ligarRecordatorios();
   var qi = document.getElementById('q'), deb=null;
   qi.addEventListener('input', function(){
     var val=this.value;
@@ -8875,7 +8943,7 @@ function vistaFicha(){
     h += '<button class="btn-eval" id="evaluar">Diagnosticar</button>';
     h += '<button class="limpiar" id="limpiar">Borrar lo cargado</button>';
     h += '</div><div id="salida"><div id="salidaVer"></div>'+
-         '<button class="btn-reg" id="guardar" hidden>Guardar en el informe</button></div></div>';
+         '<button class="btn-reg" id="guardar" hidden>Guardar en el informe</button></div><div id="fotosFicha"></div></div>';
   }
 
   h += '<div class="bloque"><h3>Cómo se soluciona</h3><ul class="sol">';
@@ -8924,6 +8992,7 @@ function vistaFicha(){
   var gb=document.getElementById('guardar'); if(gb) gb.onclick=guardarRegistro;
   ligarSelCirc('F', x);
   pintarSalida();
+  pintarFotosFicha();
   pintarNav();
 }
 /* Repinta sólo el bloque de resultado. El botón de guardar es un nodo fijo:
@@ -8977,6 +9046,7 @@ function guardarRegistro(){
   if(ca) item.circ={id:ca.id, n:ca.n, tab:ca.tab};
   if(ST.editando!==null && ST.registro[ST.editando] && ST.registro[ST.editando].id===x.id && circDeRegistro(ST.registro[ST.editando])===(ST.obra.cAct||'')){
     item.ts=ST.registro[ST.editando].ts; item.hora=ST.registro[ST.editando].hora;
+    if(ST.registro[ST.editando].fotos) item.fotos=ST.registro[ST.editando].fotos;
     ST.registro[ST.editando]=item;
     toast('Actualizado en el informe');
   } else {
@@ -8988,6 +9058,7 @@ function guardarRegistro(){
   var g=document.getElementById('guardar');
   if(g){ g.textContent='Guardado ✓'; g.disabled=true; }
   pintarNav();
+  if(esFicha) pintarFotosFicha();
 }
 
 /* ---------- listado de cálculos ---------- */
@@ -9116,20 +9187,26 @@ function vistaInforme(){
 
   h+='<div class="bloque"><h3>Datos de la obra</h3><div id="obraPrint" class="solo-print"></div><div class="obra">'+
      pintarCampos([
-      {id:'cliente', lbl:'Cliente'},
-      {id:'dir', lbl:'Domicilio'},
-      {id:'fecha', lbl:'Fecha', ayuda:'aaaa-mm-dd'},
+      {id:'cliente', lbl:'Cliente', tipo:'txt'},
+      {id:'dir', lbl:'Domicilio', tipo:'txt'},
+      {id:'fecha', lbl:'Fecha', tipo:'fecha'},
       CAMPO_REGLAM,
       {id:'tipo', lbl:'Tipo de intervención', tipo:'sel', opts:[
         ['Verificación inicial (recepción)','Verificación inicial (recepción)'],
         ['Verificación periódica','Verificación periódica'],
+        ['Mantenimiento preventivo','Mantenimiento preventivo'],
         ['Reparación','Reparación'],
         ['Relevamiento para habilitación','Relevamiento para habilitación'],
         ['Diagnóstico de falla','Diagnóstico de falla']]},
-      {id:'inst', lbl:'Instalador'},
-      {id:'mat', lbl:'Matrícula'},
-      {id:'obs', lbl:'Observaciones'}
-     ], ST.obra, 'o_')+'</div></div>';
+      {id:'perAnios', lbl:'Inspección periódica cada', tipo:'sel', ayuda:'Vacío: 5 años, el máximo de la AEA (770.23.4.3 · 771.23.4.3). El reglamento de conexión del ENRE sugiere 3 años en oficinas, comercios e instalaciones comunes de edificios, 2 en lugares de pública concurrencia y 1 con riesgo de incendio o explosión (apartado III, punto 5).',
+       opts:[['5','5 años'],['4','4 años'],['3','3 años'],['2','2 años'],['1','1 año']]},
+      {id:'mantMeses', lbl:'Mantenimiento de tableros de comando cada', tipo:'sel',
+       ayuda:'La AEA no fija esta frecuencia: es criterio tuyo. Vacío: lo de Ajustes'+(parseInt(ST.ajustes.mantMeses,10)>0 ? ' ('+parseInt(ST.ajustes.mantMeses,10)+' meses)' : '')+'.',
+       opts:[['0','No tiene tablero de comando'],['3','3 meses'],['6','6 meses'],['12','12 meses'],['24','24 meses']]},
+      {id:'inst', lbl:'Instalador', tipo:'txt'},
+      {id:'mat', lbl:'Matrícula', tipo:'txt'},
+      {id:'obs', lbl:'Observaciones', tipo:'txt'}
+     ], ST.obra, 'o_')+'</div><div id="proxObra" class="no-print">'+htmlProxObra()+'</div></div>';
   h+='<div class="bloque no-print"><h3>Tableros, circuitos y protocolo</h3><div class="calc-lista">'+
      '<button class="calc-b" data-ir="instalacion"><span class="n"><b>Tableros y circuitos</b><i>'+esc(resumenInst())+'</i></span><span class="fl">›</span></button>'+
      '<button class="calc-b" data-ir="protocolo"><span class="n"><b>Protocolo de ensayos</b><i>'+esc(resumenProt())+'</i></span><span class="fl">›</span></button></div></div>';
@@ -9157,16 +9234,22 @@ function vistaInforme(){
     h+='<div class="bloque"><h3>Registros</h3>';
     for(var i=0;i<n;i++){
       var x=ST.registro[i];
-      h += '<div class="reg-item '+x.e+'"><div class="h">'+esc(x.id)+' · '+esc(x.t)+(x.circ?' · '+esc(etiquetaCirc(x.circ)):'')+'<time>'+esc(x.hora)+'</time></div>';
+      h += '<div class="reg-item '+x.e+(x.fotos && x.fotos.length ? ' con-fotos' : '')+'"><div class="h">'+esc(x.id)+' · '+esc(x.t)+(x.circ?' · '+esc(etiquetaCirc(x.circ)):'')+'<time>'+esc(x.hora)+'</time></div>';
       h += '<div class="v '+x.e+'">'+esc(x.ver)+'</div>';
       if(x.lect && x.lect.length) h += '<div class="m">'+esc(x.lect.join(' · '))+'</div>';
       h += htmlAntesReg(x, vis);
-      h += '<div class="acc"><button data-abrir="'+i+'">Abrir</button><button data-borrar="'+i+'">Quitar</button></div></div>';
+      h += '<div class="fotos-w" data-fotos="r'+x.ts+'">'+htmlFotos(x.fotos, 'r'+x.ts)+'</div>';
+      h += '<div class="acc"><button data-abrir="'+i+'">Abrir</button><button data-fadd="r'+x.ts+'">Agregar foto</button><button data-borrar="'+i+'">Quitar</button></div></div>';
     }
     h+='</div>';
     h+=htmlQueCorregir(qc);
   }
-  if(n || hayProt(ST.obra)){
+  var fo=ST.obra.fotos||[];
+  h+='<div class="bloque fotos-obra'+(fo.length?'':' no-print')+'"><h3>Fotos de la obra <small data-nfotos="o">'+(fo.length||'')+'</small></h3>'+
+     '<div class="fotos-w" data-fotos="o">'+htmlFotos(fo, 'o')+'</div>'+
+     '<button type="button" class="fotos-add" data-fadd="o">Agregar fotos</button>'+
+     '<p class="nota-t no-print">Tablero, frente de la obra, termografías. Las de cada medición se agregan en su registro.</p></div>';
+  if(n || hayProt(ST.obra) || fo.length){
     h+='<div class="acciones"><button class="pri" id="copiar">Copiar informe</button>'+
        '<button id="compartir">Compartir</button>'+
        '<button id="imprimir">Imprimir o PDF</button>'+
@@ -9192,11 +9275,12 @@ function vistaInforme(){
      (ALM.ok?'Queda guardado en este teléfono hasta que lo cierres o lo borres.':'<b>En este teléfono no se puede guardar</b>: copialo antes de cerrar la app.')+'</div>';
   h+='</div>';
   app.innerHTML=h;
+  pintarFotos(app);
 
   ligarCampos(ST.obra, null);
   app.querySelectorAll('[data-c]').forEach(function(el){
-    el.addEventListener('input', pintarObraPrint);
-    el.addEventListener('change', function(){ guardar(); pintarObraPrint(); });
+    el.addEventListener('input', function(){ pintarObraPrint(); pintarProximas(); });
+    el.addEventListener('change', function(){ guardar(); pintarObraPrint(); pintarProximas(); });
     el.addEventListener('blur', function(){ guardar(); });
   });
   pintarObraPrint();
@@ -9211,7 +9295,7 @@ function vistaInforme(){
   app.querySelectorAll('[data-borrar]').forEach(function(b){
     b.onclick=function(){
       var i=parseInt(this.dataset.borrar,10);
-      ST.registro.splice(i,1); ST.editando=null; guardar(); vistaInforme(); pintarNav();
+      ST.registro.splice(i,1); ST.editando=null; guardar(); vistaInforme(); pintarNav(); gcFotos();
     };
   });
   app.querySelectorAll('[data-arch]').forEach(function(b){
@@ -9226,13 +9310,13 @@ function vistaInforme(){
   app.querySelectorAll('[data-archdel]').forEach(function(b){
     b.onclick=function(){
       if(!confirm('¿Borrar esta intervención archivada?')) return;
-      ST.archivo.splice(parseInt(this.dataset.archdel,10),1); guardar(); vistaInforme();
+      ST.archivo.splice(parseInt(this.dataset.archdel,10),1); guardar(); vistaInforme(); gcFotos();
     };
   });
   app.querySelectorAll('[data-ir]').forEach(function(b){ b.onclick=function(){ ir(this.dataset.ir); }; });
   var cp=document.getElementById('copiar'); if(cp) cp.onclick=function(){ copiarTexto(textoInforme()); };
   var sh=document.getElementById('compartir'); if(sh) sh.onclick=compartirInforme;
-  var im=document.getElementById('imprimir'); if(im) im.onclick=function(){ window.print(); };
+  var im=document.getElementById('imprimir'); if(im) im.onclick=function(){ esperarFotos().then(function(){ window.print(); }); };
   var dl=document.getElementById('descargar'); if(dl) dl.onclick=descargarInforme;
   var cl=document.getElementById('cerrar'); if(cl) cl.onclick=cerrarIntervencion;
   var bo=document.getElementById('borrar');
@@ -9240,7 +9324,7 @@ function vistaInforme(){
     if(!confirm('¿Borrar todos los registros de esta intervención? Los datos de la obra también se limpian.')) return;
     ST.registro=[]; ST.t0=null; ST.editando=null;
     ST.obra=obraVacia();
-    guardar(); vistaInforme(); pintarNav();
+    guardar(); vistaInforme(); pintarNav(); gcFotos();
   };
   pintarNav();
 }
@@ -9253,6 +9337,7 @@ function pintarObraPrint(){
   f2.push(['Fecha', fechaAR(o.fecha||hoyISO())]);
   if(o.reglam && REG_NOMBRE[o.reglam]) f2.push(['Reglamentación', REG_NOMBRE[o.reglam]]);
   if(o.tipo) f2.push(['Tipo de intervención', o.tipo]);
+  lineasProx(proximas(visitasObra(o))).forEach(function(x){ if(x.fecha) f2.push([x.k, x.v+'. '+x.nota]); });
   if(o.inst) f2.push(['Instalador', o.inst+(o.mat?' — Matrícula '+o.mat:'')]);
   else if(o.mat) f2.push(['Matrícula', o.mat]);
   if(o.obs) f2.push(['Observaciones', o.obs]);
@@ -9278,6 +9363,8 @@ function textoInforme(fuente){
   if(obra.reglam && REG_NOMBRE[obra.reglam]) t+='Reglamentación: '+REG_NOMBRE[obra.reglam]+'\n';
   if(obra.tipo)    t+='Tipo: '+obra.tipo+'\n';
   if(obra.inst)    t+='Instalador: '+obra.inst+(obra.mat?' — Matrícula '+obra.mat:'')+'\n';
+  var visP=fuente ? visitasPrevias(fuente).concat([fuente]) : visitasObra(ST.obra);
+  lineasProx(proximas(visP), !!fuente).forEach(function(x){ if(x.fecha) t+=x.k+': '+x.v+' ('+x.nota+')\n'; });
   var vis=fuente ? visitasPrevias(fuente) : visitasPrevias();
   if(vis.length) t+='Visitas anteriores: '+vis.slice().reverse().map(function(a){ return fechaAR(fechaVisita(a))+(a.obra.tipo?' ('+a.obra.tipo+')':''); }).join(', ')+'\n';
   t+='Registros: '+reg.length+'\n\n';
@@ -9288,6 +9375,7 @@ function textoInforme(fuente){
     t+=(i+1)+'. ['+x.hora+'] '+x.id+' — '+x.t+(x.circ?' — '+etiquetaCirc(x.circ):'')+'\n';
     t+='   Resultado: '+(x.e==='mal'?'NO CUMPLE / CORREGIR':(x.e==='ojo'?'REVISAR':(x.e==='ok'?'CUMPLE':'DATO')))+' — '+x.ver+'\n';
     if(x.lect && x.lect.length) t+='   '+x.lect.join('\n   ')+'\n';
+    if(x.fotos && x.fotos.length) t+='   Fotos: '+textoFotos(x.fotos)+'\n';
     var an=registrosAnteriores(x.k, x.id, x.circ||null, vis)[0];
     if(an) t+='   Antes ('+fechaAR(an.f)+'): '+(an.it.e==='mal'?'NO CUMPLE / CORREGIR':(an.it.e==='ojo'?'REVISAR':(an.it.e==='ok'?'CUMPLE':'DATO')))+' — '+an.it.ver+'\n';
     t+='\n';
@@ -9296,6 +9384,7 @@ function textoInforme(fuente){
   var tp=textoProtocolo(obra); if(tp) t+='\n'+tp;
   var tc=textoComparacion(obra, vis); if(tc) t+='\n'+tc;
   t+=textoQueCorregir(queCorregir(obra, reg));
+  if(obra.fotos && obra.fotos.length) t+='\nFotos de la obra: '+textoFotos(obra.fotos)+'\n';
   if(obra.obs) t+='\nObservaciones: '+obra.obs+'\n';
   t+='\nCriterios: AEA 90364-7-770 (Ed. 2026) / 7-771 / 7-701 / 7-718. UL = 24 V.\n';
   t+='Borrador de obra. No reemplaza al protocolo de medición firmado.\n';
@@ -9332,6 +9421,15 @@ function descargarInforme(){
 /* ---------- respaldo: exportar e importar todo lo guardado ---------- */
 var RESP_FORMATO = 3;
 function exportarRespaldo(){
+  var ids=idsFotosEnUso();
+  if(ids.length && confirm('¿Incluir las '+ids.length+' foto'+(ids.length===1?'':'s')+' en el respaldo? El archivo queda más grande, pero las fotos vuelven al importarlo en otro teléfono.')){
+    toast('Armando el respaldo con las fotos…');
+    fotosParaRespaldo(ids).then(function(m){ bajarRespaldo(m); });
+    return;
+  }
+  bajarRespaldo(null);
+}
+function bajarRespaldo(fotos){
   var d = {
     app:'diagAEA', formato:RESP_FORMATO, titulo:'Diagnóstico en obra — AEA 90364',
     exportado:new Date().toISOString(),
@@ -9340,6 +9438,7 @@ function exportarRespaldo(){
       recientes:ST.recientes, valores:ST.guardados, ajustes:ST.ajustes, archivo:ST.archivo
     }
   };
+  if(fotos && Object.keys(fotos).length) d.fotos=fotos;
   var txt;
   try{ txt=JSON.stringify(d); }catch(e){ toast('No se pudo armar el respaldo'); return; }
   var nombre='respaldo-diagnostico-'+hoyISO()+'.json';
@@ -9362,7 +9461,7 @@ function leerRespaldo(texto){
   var n = (d.datos && typeof d.datos==='object') ? d.datos : d;
   if(!n.registro && !n.archivo && !n.valores && !n.favoritos && !n.obra)
     return {error:'El archivo no parece un respaldo de esta app.'};
-  return {datos:n, exportado:d.exportado||null};
+  return {datos:n, exportado:d.exportado||null, fotos:(d.fotos && typeof d.fotos==='object') ? d.fotos : null};
 }
 function aplicarRespaldo(n, modo){
   function arr(x){ return Array.isArray(x)?x:[]; }
@@ -9398,6 +9497,7 @@ function aplicarRespaldo(n, modo){
     if(n.obra){
       var o=n.obra, c;
       for(c in o){ if(Object.prototype.hasOwnProperty.call(o,c) && !ST.obra[c] && o[c]) ST.obra[c]=o[c]; }
+      if(Array.isArray(o.fotos) && o.fotos.length && !(ST.obra.fotos && ST.obra.fotos.length)) ST.obra.fotos=o.fotos;
       if(Array.isArray(o.circ) && o.circ.length && !ST.obra.circ.length){
         ST.obra.tab=Array.isArray(o.tab)?o.tab:[]; ST.obra.circ=o.circ;
         if(o.prot && typeof o.prot==='object') ST.obra.prot=o.prot;
@@ -9797,8 +9897,15 @@ function vistaAjustes(){
      '<div class="seg">'+
      '<button data-wake="1" aria-pressed="'+(a.wake===true)+'">Sí</button>'+
      '<button data-wake="0" aria-pressed="'+(a.wake!==true)+'">No</button></div></div>';
+  h+='<div class="aj"><b>Mantenimiento de tableros de comando</b><p>La AEA no fija cada cuánto se hace: es criterio tuyo. '+
+     'Con una frecuencia elegida, cada obra con un mantenimiento cargado (ficha M12 o tipo «Mantenimiento preventivo») muestra la fecha del próximo '+
+     'en el informe y aparece en Inicio cuando faltan '+AVISO_DIAS+' días o menos. En cada obra se puede cambiar.</p><div class="seg">'+
+     [['','Sin fijar'],['3','3 meses'],['6','6 meses'],['12','12 meses']].map(function(o){
+       return '<button data-mant="'+o[0]+'" aria-pressed="'+(String(a.mantMeses||'')===o[0])+'">'+o[1]+'</button>'; }).join('')+'</div></div>';
+  h+='<div class="aj"><b>Fotos</b><p id="ajFotos">'+(FOTOS.ok===false ? 'Este navegador no deja guardar las fotos ('+esc(FOTOS.motivo)+'): quedan hasta cerrar la app. ' : '')+
+     'Contando las fotos guardadas…</p></div>';
   h+='<div class="aj"><b>Datos guardados</b><p>'+
-     (ALM.ok ? 'Se guardan en este teléfono: la intervención en curso, los favoritos, los valores cargados en cada ficha y hasta 50 intervenciones archivadas. Nada sale del equipo. Si borrás los datos del navegador se pierde todo, así que conviene exportar un respaldo cada tanto.'
+     (ALM.ok ? 'Se guardan en este teléfono: la intervención en curso, los favoritos, los valores cargados en cada ficha y hasta 50 intervenciones archivadas, con sus fotos. Nada sale del equipo. Si borrás los datos del navegador se pierde todo, así que conviene exportar un respaldo cada tanto.'
              : 'Este teléfono no está dejando guardar ('+esc(ALM.motivo)+'). Suele pasar al abrir el archivo directamente desde el almacenamiento o en una ventana privada. Todo funciona igual, pero se pierde al cerrar.')+
      '</p><div class="acciones"><button class="peligro" id="borrartodo">Borrar todo lo guardado</button></div></div>';
   h+='<div class="aj"><b>Respaldo</b><p>Todo lo guardado en este teléfono cabe en un archivo. Sirve para pasar la app a otro equipo, para recuperarla después de borrar los datos del navegador y para dejar copia de las intervenciones cerradas. El archivo no sale de tu teléfono si no lo mandás vos.</p>'+
@@ -9819,6 +9926,17 @@ function vistaAjustes(){
   app.querySelectorAll('[data-wake]').forEach(function(b){
     b.onclick=function(){ ST.ajustes.wake=this.dataset.wake==='1'; guardar();
       if(ST.ajustes.wake) pedirWake(); else soltarWake(); vistaAjustes(); };
+  });
+  app.querySelectorAll('[data-mant]').forEach(function(b){
+    b.onclick=function(){ ST.ajustes.mantMeses=this.dataset.mant; guardar(); vistaAjustes(); };
+  });
+  tamFotos().then(function(r){
+    var p=document.getElementById('ajFotos');
+    if(!p) return;
+    p.textContent=(FOTOS.ok===false ? 'Este navegador no deja guardar las fotos ('+FOTOS.motivo+'): quedan hasta cerrar la app. ' : '')+
+      (r.n ? r.n+' foto'+(r.n===1?'':'s')+' en este teléfono ('+mb(r.bytes)+'). ' : 'Todavía no hay fotos guardadas. ')+
+      'Se guardan comprimidas, con el lado mayor de '+FOTO_LADO+' px, y se borran solas cuando ya no las usa ninguna intervención. '+
+      'Para pasarlas a otro teléfono, incluilas al exportar el respaldo.';
   });
   var be=document.getElementById('expo');
   if(be) be.onclick=exportarRespaldo;
@@ -9843,6 +9961,7 @@ function vistaAjustes(){
         nreg+' registro'+(nreg===1?'':'s')+' en la intervención en curso · '+
         narc+' intervención'+(narc===1?'':'es')+' archivada'+(narc===1?'':'s')+' · '+
         nfav+' favorito'+(nfav===1?'':'s')+' · '+nval+' ficha'+(nval===1?'':'s')+' con valores cargados'+
+        (r.fotos ? ' · '+Object.keys(r.fotos).length+' foto'+(Object.keys(r.fotos).length===1?'':'s') : '')+
         (r.exportado?'<br>Exportado el '+esc(fechaAR(String(r.exportado).slice(0,10))):'')+
         '<div class="acciones"><button class="pri" id="impoFus">Fusionar</button>'+
         '<button id="impoRee">Reemplazar todo</button>'+
@@ -9850,8 +9969,10 @@ function vistaAjustes(){
         '<b>Fusionar</b> agrega lo que falte y no pisa nada de lo que ya tenés cargado. '+
         '<b>Reemplazar</b> borra lo de este teléfono y deja exactamente lo del archivo.</div>';
       var bf=document.getElementById('impoFus'), br=document.getElementById('impoRee'), bc=document.getElementById('impoCan');
-      if(bf) bf.onclick=function(){ aplicarRespaldo(n,'fusionar'); vistaAjustes(); pintarNav(); toast('Respaldo fusionado'); };
-      if(br) br.onclick=function(){ aplicarRespaldo(n,'reemplazar'); aplicarAjustes(); vistaAjustes(); pintarNav(); toast('Respaldo importado'); };
+      if(bf) bf.onclick=function(){ aplicarRespaldo(n,'fusionar'); vistaAjustes(); pintarNav(); toast('Respaldo fusionado');
+        restaurarFotos(r.fotos).then(function(){ if(ST.vista==='ajustes') vistaAjustes(); }); };
+      if(br) br.onclick=function(){ aplicarRespaldo(n,'reemplazar'); aplicarAjustes(); vistaAjustes(); pintarNav(); toast('Respaldo importado');
+        restaurarFotos(r.fotos).then(function(){ return gcFotos(); }).then(function(){ if(ST.vista==='ajustes') vistaAjustes(); }); };
       if(bc) bc.onclick=function(){ p.innerHTML=''; };
     };
     fr.onerror=function(){
@@ -9866,6 +9987,7 @@ function vistaAjustes(){
     try{ localStorage.removeItem(CLAVE); }catch(e){}
     ST.registro=[]; ST.archivo=[]; ST.favoritos=[]; ST.recientes=[]; ST.guardados={}; ST.t0=null;
     ST.obra=obraVacia();
+    gcFotos().then(function(){ if(ST.vista==='ajustes') vistaAjustes(); });
     vistaAjustes(); pintarNav(); toast('Listo, quedó vacío');
   };
   pintarNav();
@@ -9880,7 +10002,7 @@ function vistaAjustes(){
    igual en los dos casos: la planilla es optativa.
    ============================================================ */
 function obraVacia(){
-  return {uid:idNuevo('o'), cliente:'', dir:'', tipo:'', inst:'', mat:'', obs:'', reglam:'', fecha:hoyISO(),
+  return {uid:idNuevo('o'), cliente:'', dir:'', tipo:'', inst:'', mat:'', obs:'', reglam:'', fecha:hoyISO(), perAnios:'', mantMeses:'', fotos:[],
           tab:[], circ:[], prot:{rp:'', c:{}, ra:{}, vis:{}, modoVis:''}, cAct:'', origen:null};
 }
 function normalizarObra(o){
@@ -9891,6 +10013,7 @@ function normalizarObra(o){
   }
   if(!Array.isArray(o.tab)) o.tab=[];
   if(!Array.isArray(o.circ)) o.circ=[];
+  if(!Array.isArray(o.fotos)) o.fotos=[];
   if(!o.prot || typeof o.prot!=='object') o.prot=b.prot;
   ['c','ra','vis'].forEach(function(q){ if(!o.prot[q] || typeof o.prot[q]!=='object') o.prot[q]={}; });
   if(typeof o.cAct!=='string') o.cAct='';
@@ -10022,19 +10145,19 @@ function camposTab(actual){
   var opts=[['Medidor','Medidor (acometida)']];
   ST.obra.tab.forEach(function(t){ if(t.n!==actual) opts.push([t.n, t.n]); });
   return [
-    {id:'n', lbl:'Nombre', ayuda:'TP, TS1, TS cocina…'},
-    {id:'ub', lbl:'Ubicación'},
+    {id:'n', lbl:'Nombre', tipo:'txt', ayuda:'TP, TS1, TS cocina…'},
+    {id:'ub', lbl:'Ubicación', tipo:'txt'},
     {id:'de', lbl:'Alimentado desde', tipo:'sel', opts:opts},
-    {id:'obs', lbl:'Observaciones'}
+    {id:'obs', lbl:'Observaciones', tipo:'txt'}
   ];
 }
 function camposCirc(){
   var tabs=ST.obra.tab.map(function(t){ return [t.n, t.n+(t.ub?' — '+t.ub:'')]; });
   return {
     base:[
-      {id:'n', lbl:'Nombre o sigla', ayuda:'Como figura en el proyecto o en el rótulo del tablero: IUG-1, TUG-2, Aire del dormitorio…'},
+      {id:'n', lbl:'Nombre o sigla', tipo:'txt', ayuda:'Como figura en el proyecto o en el rótulo del tablero: IUG-1, TUG-2, Aire del dormitorio…'},
       {id:'tab', lbl:'Tablero del que sale', tipo:'sel', opts:tabs},
-      {id:'des', lbl:'Qué alimenta', ayuda:'Ambientes o equipo'},
+      {id:'des', lbl:'Qué alimenta', tipo:'txt', ayuda:'Ambientes o equipo'},
       {id:'sis', lbl:'Sistema', tipo:'sel', opts:[['1F+N','Monofásico, fase y neutro'],['2F','Bifásico, dos fases'],['3F+N','Trifásico con neutro'],['3F','Trifásico sin neutro']]},
       {id:'in', lbl:'Calibre del interruptor In', u:'A'},
       {id:'curva', lbl:'Curva del interruptor', tipo:'sel', opts:[['B','B'],['C','C'],['D','D']]},
@@ -10046,7 +10169,7 @@ function camposCirc(){
       {id:'secc', lbl:'Sección de fase y neutro', tipo:'sel', opts:OPC_SECC},
       {id:'pe', lbl:'Sección del conductor de protección', tipo:'sel', opts:OPC_SECC.concat([['0','No tiene PE']])},
       {id:'lon', lbl:'Longitud hasta la boca más alejada', u:'m'},
-      {id:'obs', lbl:'Observaciones'}
+      {id:'obs', lbl:'Observaciones', tipo:'txt'}
     ],
     mas:[
       {id:'ib', lbl:'Corriente de proyecto IB', u:'A'},
@@ -10400,7 +10523,7 @@ function htmlProtCirc(c, i){
      '<div class="medir" data-pc="'+esc(c.id)+'|id">'+pintarCampos(camposDe('D2',['reglam']), vid, pre+'id_', an.id)+'</div>'+
      '<div id="pv-'+esc(c.id)+'-id">'+htmlVerBloque(c,'id')+'</div></div>';
   h+='<div class="prot-blq"><div class="medir" data-pc="'+esc(c.id)+'|obs">'+
-     pintarCampos([{id:'obs', lbl:'Observaciones del circuito'}], p, pre+'ob_')+'</div></div>';
+     pintarCampos([{id:'obs', lbl:'Observaciones del circuito', tipo:'txt'}], p, pre+'ob_')+'</div></div>';
   return h+'</div></details>';
 }
 function instrumentosProt(){
@@ -10464,6 +10587,7 @@ function htmlProtPrint(o){
   f2.push(['Fecha', fechaAR(o.fecha||hoyISO())]);
   if(o.reglam && REG_NOMBRE[o.reglam]) f2.push(['Reglamentación', REG_NOMBRE[o.reglam]]);
   if(o.tipo) f2.push(['Tipo de intervención', o.tipo]);
+  lineasProx(proximas(visitasObra(o))).forEach(function(x){ if(x.fecha) f2.push([x.k, x.v+'. '+x.nota]); });
   if(o.inst) f2.push(['Instalador', o.inst+(o.mat?' — Matrícula '+o.mat:'')]);
   var h='<div class="solo-print prot-print"><div class="encab-print"><b>Protocolo de ensayos — AEA 90364</b>'+
         '<span>Diagnóstico en obra · mediciones circuito por circuito con el criterio de la ficha de cada ensayo</span></div>'+
@@ -10840,7 +10964,7 @@ function hayProt(o){
   }
   return hayDatos(p.ra||{}) || hayDatos(p.vis||{});
 }
-function hayIntervencion(){ return ST.registro.length>0 || hayProt(ST.obra); }
+function hayIntervencion(){ return ST.registro.length>0 || hayProt(ST.obra) || !!(ST.obra.fotos && ST.obra.fotos.length); }
 function resumenRegs(reg){
   reg=reg||[];
   if(!reg.length) return '—';
@@ -11027,6 +11151,7 @@ function archivarActual(){
   if(ST.archivo.length>MAX_ARCH) ST.archivo.splice(0, ST.archivo.length-MAX_ARCH);
   ST.registro=[]; ST.t0=null; ST.editando=null;
   ST.obra=obraVacia();
+  gcFotos();
 }
 /* Nueva visita a una obra archivada: mismos datos, tableros y circuitos; protocolo y registros en blanco. */
 function nuevaVisita(a){
@@ -11040,7 +11165,7 @@ function nuevaVisita(a){
   ST.archivo.forEach(function(x){ if(x && x.obra && !x.obra.uid && mismaObra(x.obra, a.obra)) x.obra.uid=o.uid; });
   a.obra.uid=o.uid;
   o.fecha=hoyISO(); o.tipo='Verificación periódica'; o.obs=''; o.cAct='';
-  o.prot={rp:'', c:{}, ra:{}, vis:{}, modoVis:''};
+  o.prot={rp:'', c:{}, ra:{}, vis:{}, modoVis:''}; o.fotos=[];
   ST.obra=o; ST.registro=[]; ST.t0=null; ST.editando=null;
   /* lo cargado en las fichas de esos circuitos es de la visita anterior: no se precarga en la nueva */
   Object.keys(ST.guardados).forEach(function(k){
@@ -11075,6 +11200,602 @@ function reabrirArchivada(a){
 function htmlTendCirc(id, pz){
   return '<span data-tend="'+esc(id)+'"'+(pz && pz.length ? ' class="tend peor" title="'+
          esc(pz.map(function(q){ return TEND[q].txt; }).join('; '))+'">↘ peor que antes' : '>')+'</span>';
+}
+
+/* ---------- próxima inspección periódica y próximo mantenimiento ----------
+   Inspección periódica: AEA 90364-7-770 Ed. 2026, 770.23.4.3 (intervalos no mayores que 5 años) y AEA 90364-7-771,
+   771.23.4.3 (plazo máximo de 5 años en viviendas, oficinas y locales unitarios). Se cuenta desde la última
+   verificación inicial o periódica de la obra que está en la app (intervención en curso o archivada).
+   Mantenimiento de los tableros de comando: la AEA no fija la frecuencia; la elige el profesional, en Ajustes para
+   todas las obras o en cada obra. Se cuenta desde la última visita con la ficha M12 o del tipo «Mantenimiento
+   preventivo». */
+var TIPOS_VERIF=['Verificación inicial (recepción)','Verificación periódica'];
+var TIPO_MANT='Mantenimiento preventivo';
+var AVISO_DIAS=60;
+var AG={};
+function isoOk(s){
+  var m=String(s||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if(!m) return false;
+  var y=+m[1], mo=+m[2], d=+m[3];
+  if(y<1900 || y>2200 || mo<1 || mo>12 || d<1) return false;
+  return d<=new Date(Date.UTC(y, mo, 0)).getUTCDate();
+}
+function partesISO(s){ return [parseInt(s.slice(0,4),10), parseInt(s.slice(5,7),10), parseInt(s.slice(8,10),10)]; }
+/* Suma meses a una fecha aaaa-mm-dd; si el día no existe en el mes de llegada, queda el último (29/02 + 1 año = 28/02). */
+function sumarMeses(iso, m){
+  var p=partesISO(iso), y=p[0], mo=p[1]-1+m, d=p[2];
+  y+=Math.floor(mo/12); mo=((mo%12)+12)%12;
+  var ult=new Date(Date.UTC(y, mo+1, 0)).getUTCDate();
+  if(d>ult) d=ult;
+  return y+'-'+dosD(mo+1)+'-'+dosD(d);
+}
+function diaSiguiente(iso){
+  var p=partesISO(iso), t=new Date(Date.UTC(p[0], p[1]-1, p[2]+1));
+  return t.getUTCFullYear()+'-'+dosD(t.getUTCMonth()+1)+'-'+dosD(t.getUTCDate());
+}
+function diasEntre(a, b){
+  var pa=partesISO(a), pb=partesISO(b);
+  return Math.round((Date.UTC(pb[0],pb[1]-1,pb[2])-Date.UTC(pa[0],pa[1]-1,pa[2]))/86400000);
+}
+function esVerif(a){ return !!(a && a.obra && TIPOS_VERIF.indexOf(a.obra.tipo)>=0); }
+function tieneMant(a){
+  if(!a) return false;
+  if(a.obra && a.obra.tipo===TIPO_MANT) return true;
+  return (a.registro||[]).some(function(x){ return x && x.k==='F' && x.id==='M12'; });
+}
+function aniosPer(o){ var n=parseInt(o && o.perAnios,10); return (n>=1 && n<=5) ? n : 5; }
+/* Meses entre mantenimientos: número; 0 si la obra no tiene tablero de comando; null si no se eligió en ningún lado. */
+function mesesMant(o){
+  var v=o ? o.mantMeses : '';
+  if(v!==undefined && v!==null && String(v)!==''){ var n=parseInt(v,10); return n>0 ? n : 0; }
+  var a=parseInt(ST.ajustes.mantMeses,10);
+  return a>0 ? a : null;
+}
+/* Visitas de una obra, de la más vieja a la más nueva: las archivadas y, si es la obra en curso, la intervención actual. */
+function visitasObra(o){
+  var l=ST.archivo.filter(function(a){ return a && a.obra && a.obra!==o && mismaObra(a.obra, o); });
+  if(o===ST.obra) l.push({obra:ST.obra, registro:ST.registro, cerrada:Infinity, actual:true});
+  else {
+    for(var i=0;i<ST.archivo.length;i++) if(ST.archivo[i] && ST.archivo[i].obra===o){ l.push(ST.archivo[i]); break; }
+  }
+  return l.sort(ordenVisita);
+}
+function estadoVence(d){ return d<0 ? 'vencida' : (d<=AVISO_DIAS ? 'pronto' : 'ok'); }
+/* Próxima inspección y próximo mantenimiento de una obra, con sus visitas (de la más vieja a la más nueva).
+   La frecuencia sale de la visita más nueva. */
+function proximas(vis){
+  var ult=vis[vis.length-1], o=ult ? ult.obra : null, r={insp:null, mant:null, obra:o}, hoy=hoyISO();
+  if(!o) return r;
+  var bv=null, bm=null;
+  vis.forEach(function(a){
+    var fe=fechaVisita(a);
+    if(!isoOk(fe)) return;
+    if(esVerif(a) && (!bv || fe>=bv.f)) bv={f:fe, tipo:a.obra.tipo};
+    if(tieneMant(a) && (!bm || fe>=bm.f)) bm={f:fe};
+  });
+  if(bv){
+    var n=aniosPer(o), v=sumarMeses(bv.f, 12*n), d=diasEntre(hoy, v);
+    r.insp={base:bv.f, tipoBase:bv.tipo, anios:n, vence:v, dias:d, estado:estadoVence(d)};
+  }
+  var m=mesesMant(o);
+  if(bm && m!==0){
+    if(m===null) r.mant={base:bm.f, meses:null};
+    else { var vm=sumarMeses(bm.f, m), dm=diasEntre(hoy, vm); r.mant={base:bm.f, meses:m, vence:vm, dias:dm, estado:estadoVence(dm)}; }
+  }
+  return r;
+}
+function citaPer(o){
+  var n=aniosPer(o), c=(o && o.reglam==='771') ? 'AEA 90364-7-771, 771.23.4.3: plazo máximo de 5 años en viviendas, oficinas y locales unitarios' :
+        ((o && o.reglam==='770') ? 'AEA 90364-7-770 Ed. 2026, 770.23.4.3: intervalos no mayores que 5 años' : '770.23.4.3 · 771.23.4.3: 5 años como máximo');
+  return c+(n<5 ? '. '+cadaAnios(n)+' es criterio propio, más exigente que la Reglamentación' : '');
+}
+function cadaAnios(n){ return n===1 ? 'Cada año' : 'Cada '+n+' años'; }
+function plazoTxt(d){
+  var a=Math.abs(d), t;
+  if(a>=730) t=Math.floor(a/365.25)+' años';
+  else if(a>=60) t=Math.round(a/30.44)+' meses';
+  else t=a+' día'+(a===1?'':'s');
+  return t;
+}
+function txtDias(d){
+  if(d===0) return 'vence hoy';
+  return d<0 ? 'vencida hace '+plazoTxt(d) : 'faltan '+plazoTxt(d);
+}
+/* Renglones para el informe: {k, v, e, nota, ev}. sinEstado: sin «faltan»/«vencida» (informe de una visita archivada). */
+function lineasProx(p, sinEstado){
+  var out=[], o=p.obra||{}, nom=nombreObra(o), x;
+  if(p.insp){
+    x=p.insp;
+    out.push({k:'Próxima inspección periódica', fecha:x.vence, e:sinEstado?'':x.estado,
+      v:'a más tardar el '+fechaAR(x.vence)+((!sinEstado && x.estado!=='ok') ? ' — '+txtDias(x.dias) : ''),
+      nota:cadaAnios(x.anios)+' desde la '+(x.tipoBase===TIPOS_VERIF[0] ? 'verificación inicial' : 'inspección periódica')+' del '+fechaAR(x.base)+' · '+citaPer(o),
+      ev:{q:'insp', titulo:'Inspección periódica — '+nom, fecha:x.vence, lugar:o.dir||'', aviso:30, uid:(o.uid||normTxt(claveObra(o)).replace(/[^a-z0-9]/g,'')||'obra')+'-insp-'+x.vence,
+          desc:'Inspección periódica de la instalación eléctrica'+(o.cliente?' de '+o.cliente:'')+(o.dir?', '+o.dir:'')+'. Plazo máximo: '+fechaAR(x.vence)+' ('+cadaAnios(x.anios).toLowerCase()+' desde la del '+fechaAR(x.base)+'; '+citaPer(o)+').'}});
+  }
+  if(p.mant){
+    x=p.mant;
+    if(x.meses===null) out.push({k:'Próximo mantenimiento del tablero de comando', v:'sin frecuencia elegida', e:'',
+      nota:'Elegila en «Mantenimiento de tableros de comando» de esta obra o en Ajustes: la AEA no la fija.'});
+    else out.push({k:'Próximo mantenimiento del tablero de comando', fecha:x.vence, e:sinEstado?'':x.estado,
+      v:fechaAR(x.vence)+((!sinEstado && x.estado!=='ok') ? ' — '+txtDias(x.dias) : ''),
+      nota:'Cada '+x.meses+' meses desde el del '+fechaAR(x.base)+' · frecuencia por criterio propio: la AEA no la fija',
+      ev:{q:'mant', titulo:'Mantenimiento del tablero de comando — '+nom, fecha:x.vence, lugar:o.dir||'', aviso:7, uid:(o.uid||normTxt(claveObra(o)).replace(/[^a-z0-9]/g,'')||'obra')+'-mant-'+x.vence,
+          desc:'Mantenimiento del tablero de comando'+(o.cliente?' de '+o.cliente:'')+(o.dir?', '+o.dir:'')+' (ficha M12). Cada '+x.meses+' meses desde el del '+fechaAR(x.base)+'; frecuencia por criterio propio.'}});
+  }
+  return out;
+}
+function btnAgenda(ev){
+  var k='a'+Object.keys(AG).length;
+  AG[k]=ev;
+  return '<button type="button" data-gcal="'+k+'">Google Calendar</button><button type="button" data-ics="'+k+'">Archivo .ics</button>';
+}
+/* Datos de la obra, en pantalla: la fecha de la próxima inspección y del próximo mantenimiento, con botones para agendar. */
+function htmlProxObra(){
+  AG={};
+  var l=lineasProx(proximas(visitasObra(ST.obra))), h='';
+  if(!l.length) return '<p class="nota-t">Próxima inspección periódica: sale sola cuando la obra tiene una verificación inicial o periódica (Tipo de intervención), en curso o archivada.</p>';
+  l.forEach(function(x){
+    h+='<div class="prox'+(x.e && x.e!=='ok' ? ' '+x.e : '')+'"><div class="k">'+esc(x.k)+'</div><div class="v">'+esc(x.v)+'</div>'+
+       '<div class="n">'+esc(x.nota)+'</div>'+(x.ev ? '<div class="acc">'+btnAgenda(x.ev)+'</div>' : '')+'</div>';
+  });
+  return h;
+}
+function pintarProximas(){ var c=document.getElementById('proxObra'); if(c) c.innerHTML=htmlProxObra(); }
+/* ---------- agendar: Google Calendar (con conexión) o archivo .ics (sin conexión, cualquier calendario) ---------- */
+function urlGCal(ev){
+  var f=ev.fecha.replace(/-/g,''), fin=diaSiguiente(ev.fecha).replace(/-/g,'');
+  return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(ev.titulo)+'&dates='+f+'/'+fin+
+         '&details='+encodeURIComponent(ev.desc||'')+(ev.lugar ? '&location='+encodeURIComponent(ev.lugar) : '');
+}
+function icsTexto(ev){
+  function e(s){ return String(s||'').replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\r?\n/g,'\\n'); }
+  function octetos(ch){ try{ return unescape(encodeURIComponent(ch)).length; }catch(x){ return 3; } }
+  function plegar(l){
+    var out=[], cur='', n=0, i, ch, b;
+    for(i=0;i<l.length;i++){
+      ch=l.charAt(i); b=octetos(ch);
+      if(n+b>(out.length ? 74 : 75)){ out.push(cur); cur=''; n=0; }
+      cur+=ch; n+=b;
+    }
+    out.push(cur);
+    return out.join('\r\n ');
+  }
+  var d=new Date(), sello=d.getUTCFullYear()+dosD(d.getUTCMonth()+1)+dosD(d.getUTCDate())+'T'+dosD(d.getUTCHours())+dosD(d.getUTCMinutes())+dosD(d.getUTCSeconds())+'Z';
+  var l=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Diagnostico en obra AEA 90364//ES','CALSCALE:GREGORIAN','METHOD:PUBLISH','BEGIN:VEVENT',
+         'UID:'+ev.uid+'@diag-aea', 'DTSTAMP:'+sello, 'DTSTART;VALUE=DATE:'+ev.fecha.replace(/-/g,''),
+         'DTEND;VALUE=DATE:'+diaSiguiente(ev.fecha).replace(/-/g,''), 'SUMMARY:'+e(ev.titulo)];
+  if(ev.lugar) l.push('LOCATION:'+e(ev.lugar));
+  if(ev.desc) l.push('DESCRIPTION:'+e(ev.desc));
+  if(ev.aviso) l.push('BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+e(ev.titulo),'TRIGGER:-P'+ev.aviso+'D','END:VALARM');
+  l.push('END:VEVENT','END:VCALENDAR');
+  return l.map(plegar).join('\r\n')+'\r\n';
+}
+function bajarArchivo(txt, nombre, tipo){
+  try{
+    var b=new Blob([txt], {type:tipo});
+    var u=URL.createObjectURL(b), a=document.createElement('a');
+    a.href=u; a.download=nombre; document.body.appendChild(a); a.click();
+    setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(u); }, 1500);
+    toast('Descargado: '+nombre);
+    return true;
+  }catch(e){ toast('No se pudo descargar el archivo'); return false; }
+}
+function nombreArchivo(s){ return normTxt(s).replace(/[^a-z0-9ñ ]/g,'').replace(/\s+/g,'-').slice(0,40) || 'obra'; }
+document.addEventListener('click', function(ev){
+  var t=ev.target, b=(t && t.closest) ? t.closest('[data-gcal],[data-ics]') : null;
+  if(!b) return;
+  var g=b.getAttribute('data-gcal'), k=g!==null ? g : b.getAttribute('data-ics'), e=AG[k];
+  if(!e) return;
+  if(g!==null){
+    if(navigator.onLine===false){ toast('Sin conexión: usá «Archivo .ics»'); return; }
+    var w=null;
+    try{ w=window.open(urlGCal(e), '_blank', 'noopener'); }catch(x){ w=null; }
+    return;
+  }
+  bajarArchivo(icsTexto(e), (e.q==='insp' ? 'inspeccion-' : 'mantenimiento-')+nombreArchivo(e.titulo.split(' — ').slice(1).join(' '))+'-'+e.fecha+'.ics', 'text/calendar;charset=utf-8');
+});
+/* ---------- Inicio: lo que vence en los próximos 60 días o ya venció ---------- */
+function gruposObras(){
+  var g=[];
+  function meter(a){
+    for(var i=0;i<g.length;i++){
+      if(g[i].some(function(b){ return mismaObra(b.obra, a.obra); })){ g[i].push(a); return; }
+    }
+    g.push([a]);
+  }
+  ST.archivo.forEach(function(a){ if(a && a.obra) meter(a); });
+  if(hayIntervencion() || ST.obra.cliente || ST.obra.dir) meter({obra:ST.obra, registro:ST.registro, cerrada:Infinity, actual:true});
+  return g.map(function(l){ return l.sort(ordenVisita); });
+}
+function recordatorios(){
+  var out=[];
+  gruposObras().forEach(function(vis){
+    var p=proximas(vis), act=vis.some(function(a){ return a.actual; }), arch=null, i;
+    for(i=vis.length-1;i>=0;i--) if(!vis[i].actual){ arch=vis[i]; break; }
+    lineasProx(p).forEach(function(x){
+      if(x.fecha && x.e && x.e!=='ok') out.push({x:x, obra:p.obra, actual:act, arch:arch});
+    });
+  });
+  return out.sort(function(a,b){ return a.x.fecha<b.x.fecha ? -1 : (a.x.fecha>b.x.fecha ? 1 : 0); });
+}
+function htmlRecordatorios(){
+  AG={};
+  var l=recordatorios();
+  if(!l.length) return '';
+  var h='<section class="recs no-print"><h3>Para agendar <small>vence en los próximos '+AVISO_DIAS+' días o ya venció</small></h3>';
+  l.slice(0,6).forEach(function(r){
+    var o=r.obra||{}, ia=r.arch ? ST.archivo.indexOf(r.arch) : -1;
+    h+='<div class="rec '+r.x.e+'"><div class="h">'+esc(nombreObra(o))+(o.cliente && o.dir ? ' <small>'+esc(o.dir)+'</small>' : '')+'</div>'+
+       '<div class="v">'+esc((r.x.ev.q==='insp' ? 'Inspección periódica: ' : 'Mantenimiento del tablero de comando: ')+r.x.v)+'</div>'+
+       '<div class="acc">'+(r.actual ? '<button type="button" data-recinf="1">Abrir el informe</button>' :
+                            (ia>=0 ? '<button type="button" data-recnv="'+ia+'">Nueva visita</button>' : ''))+btnAgenda(r.x.ev)+'</div></div>';
+  });
+  if(l.length>6) h+='<p class="nota-t">Y '+(l.length-6)+' más: están en Informe › Intervenciones archivadas.</p>';
+  return h+'</section>';
+}
+function ligarRecordatorios(){
+  app.querySelectorAll('[data-recnv]').forEach(function(b){
+    b.onclick=function(){ var a=ST.archivo[parseInt(this.getAttribute('data-recnv'),10)]; if(a){ ir('informe'); nuevaVisita(a); } };
+  });
+  app.querySelectorAll('[data-recinf]').forEach(function(b){ b.onclick=function(){ ir('informe'); }; });
+}
+
+/* ---------- fotos de la intervención ----------
+   Van con cada registro del informe y con la obra (tablero, frente, termografías). Se guardan en este teléfono,
+   en IndexedDB (localStorage no alcanza para imágenes), comprimidas a JPEG con el lado mayor de 1600 px. En la
+   intervención sólo queda la referencia {id, n: lo que muestra, tm: imagen térmica}. Sin IndexedDB (ventana privada
+   o algunos navegadores con el archivo abierto desde el almacenamiento) quedan en memoria hasta cerrar la app.
+   Una foto se borra del teléfono cuando ya no la usa ninguna intervención, en curso ni archivada. */
+var FOTO_LADO=1600, FOTO_Q=0.72;
+var FOTOS={db:null, abriendo:null, ok:null, motivo:'', mem:{}, urls:{}, destino:null, persist:false};
+function abrirFotos(){
+  if(FOTOS.db) return Promise.resolve(FOTOS.db);
+  if(FOTOS.abriendo) return FOTOS.abriendo;
+  FOTOS.abriendo=new Promise(function(res){
+    var idb=null, rq=null;
+    try{ idb=window.indexedDB || null; }catch(e){ idb=null; }
+    if(!idb){ FOTOS.ok=false; FOTOS.motivo='el navegador no tiene IndexedDB'; res(null); return; }
+    try{ rq=idb.open('diagAEA-fotos', 1); }catch(e){ FOTOS.ok=false; FOTOS.motivo=e.name||'error'; res(null); return; }
+    rq.onupgradeneeded=function(){
+      var db=rq.result;
+      if(!db.objectStoreNames.contains('f')) db.createObjectStore('f', {keyPath:'id'});
+    };
+    rq.onsuccess=function(){
+      FOTOS.db=rq.result; FOTOS.ok=true;
+      FOTOS.db.onversionchange=function(){ try{ FOTOS.db.close(); }catch(e){} FOTOS.db=null; FOTOS.abriendo=null; };
+      res(FOTOS.db);
+    };
+    rq.onerror=function(){ FOTOS.ok=false; FOTOS.motivo=(rq.error && rq.error.name) || 'error'; res(null); };
+  });
+  return FOTOS.abriendo;
+}
+function fotoTx(modo, fn){
+  return abrirFotos().then(function(db){
+    if(!db) return {ok:false};
+    return new Promise(function(res){
+      var out, listo=false;
+      function fin(x){ if(!listo){ listo=true; res(x); } }
+      try{
+        var tx=db.transaction('f', modo), rq=fn(tx.objectStore('f'));
+        if(rq) rq.onsuccess=function(){ out=rq.result; };
+        tx.oncomplete=function(){ fin({ok:true, r:out}); };
+        tx.onerror=function(){ fin({ok:false, error:(tx.error && tx.error.name) || 'error'}); };
+        tx.onabort=function(){ fin({ok:false, error:(tx.error && tx.error.name) || 'abort'}); };
+      }catch(e){ fin({ok:false, error:e.name||'error'}); }
+    });
+  });
+}
+function fotoPut(rec){ return fotoTx('readwrite', function(st){ return st.put(rec); }).then(function(x){ return x.ok; }); }
+function fotoGet(id){
+  if(FOTOS.mem[id]) return Promise.resolve(FOTOS.mem[id]);
+  return fotoTx('readonly', function(st){ return st.get(id); }).then(function(x){ return (x.ok && x.r) ? x.r : null; });
+}
+function soltarUrl(id){
+  if(FOTOS.urls[id]){ try{ URL.revokeObjectURL(FOTOS.urls[id]); }catch(e){} delete FOTOS.urls[id]; }
+}
+function fotoDel(ids){
+  ids.forEach(function(id){ delete FOTOS.mem[id]; soltarUrl(id); });
+  return fotoTx('readwrite', function(st){ ids.forEach(function(id){ st['delete'](id); }); return null; });
+}
+function fotoClaves(){
+  return fotoTx('readonly', function(st){ return st.getAllKeys(); }).then(function(x){
+    var l=(x.ok && x.r) ? Array.prototype.slice.call(x.r).map(String) : [];
+    Object.keys(FOTOS.mem).forEach(function(k){ if(l.indexOf(k)<0) l.push(k); });
+    return l;
+  });
+}
+function urlFoto(id){
+  if(FOTOS.urls[id]) return Promise.resolve(FOTOS.urls[id]);
+  return fotoGet(id).then(function(rec){
+    if(!rec || !rec.b) return null;
+    if(FOTOS.urls[id]) return FOTOS.urls[id];
+    try{ FOTOS.urls[id]=URL.createObjectURL(rec.b); }catch(e){ return null; }
+    return FOTOS.urls[id];
+  });
+}
+function pedirPersistencia(){
+  if(FOTOS.persist) return;
+  FOTOS.persist=true;
+  try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist().then(function(){}, function(){}); }catch(e){}
+}
+/* JPEG con el lado mayor de 1600 px como máximo. Las chicas (por ejemplo las de la cámara térmica) no se agrandan
+   y se guardan con más calidad para no perder la escala de temperaturas. */
+function comprimirFoto(file){
+  return new Promise(function(res, rej){
+    var url;
+    try{ url=URL.createObjectURL(file); }catch(e){ rej(e); return; }
+    var im=new Image();
+    im.onload=function(){
+      try{
+        var w=im.naturalWidth, h=im.naturalHeight, lado=Math.max(w, h), k=1, q=FOTO_Q;
+        if(!(w>0 && h>0)) throw new Error('imagen vacía');
+        if(lado>FOTO_LADO) k=FOTO_LADO/lado; else if(lado<=800) q=0.9;
+        var cw=Math.max(1, Math.round(w*k)), ch=Math.max(1, Math.round(h*k));
+        var cv=document.createElement('canvas'); cv.width=cw; cv.height=ch;
+        var cx=cv.getContext('2d');
+        cx.fillStyle='#FFFFFF'; cx.fillRect(0, 0, cw, ch);
+        cx.drawImage(im, 0, 0, cw, ch);
+        URL.revokeObjectURL(url);
+        cv.toBlob(function(b){ if(b) res({blob:b, w:cw, h:ch}); else rej(new Error('no se pudo comprimir')); }, 'image/jpeg', q);
+      }catch(e){ try{ URL.revokeObjectURL(url); }catch(x){} rej(e); }
+    };
+    im.onerror=function(){ try{ URL.revokeObjectURL(url); }catch(x){} rej(new Error('formato no compatible')); };
+    im.src=url;
+  });
+}
+/* Dónde van las fotos: 'o' la obra; 'r<ts>' el registro del informe con esa marca de tiempo. */
+function duenioFotos(dest){
+  if(dest==='o') return ST.obra;
+  if(dest && dest.charAt(0)==='r'){
+    var ts=parseInt(dest.slice(1),10);
+    for(var i=0;i<ST.registro.length;i++) if(ST.registro[i] && ST.registro[i].ts===ts) return ST.registro[i];
+  }
+  return null;
+}
+function listaFotos(dest, crear){
+  var d=duenioFotos(dest);
+  if(!d) return null;
+  if(!Array.isArray(d.fotos)){ if(!crear) return []; d.fotos=[]; }
+  return d.fotos;
+}
+function pedirFotos(dest){
+  FOTOS.destino=dest;
+  var inp=document.getElementById('fotoIn');
+  if(!inp){
+    inp=document.createElement('input');
+    inp.type='file'; inp.accept='image/*'; inp.multiple=true; inp.id='fotoIn'; inp.hidden=true;
+    inp.setAttribute('aria-hidden','true');
+    document.body.appendChild(inp);
+    inp.addEventListener('change', function(){
+      var fs=Array.prototype.slice.call(this.files || []);
+      this.value='';
+      if(fs.length) agregarFotos(fs, FOTOS.destino);
+    });
+  }
+  inp.click();
+}
+function agregarFotos(files, dest){
+  if(!listaFotos(dest, true)){ toast('No encontré el registro para la foto: volvé a abrir el informe'); return Promise.resolve(0); }
+  pedirPersistencia();
+  toast(files.length===1 ? 'Guardando la foto…' : 'Guardando '+files.length+' fotos…');
+  var hechas=0, malas=0, enMem=0, cadena=Promise.resolve();
+  files.forEach(function(file){
+    cadena=cadena.then(function(){
+      return comprimirFoto(file).then(function(c){
+        var l=listaFotos(dest, true);
+        if(!l){ malas++; return; }
+        var id=idNuevo('f'), rec={id:id, b:c.blob, w:c.w, h:c.h, t:Date.now()};
+        FOTOS.mem[id]=rec;
+        l.push({id:id, n:'', tm:false});
+        guardar();
+        hechas++;
+        return fotoPut(rec).then(function(ok){ if(ok) delete FOTOS.mem[id]; else enMem++; });
+      }, function(){ malas++; });
+    });
+  });
+  return cadena.then(function(){
+    refrescarFotos(dest);
+    var m=hechas ? (hechas===1 ? 'Foto agregada' : hechas+' fotos agregadas') : 'No se agregó ninguna foto';
+    if(malas) m+=' · '+malas+' no se pudo leer';
+    if(enMem) m+=' · no hay lugar en el teléfono: se pierde'+(enMem===1?'':'n')+' al cerrar';
+    toast(m);
+    return hechas;
+  });
+}
+function htmlFotos(l, dest){
+  l=l || [];
+  if(!l.length) return '';
+  var h='<div class="fotos">';
+  l.forEach(function(ft, i){
+    var cap=(ft.tm ? 'Imagen térmica ' : 'Foto ')+(i+1)+(ft.n ? ': '+ft.n : '');
+    h+='<figure class="foto"><button type="button" data-fver="'+esc(dest)+'|'+esc(ft.id)+'" aria-label="Ver '+esc(cap)+'">'+
+       '<img data-foto="'+esc(ft.id)+'" alt="'+esc(cap)+'"></button>'+(ft.tm ? '<span class="term">Térmica</span>' : '')+
+       '<figcaption>'+esc(cap)+'</figcaption></figure>';
+  });
+  return h+'</div>';
+}
+/* Pone las imágenes en los <img data-foto>; termina cuando están todas cargadas (para imprimir). */
+function pintarFotos(raiz){
+  var imgs=Array.prototype.slice.call((raiz || document).querySelectorAll('img[data-foto]'));
+  return Promise.all(imgs.map(function(im){
+    var id=im.getAttribute('data-foto');
+    return urlFoto(id).then(function(u){
+      if(!u){ im.classList.add('falta'); im.alt='Foto no disponible en este teléfono'; return; }
+      if(im.getAttribute('src')===u && im.complete) return;
+      return new Promise(function(res){
+        var t=setTimeout(res, 4000);
+        im.onload=im.onerror=function(){ clearTimeout(t); res(); };
+        im.src=u;
+      });
+    });
+  }));
+}
+function esperarFotos(){ return pintarFotos(document.getElementById('app')).then(function(){}, function(){}); }
+function refrescarFotos(dest){
+  if(ST.vista==='ficha'){ pintarFotosFicha(); return; }
+  var cont=app.querySelector('[data-fotos="'+dest+'"]');
+  if(cont){ cont.innerHTML=htmlFotos(listaFotos(dest, false), dest); pintarFotos(cont); }
+  var n=app.querySelector('[data-nfotos="'+dest+'"]');
+  if(n){ var c=(listaFotos(dest, false) || []).length; n.textContent=c ? String(c) : ''; }
+  if(dest==='o'){
+    var b=app.querySelector('.fotos-obra');
+    if(b) b.classList.toggle('no-print', !(ST.obra.fotos && ST.obra.fotos.length));
+  }
+}
+/* En la ficha: las fotos del registro guardado de esa ficha y ese circuito. */
+function htmlFotosFicha(){
+  var x=ST.falla;
+  if(!x || !x.med) return '';
+  var it=(ST.editando!==null && ST.editando!==undefined) ? ST.registro[ST.editando] : null;
+  if(it && it.id===x.id && it.k==='F' && circDeRegistro(it)===(ST.obra.cAct || '')){
+    var d='r'+it.ts, l=it.fotos || [];
+    return '<div class="fotos-ficha"><h4>Fotos de este registro <small data-nfotos="'+d+'">'+(l.length || '')+'</small></h4>'+
+           '<div class="fotos-w" data-fotos="'+d+'">'+htmlFotos(l, d)+'</div>'+
+           '<button type="button" class="fotos-add" data-fadd="'+d+'">Agregar foto</button></div>';
+  }
+  return '<div class="fotos-ficha"><p class="nota-t">Las fotos se agregan después de «Guardar en el informe»: quedan con este registro y salen en el informe impreso.</p></div>';
+}
+function pintarFotosFicha(){
+  var c=document.getElementById('fotosFicha');
+  if(c){ c.innerHTML=htmlFotosFicha(); pintarFotos(c); }
+}
+function cerrarVisor(){
+  var v=document.getElementById('visor');
+  if(v && v._cerrar) v._cerrar();
+}
+function verFoto(dest, id){
+  var l=listaFotos(dest, false) || [], ft=null, i;
+  for(i=0;i<l.length;i++) if(l[i].id===id){ ft=l[i]; break; }
+  if(!ft) return;
+  cerrarVisor();
+  var v=document.createElement('div');
+  v.className='visor'; v.id='visor';
+  v.setAttribute('role','dialog'); v.setAttribute('aria-modal','true'); v.setAttribute('aria-label','Foto '+(i+1));
+  v.innerHTML='<div class="vis-img"><img alt="Foto '+(i+1)+'"></div>'+
+    '<div class="vpie"><label for="visorNota">Qué muestra</label>'+
+    '<input class="entrada" id="visorNota" type="text" maxlength="200" value="'+esc(ft.n || '')+'" placeholder="Tablero principal abierto, borne flojo, punto caliente…">'+
+    '<div class="sino"><button type="button" id="visorTerm" aria-pressed="'+(!!ft.tm)+'">Imagen térmica</button></div>'+
+    '<div class="acciones"><button type="button" class="peligro" id="visorQuitar">Quitar la foto</button>'+
+    '<button type="button" class="pri" id="visorListo">Listo</button></div></div>';
+  document.body.appendChild(v);
+  urlFoto(id).then(function(u){
+    var im=v.querySelector('img');
+    if(u) im.src=u; else im.alt='Foto no disponible en este teléfono';
+  });
+  v._cerrar=function(){
+    var n=v.querySelector('#visorNota');
+    if(n) ft.n=String(n.value || '').trim().slice(0,200);
+    guardar();
+    if(v.parentNode) v.parentNode.removeChild(v);
+    refrescarFotos(dest);
+  };
+  v.querySelector('#visorTerm').onclick=function(){ ft.tm=!ft.tm; this.setAttribute('aria-pressed', String(!!ft.tm)); };
+  v.querySelector('#visorListo').onclick=v._cerrar;
+  v.querySelector('#visorQuitar').onclick=function(){
+    if(!confirm('¿Quitar esta foto del informe?')) return;
+    var k=l.indexOf(ft);
+    if(k>=0) l.splice(k, 1);
+    guardar();
+    if(v.parentNode) v.parentNode.removeChild(v);
+    refrescarFotos(dest);
+    gcFotos();
+    toast('Foto quitada');
+  };
+}
+window.addEventListener('popstate', cerrarVisor);
+app.addEventListener('click', function(ev){
+  var t=ev.target, b=(t && t.closest) ? t.closest('[data-fver],[data-fadd]') : null;
+  if(!b) return;
+  if(b.hasAttribute('data-fadd')){ pedirFotos(b.getAttribute('data-fadd')); return; }
+  var p=String(b.getAttribute('data-fver')).split('|');
+  verFoto(p[0], p[1]);
+});
+/* Las fotos que usa alguna intervención (en curso, archivada o guardada por otra pestaña). */
+function idsFotosEnUso(){
+  var ids={};
+  function de(l){ (Array.isArray(l) ? l : []).forEach(function(x){ if(x && x.id) ids[x.id]=1; }); }
+  function deVisita(o, r){ if(o) de(o.fotos); (Array.isArray(r) ? r : []).forEach(function(x){ if(x) de(x.fotos); }); }
+  deVisita(ST.obra, ST.registro);
+  ST.archivo.forEach(function(a){ if(a) deVisita(a.obra, a.registro); });
+  var d=null;
+  try{ d=JSON.parse(localStorage.getItem(CLAVE) || 'null'); }catch(e){ d=null; }
+  if(d){
+    deVisita(d.obra, d.registro);
+    (Array.isArray(d.archivo) ? d.archivo : []).forEach(function(a){ if(a) deVisita(a.obra, a.registro); });
+  }
+  return Object.keys(ids);
+}
+function cantFotos(){ return idsFotosEnUso().length; }
+/* Borra del teléfono las fotos que ya no usa ninguna intervención. Si no se pudo leer lo guardado, no toca nada. */
+function gcFotos(){
+  if(!ALM.ok) return Promise.resolve(0);
+  return fotoClaves().then(function(ks){
+    if(!ks.length) return 0;
+    var uso={};
+    idsFotosEnUso().forEach(function(i){ uso[i]=1; });
+    var sobran=ks.filter(function(k){ return !uso[k]; });
+    return sobran.length ? fotoDel(sobran).then(function(){ return sobran.length; }) : 0;
+  }, function(){ return 0; });
+}
+function tamFotos(){
+  return fotoTx('readonly', function(st){ return st.getAll(); }).then(function(x){
+    var n=0, b=0;
+    ((x.ok && x.r) ? x.r : []).forEach(function(r){ n++; b+=(r && r.b && r.b.size) || 0; });
+    Object.keys(FOTOS.mem).forEach(function(k){ n++; b+=(FOTOS.mem[k].b && FOTOS.mem[k].b.size) || 0; });
+    return {n:n, bytes:b};
+  });
+}
+function mb(b){ return b<1048576 ? Math.max(1, Math.round(b/1024))+' kB' : f(b/1048576, b<10485760 ? 1 : 0)+' MB'; }
+/* ---------- respaldo con fotos ---------- */
+function blobADataURL(b){
+  return new Promise(function(res){
+    try{
+      var fr=new FileReader();
+      fr.onload=function(){ res(String(fr.result)); };
+      fr.onerror=function(){ res(null); };
+      fr.readAsDataURL(b);
+    }catch(e){ res(null); }
+  });
+}
+function dataURLABlob(s){
+  var m=String(s || '').match(/^data:([^;,]+)(;base64)?,(.*)$/);
+  if(!m) return null;
+  try{
+    var bin=m[2] ? atob(m[3]) : decodeURIComponent(m[3]), u=new Uint8Array(bin.length);
+    for(var i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i);
+    return new Blob([u], {type:m[1]});
+  }catch(e){ return null; }
+}
+function fotosParaRespaldo(ids){
+  var out={}, cadena=Promise.resolve();
+  ids.forEach(function(id){
+    cadena=cadena.then(function(){
+      return fotoGet(id).then(function(r){
+        if(!r || !r.b) return;
+        return blobADataURL(r.b).then(function(u){ if(u) out[id]={d:u, w:r.w || 0, h:r.h || 0, t:r.t || 0}; });
+      });
+    });
+  });
+  return cadena.then(function(){ return out; });
+}
+function restaurarFotos(m){
+  if(!m || typeof m!=='object') return Promise.resolve(0);
+  var n=0, cadena=Promise.resolve();
+  Object.keys(m).forEach(function(id){
+    cadena=cadena.then(function(){
+      var x=m[id], b=dataURLABlob(x && x.d);
+      if(!b || !/^[a-z0-9]+$/i.test(id)) return;
+      var rec={id:id, b:b, w:x.w || 0, h:x.h || 0, t:x.t || Date.now()};
+      return fotoPut(rec).then(function(ok){ if(!ok) FOTOS.mem[id]=rec; n++; });
+    });
+  });
+  return cadena.then(function(){ return n; });
+}
+/* arranque: al rato, limpiar las fotos que quedaron sin uso */
+setTimeout(function(){ gcFotos(); }, 4000);
+
+function textoFotos(l){
+  return l.length+' ('+l.map(function(ft, i){ return (i+1)+(ft.tm ? ', térmica' : '')+(ft.n ? ': '+ft.n : ''); }).join('; ')+')';
 }
 
 /* ---------- qué corregir: las soluciones de cada ficha que no cumplió ---------- */
