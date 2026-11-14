@@ -547,6 +547,44 @@ html[data-tema="oscuro"] .ver .pedido{background:rgba(0,0,0,.25)}
   .prot-print table{break-inside:auto}
   .prot-print tr{break-inside:avoid}
 }
+/* ---------- historial de la obra ---------- */
+.antes{font-family:var(--mono);font-size:calc(12.5px * var(--fs));color:var(--ink2);margin-top:4px;line-height:1.35}
+.tend{white-space:nowrap}
+.tend.peor{color:var(--mal);font-weight:700}
+.tend.mejor{color:var(--ok);font-weight:700}
+.antes-ficha{margin:0 0 var(--s3);padding:8px 10px;border:1px dashed var(--line);border-radius:var(--s1);
+  background:var(--sup2);font-size:calc(13.5px * var(--fs));line-height:1.4}
+.antes-ficha .ar{margin-top:6px}
+.antes-ficha time{font-family:var(--mono);font-size:calc(12.5px * var(--fs));color:var(--ink2);margin:0 6px}
+.antes-ficha .m,.antes-reg .m{font-family:var(--mono);font-size:calc(12.5px * var(--fs));color:var(--ink2);margin-top:2px;word-break:break-word}
+.antes-reg{font-size:calc(13.5px * var(--fs));margin-top:6px;padding-top:6px;border-top:1px dashed var(--line);color:var(--ink2)}
+.tabla.comp td,.tabla.comp th{text-align:center}
+.tabla.comp td.iz,.tabla.comp th.iz{text-align:left}
+.tabla.comp td{font-family:var(--mono);font-size:calc(13px * var(--fs));font-weight:400}
+.tabla.comp td.iz{font-family:var(--sans);font-weight:600}
+.hist h4{font-size:calc(15px * var(--fs));margin:var(--s4) 0 0}
+.nota-t{font-size:calc(12.5px * var(--fs));color:var(--ink2);margin-top:6px;line-height:1.45}
+.arch-ayuda{font-size:calc(13.5px * var(--fs));color:var(--ink2);margin:0 0 var(--s2);line-height:1.4}
+.reg-item.misma{border-left-color:var(--cel)}
+.medir .antes{color:#4A3B00}
+.medir .tend.peor{color:#8A1E14}
+.medir .antes-ficha{color:var(--ink)}
+.comp-c,.vis-c{background:var(--sup);border:1px solid var(--line);border-left:4px solid var(--line2);border-radius:var(--s1);
+  padding:8px 12px;margin-top:var(--s2)}
+.comp-c.peor{border-left-color:var(--mal)}
+.comp-c .h,.vis-c .h{font-weight:700;display:flex;gap:var(--s2);align-items:baseline;flex-wrap:wrap}
+.vis-c .h small{font-weight:400;color:var(--ink2);font-size:calc(13.5px * var(--fs))}
+.comp-c .fila{display:flex;flex-wrap:wrap;column-gap:var(--s2);margin-top:4px;font-size:calc(14px * var(--fs));line-height:1.35}
+.comp-c .fila .k{flex:0 0 9.5em;color:var(--ink2)}
+.comp-c .fila .v{font-family:var(--mono);font-size:calc(13.5px * var(--fs))}
+.vis-c .m{font-size:calc(13.5px * var(--fs));color:var(--ink2);margin-top:3px;line-height:1.35}
+.reg-item .acc{flex-wrap:wrap}
+@media print{
+  .antes,.antes-ficha,.antes-reg,.nota-t{color:#333}
+  .tend.peor{color:#000;text-decoration:underline}
+  .tabla.comp{break-inside:auto}
+  .tabla.comp tr{break-inside:avoid}
+}
 </style>
 </head>
 <body>
@@ -7084,6 +7122,11 @@ var btnVolver = document.getElementById('btnVolver');
 var tituloBarra = document.getElementById('tituloBarra');
 var elCrono = document.getElementById('crono');
 var elNav = document.getElementById('nav');
+/* «Antes: …» debajo de un campo: la diferencia con la visita anterior se actualiza mientras se escribe. */
+document.addEventListener('input', function(ev){
+  var el=ev.target;
+  if(el && el.getAttribute && el.getAttribute('data-c')!==null) refrescarAntes(el);
+});
 
 /* ---------- tema y tamaño de letra ---------- */
 function aplicarAjustes(){
@@ -8524,7 +8567,7 @@ cita:'Cálculo de obra con la resistencia del cobre (ρ a 20 °C = 0,01724 Ω·m
 /* ============================================================
    RENDERIZADO
    ============================================================ */
-function pintarCampos(campos, valores, prefijo){
+function pintarCampos(campos, valores, prefijo, antes){
   var h='', m, c;
   for(m=0;m<campos.length;m++){
     c=campos[m];
@@ -8567,6 +8610,7 @@ function pintarCampos(campos, valores, prefijo){
            '" type="text" inputmode="decimal" value="'+esc(val)+'" placeholder="—">'+
            (c.u?'<span class="u">'+esc(c.u)+'</span>':'')+'</div>';
     }
+    if(antes && antes[c.id]) h += htmlAntes(antes[c.id], valores[c.id]);
     h += '</div>';
   }
   return h;
@@ -8826,7 +8870,8 @@ function vistaFicha(){
     h += '<div class="bloque"><h3>Valores medidos <small>completá lo que tengas</small></h3><div class="medir">';
     h += '<h4>Cargá las lecturas del instrumento</h4>';
     h += htmlSelCirc();
-    h += pintarCampos(x.med.campos, ST.valores, 'c_');
+    h += htmlAntesFicha('F', x);
+    h += pintarCampos(x.med.campos, ST.valores, 'c_', antesCampos('F', x, x.med.campos));
     h += '<button class="btn-eval" id="evaluar">Diagnosticar</button>';
     h += '<button class="limpiar" id="limpiar">Borrar lo cargado</button>';
     h += '</div><div id="salida"><div id="salidaVer"></div>'+
@@ -8926,7 +8971,7 @@ function guardarRegistro(){
   if(!ST.t0) ST.t0=Date.now();
   var item = {
     k: esFicha?'F':'C', id:x.id, t:x.t, fam: esFicha?nombreFam(x.fam):'Cálculo de obra',
-    e:v.e, ver:v.t, lect:lecturas(campos, ST.vals), ts:Date.now(), hora:horaDe(Date.now())
+    e:v.e, ver:v.t, lect:lecturas(campos, ST.vals), v:JSON.parse(JSON.stringify(ST.valores||{})), ts:Date.now(), hora:horaDe(Date.now())
   };
   var ca=circActivo();
   if(ca) item.circ={id:ca.id, n:ca.n, tab:ca.tab};
@@ -8968,7 +9013,7 @@ function vistaCalc(){
   var h='<div class="ficha"><div class="migas">'+esc(c.id)+' · Cálculo de obra</div><h2>'+esc(c.t)+'</h2>'+
         '<div class="sint">'+esc(c.s)+'</div>';
   h+='<div class="bloque"><h3>Datos <small>se recalcula solo</small></h3><div class="medir">';
-  h+=htmlSelCirc()+pintarCampos(c.campos, ST.valores, 'k_');
+  h+=htmlSelCirc()+htmlAntesFicha('C', c)+pintarCampos(c.campos, ST.valores, 'k_', antesCampos('C', c, c.campos));
   h+='<button class="limpiar" id="limpiar">Borrar lo cargado</button></div>';
   h+='<div id="salida"><div id="salidaVer"></div>'+
      '<button class="btn-reg" id="guardar" hidden>Guardar en el informe</button></div></div>';
@@ -9088,6 +9133,8 @@ function vistaInforme(){
   h+='<div class="bloque no-print"><h3>Tableros, circuitos y protocolo</h3><div class="calc-lista">'+
      '<button class="calc-b" data-ir="instalacion"><span class="n"><b>Tableros y circuitos</b><i>'+esc(resumenInst())+'</i></span><span class="fl">›</span></button>'+
      '<button class="calc-b" data-ir="protocolo"><span class="n"><b>Protocolo de ensayos</b><i>'+esc(resumenProt())+'</i></span><span class="fl">›</span></button></div></div>';
+  var vis=visitasPrevias();
+  h+=htmlHistorial(ST.obra, vis);
   var qc=queCorregir();
 
   if(!n){
@@ -9113,10 +9160,13 @@ function vistaInforme(){
       h += '<div class="reg-item '+x.e+'"><div class="h">'+esc(x.id)+' · '+esc(x.t)+(x.circ?' · '+esc(etiquetaCirc(x.circ)):'')+'<time>'+esc(x.hora)+'</time></div>';
       h += '<div class="v '+x.e+'">'+esc(x.ver)+'</div>';
       if(x.lect && x.lect.length) h += '<div class="m">'+esc(x.lect.join(' · '))+'</div>';
+      h += htmlAntesReg(x, vis);
       h += '<div class="acc"><button data-abrir="'+i+'">Abrir</button><button data-borrar="'+i+'">Quitar</button></div></div>';
     }
     h+='</div>';
     h+=htmlQueCorregir(qc);
+  }
+  if(n || hayProt(ST.obra)){
     h+='<div class="acciones"><button class="pri" id="copiar">Copiar informe</button>'+
        '<button id="compartir">Compartir</button>'+
        '<button id="imprimir">Imprimir o PDF</button>'+
@@ -9126,12 +9176,14 @@ function vistaInforme(){
   }
 
   if(ST.archivo.length){
-    h+='<div class="bloque"><h3>Intervenciones archivadas <small>'+ST.archivo.length+'</small></h3>';
+    h+='<div class="bloque no-print"><h3>Intervenciones archivadas <small>'+ST.archivo.length+'</small></h3>'+
+       '<p class="arch-ayuda">«Nueva visita» abre esa obra con sus tableros y circuitos, y cada medición nueva se compara con las de las visitas anteriores. «Reabrir» la vuelve a dejar en curso, tal como se archivó.</p>';
     for(var a=ST.archivo.length-1;a>=0;a--){
-      var ar=ST.archivo[a];
-      h+='<div class="reg-item"><div class="h">'+esc(ar.obra.cliente||'Sin cliente')+'<time>'+fechaAR(ar.obra.fecha)+'</time></div>'+
-         '<div class="v">'+ar.registro.length+' registro'+(ar.registro.length===1?'':'s')+' · '+esc(ar.obra.dir||'')+'</div>'+
-         '<div class="acc"><button data-arch="'+a+'">Copiar</button><button data-archdel="'+a+'">Borrar</button></div></div>';
+      var ar=ST.archivo[a], misma=mismaObra(ar.obra, ST.obra), nr=(ar.registro||[]).length;
+      h+='<div class="reg-item'+(misma?' misma':'')+'"><div class="h">'+esc(ar.obra.cliente||'Sin cliente')+'<time>'+fechaAR(fechaVisita(ar))+'</time></div>'+
+         '<div class="v">'+(ar.obra.tipo?esc(ar.obra.tipo)+' · ':'')+nr+' registro'+(nr===1?'':'s')+(ar.obra.dir?' · '+esc(ar.obra.dir):'')+(misma?' · <b>esta obra</b>':'')+'</div>'+
+         '<div class="acc"><button data-archnv="'+a+'">Nueva visita</button><button data-archre="'+a+'">Reabrir</button>'+
+         '<button data-arch="'+a+'">Copiar</button><button data-archdel="'+a+'">Borrar</button></div></div>';
     }
     h+='</div>';
   }
@@ -9164,6 +9216,12 @@ function vistaInforme(){
   });
   app.querySelectorAll('[data-arch]').forEach(function(b){
     b.onclick=function(){ copiarTexto(textoInforme(ST.archivo[parseInt(this.dataset.arch,10)])); };
+  });
+  app.querySelectorAll('[data-archnv]').forEach(function(b){
+    b.onclick=function(){ nuevaVisita(ST.archivo[parseInt(this.dataset.archnv,10)]); };
+  });
+  app.querySelectorAll('[data-archre]').forEach(function(b){
+    b.onclick=function(){ reabrirArchivada(ST.archivo[parseInt(this.dataset.archre,10)]); };
   });
   app.querySelectorAll('[data-archdel]').forEach(function(b){
     b.onclick=function(){
@@ -9204,12 +9262,9 @@ function pintarObraPrint(){
   c.innerHTML=h;
 }
 function cerrarIntervencion(){
-  if(!ST.registro.length){ toast('No hay nada para archivar'); return; }
-  if(!confirm('¿Archivar esta intervención y empezar una nueva?')) return;
-  ST.archivo.push({obra:JSON.parse(JSON.stringify(ST.obra)), registro:ST.registro.slice(), cerrada:Date.now()});
-  if(ST.archivo.length>20) ST.archivo.shift();
-  ST.registro=[]; ST.t0=null; ST.editando=null;
-  ST.obra=obraVacia();
+  if(!hayIntervencion()){ toast('No hay nada para archivar'); return; }
+  if(!confirm('¿Archivar esta intervención y empezar una nueva? Para volver a esta obra más adelante: «Nueva visita», en Intervenciones archivadas.')) return;
+  archivarActual();
   guardar(); vistaInforme(); pintarNav();
   toast('Archivada. Podés arrancar la próxima');
 }
@@ -9223,6 +9278,8 @@ function textoInforme(fuente){
   if(obra.reglam && REG_NOMBRE[obra.reglam]) t+='Reglamentación: '+REG_NOMBRE[obra.reglam]+'\n';
   if(obra.tipo)    t+='Tipo: '+obra.tipo+'\n';
   if(obra.inst)    t+='Instalador: '+obra.inst+(obra.mat?' — Matrícula '+obra.mat:'')+'\n';
+  var vis=fuente ? visitasPrevias(fuente) : visitasPrevias();
+  if(vis.length) t+='Visitas anteriores: '+vis.slice().reverse().map(function(a){ return fechaAR(fechaVisita(a))+(a.obra.tipo?' ('+a.obra.tipo+')':''); }).join(', ')+'\n';
   t+='Registros: '+reg.length+'\n\n';
   var r={ok:0,ojo:0,mal:0,info:0};
   for(var i=0;i<reg.length;i++){
@@ -9231,10 +9288,13 @@ function textoInforme(fuente){
     t+=(i+1)+'. ['+x.hora+'] '+x.id+' — '+x.t+(x.circ?' — '+etiquetaCirc(x.circ):'')+'\n';
     t+='   Resultado: '+(x.e==='mal'?'NO CUMPLE / CORREGIR':(x.e==='ojo'?'REVISAR':(x.e==='ok'?'CUMPLE':'DATO')))+' — '+x.ver+'\n';
     if(x.lect && x.lect.length) t+='   '+x.lect.join('\n   ')+'\n';
+    var an=registrosAnteriores(x.k, x.id, x.circ||null, vis)[0];
+    if(an) t+='   Antes ('+fechaAR(an.f)+'): '+(an.it.e==='mal'?'NO CUMPLE / CORREGIR':(an.it.e==='ojo'?'REVISAR':(an.it.e==='ok'?'CUMPLE':'DATO')))+' — '+an.it.ver+'\n';
     t+='\n';
   }
   t+='RESUMEN: '+r.ok+' cumplen · '+r.ojo+' a revisar · '+r.mal+' a corregir · '+r.info+' informativos\n';
   var tp=textoProtocolo(obra); if(tp) t+='\n'+tp;
+  var tc=textoComparacion(obra, vis); if(tc) t+='\n'+tc;
   t+=textoQueCorregir(queCorregir(obra, reg));
   if(obra.obs) t+='\nObservaciones: '+obra.obs+'\n';
   t+='\nCriterios: AEA 90364-7-770 (Ed. 2026) / 7-771 / 7-701 / 7-718. UL = 24 V.\n';
@@ -9309,7 +9369,7 @@ function aplicarRespaldo(n, modo){
   if(modo==='reemplazar'){
     ST.obra = normalizarObra(Object.assign(obraVacia(), n.obra||{}));
     ST.registro = arr(n.registro);
-    ST.archivo = arr(n.archivo).slice(-20);
+    ST.archivo = arr(n.archivo).slice(-MAX_ARCH);
     ST.t0 = n.t0 || null;
     ST.favoritos = arr(n.favoritos);
     ST.recientes = arr(n.recientes).slice(0,8);
@@ -9325,7 +9385,7 @@ function aplicarRespaldo(n, modo){
     ST.archivo.forEach(function(x){ if(x) cerr[x.cerrada]=1; });
     arr(n.archivo).forEach(function(x){ if(x && !cerr[x.cerrada]){ ST.archivo.push(x); cerr[x.cerrada]=1; } });
     ST.archivo.sort(function(a,b){ return (a.cerrada||0)-(b.cerrada||0); });
-    if(ST.archivo.length>20) ST.archivo=ST.archivo.slice(-20);
+    if(ST.archivo.length>MAX_ARCH) ST.archivo=ST.archivo.slice(-MAX_ARCH);
     arr(n.favoritos).forEach(function(x){ if(ST.favoritos.indexOf(x)<0) ST.favoritos.push(x); });
     arr(n.recientes).forEach(function(x){ if(ST.recientes.indexOf(x)<0) ST.recientes.push(x); });
     ST.recientes=ST.recientes.slice(0,8);
@@ -9738,7 +9798,7 @@ function vistaAjustes(){
      '<button data-wake="1" aria-pressed="'+(a.wake===true)+'">Sí</button>'+
      '<button data-wake="0" aria-pressed="'+(a.wake!==true)+'">No</button></div></div>';
   h+='<div class="aj"><b>Datos guardados</b><p>'+
-     (ALM.ok ? 'Se guardan en este teléfono: la intervención en curso, los favoritos, los valores cargados en cada ficha y hasta 20 intervenciones archivadas. Nada sale del equipo. Si borrás los datos del navegador se pierde todo, así que conviene exportar un respaldo cada tanto.'
+     (ALM.ok ? 'Se guardan en este teléfono: la intervención en curso, los favoritos, los valores cargados en cada ficha y hasta 50 intervenciones archivadas. Nada sale del equipo. Si borrás los datos del navegador se pierde todo, así que conviene exportar un respaldo cada tanto.'
              : 'Este teléfono no está dejando guardar ('+esc(ALM.motivo)+'). Suele pasar al abrir el archivo directamente desde el almacenamiento o en una ventana privada. Todo funciona igual, pero se pierde al cerrar.')+
      '</p><div class="acciones"><button class="peligro" id="borrartodo">Borrar todo lo guardado</button></div></div>';
   h+='<div class="aj"><b>Respaldo</b><p>Todo lo guardado en este teléfono cabe en un archivo. Sirve para pasar la app a otro equipo, para recuperarla después de borrar los datos del navegador y para dejar copia de las intervenciones cerradas. El archivo no sale de tu teléfono si no lo mandás vos.</p>'+
@@ -9820,7 +9880,7 @@ function vistaAjustes(){
    igual en los dos casos: la planilla es optativa.
    ============================================================ */
 function obraVacia(){
-  return {cliente:'', dir:'', tipo:'', inst:'', mat:'', obs:'', reglam:'', fecha:hoyISO(),
+  return {uid:idNuevo('o'), cliente:'', dir:'', tipo:'', inst:'', mat:'', obs:'', reglam:'', fecha:hoyISO(),
           tab:[], circ:[], prot:{rp:'', c:{}, ra:{}, vis:{}, modoVis:''}, cAct:'', origen:null};
 }
 function normalizarObra(o){
@@ -10322,22 +10382,22 @@ function camposDe(fichaId, excluir){
   return buscarFalla(fichaId).med.campos.filter(function(c){ return excluir.indexOf(c.id)<0; });
 }
 function htmlProtCirc(c, i){
-  var p=protC(c.id), e=estadoCirc(c), pre='pc'+i+'_';
+  var p=protC(c.id), e=estadoCirc(c), pre='pc'+i+'_', an=antesProt(c), visC=visitasPrevias(), pz=visC.length ? peoresCirc(ST.obra, c, visC) : [];
   var vid={idn:p.id.idn||((c.idn && String(c.idn)!=='0')?String(c.idn):''), clase:p.id.clase||c.idTipo||'', ret:p.id.ret||c.idRet||'',
            med:p.id.med, t1:p.id.t1, t5:p.id.t5, boton:p.id.boton};
   var vais={ue:p.ais.ue||'500', rln:p.ais.rln, rlpe:p.ais.rlpe, rnpe:p.ais.rnpe};
   var h='<details class="man prot-c" id="pc-'+esc(c.id)+'"><summary><span class="mn"><b>'+esc(etiquetaCirc(c))+
-        ' <span class="est '+e+'" data-est="'+esc(c.id)+'">'+txtEst(e)+'</span></b><i>'+esc(resumenCirc(c)||c.des||'')+'</i></span>'+
+        ' <span class="est '+e+'" data-est="'+esc(c.id)+'">'+txtEst(e)+'</span>'+htmlTendCirc(c.id, pz)+'</b><i>'+esc(resumenCirc(c)||c.des||'')+'</i></span>'+
         '<span class="car" aria-hidden="true">›</span></summary><div class="man-c">';
   h+='<div class="prot-blq"><h4>Continuidad del PE <small>criterio de la ficha T3</small></h4><div class="medir" data-pc="'+esc(c.id)+'|pe">'+
-     pintarCampos([{id:'rm', lbl:'Resistencia barra de PE – boca más alejada del circuito', u:'Ω'}], p.pe, pre+'pe_')+'</div>'+
+     pintarCampos([{id:'rm', lbl:'Resistencia barra de PE – boca más alejada del circuito', u:'Ω'}], p.pe, pre+'pe_', an.pe)+'</div>'+
      '<div id="pv-'+esc(c.id)+'-pe">'+htmlVerBloque(c,'pe')+'</div></div>';
   h+='<div class="prot-blq"><h4>Aislación <small>criterio de la ficha I1</small></h4><div class="medir" data-pc="'+esc(c.id)+'|ais">'+
-     pintarCampos(camposDe('I1',['reglam','lon']), vais, pre+'ai_')+'</div>'+
+     pintarCampos(camposDe('I1',['reglam','lon']), vais, pre+'ai_', an.ais)+'</div>'+
      '<div id="pv-'+esc(c.id)+'-ais">'+htmlVerBloque(c,'ais')+'</div></div>';
   h+='<div class="prot-blq"><h4>Diferencial que lo protege <small>criterio de la ficha D2</small></h4>'+
      (String(c.idn)==='0'?'<div class="info">El circuito figura sin diferencial. Si en obra tiene uno, cargá su IΔn acá y ensayalo.</div>':'')+
-     '<div class="medir" data-pc="'+esc(c.id)+'|id">'+pintarCampos(camposDe('D2',['reglam']), vid, pre+'id_')+'</div>'+
+     '<div class="medir" data-pc="'+esc(c.id)+'|id">'+pintarCampos(camposDe('D2',['reglam']), vid, pre+'id_', an.id)+'</div>'+
      '<div id="pv-'+esc(c.id)+'-id">'+htmlVerBloque(c,'id')+'</div></div>';
   h+='<div class="prot-blq"><div class="medir" data-pc="'+esc(c.id)+'|obs">'+
      pintarCampos([{id:'obs', lbl:'Observaciones del circuito'}], p, pre+'ob_')+'</div></div>';
@@ -10383,6 +10443,8 @@ function htmlProtPrintCuerpo(o){
   cv.forEach(function(c){ h+='<tr><td class="iz">'+esc(c.lbl)+'</td><td>'+(vis[c.id]===true?'Conforme':(vis[c.id]===false?'No conforme':'—'))+'</td></tr>'; });
   if(modoVis(o)!=='inicial' && vis.anio) h+='<tr><td class="iz">Año de la última inspección o de la puesta en servicio</td><td>'+esc(vis.anio)+'</td></tr>';
   h+='<tr><td class="iz"><b>Resultado</b></td><td>'+(rv?esc(rv.t):'—')+'</td></tr></tbody></table>';
+  var compV=htmlComparacion(o, visitasPreviasDe(o), 'imp');
+  if(compV) h+='<h3>Comparación con las visitas anteriores</h3>'+compV;
   var notas=[];
   var ins=instrumentosProt(); if(ins.length) notas.push('Instrumentos: '+ins.join(' · ')+'.');
   if(o.prot.rp) notas.push('Resistencia de las puntas descontada en la continuidad del PE: '+nC(o.prot.rp,2)+' Ω.');
@@ -10427,6 +10489,9 @@ function vistaProtocolo(){
   }
   if(o.reglam!=='771') h+='<div class="nota">Con la 7-770 Ed. 2026 la continuidad del PE se ensaya con 0,2 A como mínimo (770.23.5.1). El Fluke 117 y el UT-511 no aseguran esa corriente: sirven para comparar y diagnosticar (ficha T3).</div>';
   h+='<div class="bloque"><h3>Resumen</h3><div class="tabla-w prot-res-w" id="protRes">'+htmlResumenProt(o)+'</div></div>';
+  var visP=visitasPrevias();
+  if(visP.length) h+='<div class="bloque"><h3>Comparación con las visitas anteriores <small>'+esc(fechasVis(visP))+'</small></h3><div id="protComp">'+
+     (htmlComparacion(o, visP)||'<p class="vacio">Las visitas anteriores no tienen mediciones de estos circuitos.</p>')+'</div></div>';
   h+='<div class="bloque"><h3>Datos comunes</h3><div class="medir" data-pc="|comun">'+
      pintarCampos([{id:'rp', lbl:'Resistencia de las puntas del instrumento', ayuda:'Se descuenta de cada lectura de continuidad del PE', u:'Ω'}], o.prot, 'pr_')+'</div></div>';
   h+='<div class="bloque"><h3>Circuitos <small>tocá uno para cargar sus mediciones</small></h3>';
@@ -10434,7 +10499,7 @@ function vistaProtocolo(){
   h+='</div>';
   var vra={r1:o.prot.ra.r1, r2:o.prot.ra.r2, r3:o.prot.ra.r3, idn:o.prot.ra.idn||idnMayor(o)};
   h+='<div class="bloque"><h3>Puesta a tierra <small>criterio de la ficha T1</small></h3><div class="medir" data-pc="|ra">'+
-     pintarCampos(camposRa(), vra, 'pra_')+'</div><div id="pv--ra">'+htmlVerProt(evalRa(o))+'</div></div>';
+     pintarCampos(camposRa(), vra, 'pra_', antesRa())+'</div><div id="pv--ra">'+htmlVerProt(evalRa(o))+'</div></div>';
   h+='<div class="bloque"><h3>Inspección visual <small>criterio de la ficha '+(modoVis(o)==='inicial'?'R2':'R6')+'</small></h3><div class="medir" data-pc="|vis">'+
      pintarCampos(camposVis(o), o.prot.vis, 'pvi_')+'</div><div id="pv--vis">'+htmlVerProt(evalVis(o))+'</div></div>';
   h+='<div class="acciones"><button class="pri" id="protImp">Imprimir o PDF</button><button id="protExp">Exportar para la planilla</button>'+
@@ -10497,6 +10562,13 @@ function refrescarProt(id, q){
     if(b){ var e=estadoCirc(cc); b.className='est '+e; b.textContent=txtEst(e); }
   });
   el=document.getElementById('protRes'); if(el) el.innerHTML=htmlResumenProt(o);
+  el=document.getElementById('protComp');
+  if(el){
+    var vv=visitasPrevias();
+    el.innerHTML=htmlComparacion(o, vv)||'<p class="vacio">Las visitas anteriores no tienen mediciones de estos circuitos.</p>';
+    o.circ.forEach(function(cc){ var t=app.querySelector('[data-tend="'+cc.id+'"]'); if(t) t.outerHTML=htmlTendCirc(cc.id, peoresCirc(o, cc, vv)); });
+  }
+  if(q==='comun') refrescarTodosAntes();
   el=document.getElementById('protPrint0'); if(el) el.innerHTML=htmlProtPrintCuerpo(o);
 }
 /* JSON sólo con caracteres ASCII: la planilla lo lee sin depender de la codificación. */
@@ -10556,6 +10628,453 @@ function textoProtocolo(obra){
   if(ra) t+='- Puesta a tierra: '+ra.t+' ('+txtEst(ra.e)+')\n';
   if(vi) t+='- Inspección visual '+(modoVis(obra)==='inicial'?'inicial':'periódica')+': '+vi.t+' ('+txtEst(vi.e)+')\n';
   return t;
+}
+
+/* ---------- historial de la obra: visitas anteriores y tendencia ----------
+   Las visitas anteriores de una obra son sus intervenciones archivadas: las que tienen el mismo identificador
+   (las abiertas con «Nueva visita»), el mismo nombre de obra de la planilla o el mismo cliente y domicilio.
+   Los circuitos se emparejan por su identificador o, si no, por tablero y nombre. Los umbrales de «peor» son
+   criterio práctico de seguimiento: la AEA fija el valor que tiene que cumplir cada ensayo, no la tendencia. */
+var MAX_ARCH=50;
+var TEND={
+  pe: {corto:'PE', u:'Ω', txt:'la continuidad del PE subió 0,1 Ω o más',
+       peor:function(a,b){ return b-a>=0.1-1e-9; }},
+  ais:{corto:'aislación mín.', u:'MΩ', txt:'la aislación bajó a la mitad o menos',
+       peor:function(a,b){ return a>0 && b<=a*0.5; }},
+  t1: {corto:'ID ×1', u:'ms', txt:'el tiempo de disparo subió 50 % o más, y por lo menos 10 ms',
+       peor:function(a,b){ return b>=a*1.5 && b-a>=10; }},
+  t5: {corto:'ID ×5', u:'ms', txt:'el tiempo de disparo subió 50 % o más, y por lo menos 10 ms',
+       peor:function(a,b){ return b>=a*1.5 && b-a>=10; }},
+  ra: {corto:'Ra', u:'Ω', txt:'la resistencia de puesta a tierra subió 50 % o más',
+       peor:function(a,b){ return a>0 && b>=a*1.5; }}
+};
+var NOTA_TEND='«Peor» marca lo que cambió para el lado malo más allá de un umbral práctico de seguimiento: '+
+  'continuidad del PE 0,1 Ω más, aislación a la mitad o menos, tiempo del diferencial 50 % más (y por lo menos '+
+  '10 ms) y puesta a tierra 50 % más. La AEA fija el valor que tiene que cumplir cada ensayo, no la tendencia: el '+
+  'veredicto de cada medición sigue siendo el de su ficha. La puesta a tierra cambia con la humedad del suelo, así '+
+  'que conviene compararla en la misma época del año.';
+
+function normTxt(s){
+  var t=String(s===null||s===undefined?'':s).toLowerCase();
+  try{ t=t.normalize('NFD').replace(/[̀-ͯ]/g,''); }catch(e){}
+  return t.replace(/\s+/g,' ').trim();
+}
+function claveObra(o){ return normTxt(o && o.cliente)+'|'+normTxt(o && o.dir); }
+function mismaObra(a, b){
+  if(!a || !b) return false;
+  if(a.uid && b.uid && a.uid===b.uid) return true;
+  var pa=normTxt(a.origen && a.origen.obra), pb=normTxt(b.origen && b.origen.obra);
+  if(pa && pa===pb) return true;
+  var k=claveObra(a);
+  return k!=='|' && k===claveObra(b);
+}
+function nombreObra(o){
+  return (o && (o.cliente || o.dir || (o.origen && o.origen.obra))) || 'obra sin nombre';
+}
+function fechaVisita(a){
+  var fe=a && a.obra && a.obra.fecha;
+  if(fe && /^\d{4}-\d{2}-\d{2}/.test(fe)) return String(fe).slice(0,10);
+  if(a && a.cerrada && isFinite(a.cerrada)){
+    var d=new Date(a.cerrada);
+    return d.getFullYear()+'-'+dosD(d.getMonth()+1)+'-'+dosD(d.getDate());
+  }
+  return '';
+}
+function ordenVisita(a, b){
+  var fa=fechaVisita(a), fb=fechaVisita(b);
+  if(fa!==fb) return fa<fb ? -1 : 1;
+  var ca=(a && a.cerrada) || 0, cb=(b && b.cerrada) || 0;
+  return ca===cb ? 0 : (ca<cb ? -1 : 1);
+}
+/* Visitas anteriores de la misma obra, de la más vieja a la más nueva. Sin argumento: las de la intervención en
+   curso. Con una intervención archivada: las anteriores a ella. */
+function visitasPrevias(ref){
+  var o=ref ? ref.obra : ST.obra, yo=ref || {obra:{fecha:(ST.obra.fecha||hoyISO())}, cerrada:Infinity};
+  if(!o) return [];
+  return ST.archivo.filter(function(a){
+    return a && a!==ref && a.obra && mismaObra(a.obra, o) && ordenVisita(a, yo)<0;
+  }).sort(ordenVisita);
+}
+function visitasPreviasDe(o){ return (o===ST.obra) ? visitasPrevias() : visitasPrevias({obra:o, cerrada:Infinity}); }
+function fechasVis(vis){ return vis.slice(-3).map(function(a){ return fechaAR(fechaVisita(a)); }).join(', '); }
+
+function claveCirc(c){ return normTxt(c && c.tab)+'|'+normTxt(c && c.n); }
+function circAnterior(oAnt, c){
+  var l=(oAnt && oAnt.circ) || [], i, k=claveCirc(c);
+  for(i=0;i<l.length;i++) if(l[i] && c.id && l[i].id===c.id) return l[i];
+  for(i=0;i<l.length;i++) if(l[i] && claveCirc(l[i])===k) return l[i];
+  return null;
+}
+/* Magnitudes del protocolo de un circuito: PE neto (sin las puntas), la menor de las tres aislaciones con su
+   tensión de ensayo, y los tiempos del diferencial a IΔn y a 5 IΔn. */
+function medCirc(o, c){
+  var r={}, p=((o && o.prot) || {}).c, x;
+  p=p ? p[c.id] : null;
+  if(!p) return r;
+  x=num((p.pe||{}).rm);
+  if(x!==null) r.pe=Math.max(0, x-(num((o.prot||{}).rp)||0));
+  var ai=p.ais||{}, l=[num(ai.rln), num(ai.rlpe), num(ai.rnpe)].filter(function(v){ return v!==null; });
+  if(l.length){ r.ais=Math.min.apply(null, l); r.ue=num(ai.ue)||500; }
+  x=num((p.id||{}).t1); if(x!==null) r.t1=x;
+  x=num((p.id||{}).t5); if(x!==null) r.t5=x;
+  return r;
+}
+function medRa(o){
+  var ra=((o && o.prot) || {}).ra || {}, l=[num(ra.r1), num(ra.r2), num(ra.r3)].filter(function(v){ return v!==null; });
+  return l.length ? l.reduce(function(s, v){ return s+v; }, 0)/l.length : null;
+}
+function serieCirc(o, c, q, vis){
+  var ant=[];
+  vis.forEach(function(a){
+    var ca=circAnterior(a.obra, c);
+    if(!ca) return;
+    var m=medCirc(a.obra, ca);
+    if(m[q]!==undefined) ant.push({f:fechaVisita(a), v:m[q], ue:m.ue});
+  });
+  var m=medCirc(o, c);
+  return {ant:ant, act:(m[q]!==undefined ? m[q] : null), ue:m.ue};
+}
+function serieRa(o, vis){
+  var ant=[];
+  vis.forEach(function(a){ var v=medRa(a.obra); if(v!==null) ant.push({f:fechaVisita(a), v:v}); });
+  return {ant:ant, act:medRa(o)};
+}
+function fT(q, v){
+  if(v===null || v===undefined || isNaN(v)) return '—';
+  if(q==='t1' || q==='t5') return f(v, 0);
+  if(q==='pe') return f(v, 2);
+  return f(v, Math.abs(v)>=100 ? 0 : (Math.abs(v)>=10 ? 1 : 2));
+}
+function marcaTend(q, a, b){
+  var fl=b>a ? '↑' : (b<a ? '↓' : '=');
+  if(TEND[q] && TEND[q].peor(a, b)) return '<span class="tend peor" title="'+esc(TEND[q].txt)+'">'+fl+' peor</span>';
+  return '<span class="tend">'+fl+'</span>';
+}
+function htmlSerie(q, s, u){
+  var ant=s.ant.slice(-3), ue=u ? ' '+esc(u) : '';
+  if(!ant.length) return s.act===null ? '' : esc(fT(q, s.act))+ue;
+  var h=ant.map(function(x){ return esc(fT(q, x.v)); }).join(' → ')+' → '+(s.act===null ? '—' : '<b>'+esc(fT(q, s.act))+'</b>')+ue;
+  if(s.act!==null) h+=' '+marcaTend(q, ant[ant.length-1].v, s.act);
+  return h;
+}
+function peoresCirc(o, c, vis){
+  var l=[];
+  ['pe','ais','t1','t5'].forEach(function(q){
+    var s=serieCirc(o, c, q, vis);
+    if(s.act!==null && s.ant.length && TEND[q].peor(s.ant[s.ant.length-1].v, s.act)) l.push(q);
+  });
+  return l;
+}
+var ETQ_COMP={pe:'PE, sin las puntas', ais:'Aislación, la menor', t1:'Diferencial a IΔn', t5:'Diferencial a 5 IΔn'};
+/* Comparación circuito por circuito: las visitas anteriores (hasta tres) y la de hoy.
+   modo 'imp': tabla para el protocolo impreso. modo 'ambos': tarjetas en pantalla y tabla al imprimir (informe).
+   Sin modo: sólo las tarjetas (pantalla del protocolo). */
+function htmlComparacion(o, vis, modo){
+  if(!vis || !vis.length) return '';
+  var filas='', tarj='', ue=false;
+  o.circ.forEach(function(c){
+    var ss={}, hay=false, pz=[];
+    ['pe','ais','t1','t5'].forEach(function(q){
+      var s=serieCirc(o, c, q, vis), u;
+      ss[q]=s;
+      if(!s.ant.length) return;
+      hay=true;
+      u=s.ant[s.ant.length-1];
+      if(s.act!==null && TEND[q].peor(u.v, s.act)) pz.push(q);
+      if(q==='ais' && s.act!==null && s.ue && u.ue && s.ue!==u.ue) ue=true;
+    });
+    if(!hay) return;
+    filas+='<tr><td class="iz">'+esc(c.tab||'')+'</td><td class="iz">'+esc(c.n||'')+'</td><td>'+htmlSerie('pe', ss.pe)+'</td><td>'+
+           htmlSerie('ais', ss.ais)+'</td><td>'+htmlSerie('t1', ss.t1)+'</td><td>'+htmlSerie('t5', ss.t5)+'</td></tr>';
+    tarj+='<div class="comp-c'+(pz.length ? ' peor' : '')+'"><div class="h">'+esc(etiquetaCirc(c))+
+          (pz.length ? ' <span class="tend peor">↘ peor que antes</span>' : '')+'</div>';
+    ['pe','ais','t1','t5'].forEach(function(q){
+      if(ss[q].ant.length) tarj+='<div class="fila"><span class="k">'+ETQ_COMP[q]+'</span><span class="v">'+htmlSerie(q, ss[q], TEND[q].u)+'</span></div>';
+    });
+    tarj+='</div>';
+  });
+  var sr=serieRa(o, vis);
+  if(sr.ant.length){
+    var pr=sr.act!==null && TEND.ra.peor(sr.ant[sr.ant.length-1].v, sr.act);
+    filas+='<tr><td class="iz" colspan="2">Puesta a tierra, promedio de las lecturas (Ω)</td><td colspan="4">'+htmlSerie('ra', sr)+'</td></tr>';
+    tarj+='<div class="comp-c'+(pr ? ' peor' : '')+'"><div class="h">Puesta a tierra'+(pr ? ' <span class="tend peor">↘ peor que antes</span>' : '')+'</div>'+
+          '<div class="fila"><span class="k">Promedio de las lecturas</span><span class="v">'+htmlSerie('ra', sr, 'Ω')+'</span></div></div>';
+  }
+  if(!filas) return '';
+  var tabla='<table class="'+(modo==='imp' ? 'comp' : 'tabla comp')+'"><thead><tr><th class="iz">Tablero</th><th class="iz">Circuito</th>'+
+            '<th>PE (Ω)</th><th>Aislación mín. (MΩ)</th><th>ID ×1 (ms)</th><th>ID ×5 (ms)</th></tr></thead><tbody>'+filas+'</tbody></table>';
+  var nota='Las visitas anteriores van de la más vieja a la más nueva (hasta tres: '+esc(fechasVis(vis))+'); el último valor, en negrita, '+
+           'es el de hoy. PE sin la resistencia de las puntas. '+
+           (ue ? 'La aislación de algún circuito se midió con otra tensión de ensayo que la vez anterior: esa comparación no es directa. ' : '')+
+           esc(NOTA_TEND);
+  if(modo==='imp') return tabla+'<div class="notas">'+nota+'</div>';
+  if(modo==='ambos') return '<div class="no-print comp-l">'+tarj+'</div><div class="solo-print">'+tabla+'</div><div class="nota-t">'+nota+'</div>';
+  return '<div class="comp-l">'+tarj+'</div><div class="nota-t">'+nota+'</div>';
+}
+function textoComparacion(o, vis){
+  if(!vis || !vis.length) return '';
+  var lin=[];
+  function serie(q, s){
+    var ant=s.ant.slice(-3), t=TEND[q];
+    var x=t.corto+' '+ant.map(function(a){ return fT(q, a.v); }).join(' → ')+' → '+(s.act===null ? '—' : fT(q, s.act))+' '+t.u;
+    if(s.act!==null && t.peor(ant[ant.length-1].v, s.act)) x+=' (PEOR: '+t.txt+')';
+    return x;
+  }
+  o.circ.forEach(function(c){
+    var p=[];
+    ['pe','ais','t1','t5'].forEach(function(q){ var s=serieCirc(o, c, q, vis); if(s.ant.length) p.push(serie(q, s)); });
+    if(p.length) lin.push('- '+etiquetaCirc(c)+': '+p.join(' · '));
+  });
+  var sr=serieRa(o, vis);
+  if(sr.ant.length) lin.push('- Puesta a tierra: '+serie('ra', sr));
+  if(!lin.length) return '';
+  return 'COMPARACIÓN CON VISITAS ANTERIORES ('+fechasVis(vis)+'; el último valor de cada serie es el de hoy; PE sin la resistencia de las puntas)\n'+lin.join('\n')+'\n'+NOTA_TEND+'\n';
+}
+function hayProt(o){
+  o=o||ST.obra;
+  var p=o.prot||{}, c=p.c||{}, k, x;
+  for(k in c){
+    if(!Object.prototype.hasOwnProperty.call(c,k)) continue;
+    x=c[k]||{};
+    if(hayDatos(x.pe||{}) || hayDatos(x.ais||{}) || hayDatos(x.id||{}) || (x.obs && String(x.obs).trim())) return true;
+  }
+  return hayDatos(p.ra||{}) || hayDatos(p.vis||{});
+}
+function hayIntervencion(){ return ST.registro.length>0 || hayProt(ST.obra); }
+function resumenRegs(reg){
+  reg=reg||[];
+  if(!reg.length) return '—';
+  var r={ok:0, ojo:0, mal:0};
+  reg.forEach(function(x){ if(x && r[x.e]!==undefined) r[x.e]++; });
+  return reg.length+' · '+r.ok+' OK · '+r.ojo+' a revisar · '+r.mal+' no cumplen';
+}
+function resumenProtCorto(o){
+  var r={ok:0, ojo:0, mal:0}, con=0, t, ra;
+  o.circ.forEach(function(c){
+    var p=(o.prot.c||{})[c.id];
+    if(!p || !(hayDatos(p.pe||{}) || hayDatos(p.ais||{}) || hayDatos(p.id||{}))) return;
+    con++;
+    var e=estadoCirc(c, o);
+    if(r[e]!==undefined) r[e]++;
+  });
+  t=con ? con+' de '+o.circ.length+' circuitos · '+r.ok+' OK · '+r.ojo+' a revisar · '+r.mal+' no cumplen' : 'sin mediciones de circuitos';
+  ra=medRa(o);
+  if(ra!==null) t+=' · Ra '+fT('ra', ra)+' Ω';
+  return t;
+}
+/* Bloque del informe: las visitas anteriores y la comparación de las mediciones del protocolo. En pantalla van en
+   tarjetas; al imprimir, en tablas. */
+function htmlHistorial(o, vis){
+  if(!vis.length) return '';
+  var filas='', tarj='';
+  vis.slice().reverse().forEach(function(a){
+    var oa=normalizarObra(JSON.parse(JSON.stringify(a.obra))), fe=esc(fechaAR(fechaVisita(a))), ti=esc(oa.tipo||'—');
+    var rr=esc(resumenRegs(a.registro)), rp=esc(resumenProtCorto(oa));
+    filas+='<tr><td>'+fe+'</td><td>'+ti+'</td><td>'+rr+'</td><td>'+rp+'</td></tr>';
+    tarj+='<div class="vis-c"><div class="h">'+fe+' <small>'+ti+'</small></div><div class="m">Registros: '+rr+'</div>'+
+          '<div class="m">Protocolo: '+rp+'</div></div>';
+  });
+  var h='<div class="bloque hist"><h3>Historial de la obra <small>'+vis.length+' visita'+(vis.length===1?'':'s')+' anterior'+
+        (vis.length===1?'':'es')+'</small></h3><div class="no-print">'+tarj+'</div><div class="solo-print"><table class="tabla"><thead><tr>'+
+        '<th>Fecha</th><th>Intervención</th><th>Registros</th><th>Protocolo</th></tr></thead><tbody>'+filas+'</tbody></table></div>';
+  var comp=htmlComparacion(o, vis, 'ambos');
+  if(comp) h+='<h4>Comparación de las mediciones del protocolo</h4>'+comp;
+  return h+'</div>';
+}
+/* Registros de la misma ficha (o cálculo) y el mismo circuito en las visitas anteriores, el más nuevo primero. */
+function mismoCircReg(a, b){
+  if(!a && !b) return true;
+  if(!a || !b) return false;
+  if(a.id && b.id && a.id===b.id) return true;
+  return claveCirc(a)===claveCirc(b);
+}
+function registrosAnteriores(k, id, circ, vis){
+  var out=[];
+  (vis||[]).forEach(function(a){
+    (a.registro||[]).forEach(function(it){
+      if(it && it.k===k && it.id===id && mismoCircReg(it.circ||null, circ||null)) out.push({f:fechaVisita(a), it:it});
+    });
+  });
+  return out.reverse();
+}
+var EST_COMP={ok:1, ojo:2, mal:3};
+function htmlAntesReg(x, vis){
+  var l=registrosAnteriores(x.k, x.id, x.circ||null, vis);
+  if(!l.length) return '';
+  var a=l[0], ev='';
+  if(EST_COMP[x.e] && EST_COMP[a.it.e]){
+    var d=EST_COMP[x.e]-EST_COMP[a.it.e];
+    ev=d>0 ? ' · <b class="tend peor">empeoró</b>' : (d<0 ? ' · <b class="tend mejor">mejoró</b>' : ' · igual que antes');
+  }
+  return '<div class="antes-reg">Antes ('+esc(fechaAR(a.f))+'): <span class="est '+esc(a.it.e)+'">'+txtEst(a.it.e)+'</span> '+esc(a.it.ver)+ev+
+         (a.it.lect && a.it.lect.length ? '<div class="m">'+esc(a.it.lect.join(' · '))+'</div>' : '')+'</div>';
+}
+function circRegActivo(){ var ca=circActivo(); return ca ? {id:ca.id, n:ca.n, tab:ca.tab} : null; }
+/* Ficha o cálculo: lo que dio en las visitas anteriores, para el circuito elegido. */
+function htmlAntesFicha(k, x){
+  var vis=visitasPrevias();
+  if(!vis.length) return '';
+  var ca=circActivo(), l=registrosAnteriores(k, x.id, circRegActivo(), vis);
+  if(!l.length) return '';
+  var h='<div class="antes-ficha"><b>En visitas anteriores'+(ca ? ' · '+esc(etiquetaCirc(ca)) : '')+'</b>';
+  l.slice(0,3).forEach(function(r){
+    h+='<div class="ar"><span class="est '+esc(r.it.e)+'">'+txtEst(r.it.e)+'</span><time>'+esc(fechaAR(r.f))+'</time>'+esc(r.it.ver)+
+       (r.it.lect && r.it.lect.length ? '<div class="m">'+esc(r.it.lect.join(' · '))+'</div>' : '')+'</div>';
+  });
+  return h+'</div>';
+}
+/* Valor anterior de cada campo numérico con unidad: el del registro más nuevo que lo tenga. */
+function antesCampos(k, x, campos){
+  var vis=visitasPrevias();
+  if(!vis.length) return null;
+  var l=registrosAnteriores(k, x.id, circRegActivo(), vis), m={}, hay=false;
+  if(!l.length) return null;
+  (campos||[]).forEach(function(c){
+    if(c.tipo || !c.u) return;
+    for(var i=0;i<l.length;i++){
+      var v=l[i].it.v ? num(l[i].it.v[c.id]) : null;
+      if(v!==null){ m[c.id]={v:v, f:l[i].f, u:c.u, dec:decDe(l[i].it.v[c.id])}; hay=true; break; }
+    }
+  });
+  return hay ? m : null;
+}
+/* Protocolo: valor anterior de cada lectura del circuito, de la visita más nueva que la tenga. */
+function antesProt(c){
+  var vis=visitasPrevias(), r={pe:null, ais:null, id:null};
+  if(!vis.length) return r;
+  function busca(fn){
+    for(var i=vis.length-1;i>=0;i--){
+      var ca=circAnterior(vis[i].obra, c);
+      if(!ca) continue;
+      var v=fn(vis[i].obra, ((vis[i].obra.prot||{}).c||{})[ca.id]||{}, ca);
+      if(v!==null && v!==undefined) return {v:v, f:fechaVisita(vis[i])};
+    }
+    return null;
+  }
+  var x=busca(function(o, p, ca){ var m=medCirc(o, ca); return m.pe!==undefined ? m.pe : null; });
+  if(x) r.pe={rm:{v:x.v, f:x.f, u:'Ω', dec:2, q:'pe', neto:true}};
+  var ai={}, hayA=false;
+  ['rln','rlpe','rnpe'].forEach(function(k){
+    var y=busca(function(o, p){ var r=(p.ais||{})[k]; return num(r)===null ? null : {n:num(r), d:decDe(r)}; });
+    if(y){ ai[k]={v:y.v.n, f:y.f, u:'MΩ', q:'ais', dec:y.v.d}; hayA=true; }
+  });
+  var ue=busca(function(o, p){ var a=p.ais||{}; return hayDatos({a:a.rln, b:a.rlpe, c:a.rnpe}) ? (num(a.ue)||500) : null; });
+  if(ue){ ai.ue={v:ue.v, f:ue.f, u:'V', dec:0, fijo:true}; hayA=true; }
+  if(hayA) r.ais=ai;
+  var idd={}, hayI=false;
+  ['t1','t5'].forEach(function(k){
+    var y=busca(function(o, p){ var r=(p.id||{})[k]; return num(r)===null ? null : {n:num(r), d:decDe(r)}; });
+    if(y){ idd[k]={v:y.v.n, f:y.f, u:'ms', dec:y.v.d, q:k}; hayI=true; }
+  });
+  if(hayI) r.id=idd;
+  return r;
+}
+function antesRa(){
+  var vis=visitasPrevias(), m={}, hay=false;
+  ['r1','r2','r3'].forEach(function(k){
+    for(var i=vis.length-1;i>=0;i--){
+      var r=(((vis[i].obra||{}).prot||{}).ra||{})[k], v=num(r);
+      if(v!==null){ m[k]={v:v, f:fechaVisita(vis[i]), u:'Ω', q:'ra', dec:decDe(r)}; hay=true; break; }
+    }
+  });
+  return hay ? m : null;
+}
+/* Debajo de cada campo: «Antes: valor · fecha» y, cuando hay lectura nueva, la diferencia. */
+function decAuto(v){ v=Math.abs(v); return v>=100 ? 0 : (v>=10 ? 1 : 2); }
+/* Decimales con que se escribió un valor (hasta tres), para mostrarlo igual. */
+function decDe(raw){
+  var m=String(raw===null||raw===undefined?'':raw).replace(',', '.').match(/\.(\d+)/);
+  return m ? Math.min(m[1].length, 3) : 0;
+}
+function contenidoAntes(base, prev, cur, q, u, dec, decCur){
+  var h=esc(base);
+  if(cur===null || cur===undefined || isNaN(cur) || prev===null || prev===undefined || isNaN(prev)) return h;
+  var d=cur-prev;
+  if(Math.abs(d)<1e-9) return h+' · <span class="tend">= igual</span>';
+  var pct=prev!==0 ? Math.round(Math.abs(d)/Math.abs(prev)*100) : null;
+  var peor=!!(q && TEND[q] && TEND[q].peor(prev, cur));
+  return h+' · <span class="tend'+(peor?' peor':'')+'"'+(peor?' title="'+esc(TEND[q].txt)+'"':'')+'>'+(d>0 ? '↑ +' : '↓ −')+
+         f(Math.abs(d), Math.max(dec, decCur||0))+(u?' '+u:'')+(pct ? ' ('+(d>0?'+':'−')+pct+' %)' : '')+(peor ? ' · peor' : '')+'</span>';
+}
+function actualAntes(a, valor){
+  var cur=num(valor);
+  if(cur!==null && a.neto) cur=Math.max(0, cur-(num(ST.obra.prot.rp)||0));
+  return cur;
+}
+function htmlAntes(a, valor){
+  var dec=(a.dec!==undefined) ? a.dec : decAuto(a.v), u=a.u||'';
+  var base='Antes: '+f(a.v, dec)+(u?' '+u:'')+(a.neto?' sin las puntas':'')+' · '+fechaAR(a.f);
+  if(a.fijo) return '<div class="antes">'+esc(base)+'</div>';
+  return '<div class="antes" data-base="'+esc(base)+'" data-prev="'+a.v+'" data-dec="'+dec+'" data-u="'+esc(u)+'"'+
+         (a.q?' data-q="'+esc(a.q)+'"':'')+(a.neto?' data-neto="1"':'')+'>'+contenidoAntes(base, a.v, actualAntes(a, valor), a.q, u, dec, decDe(valor))+'</div>';
+}
+function refrescarAntes(el){
+  var cp=el && el.closest ? el.closest('.campo') : null, a=cp ? cp.querySelector('.antes[data-prev]') : null;
+  if(!a) return;
+  var cur=actualAntes({neto:a.getAttribute('data-neto')==='1'}, el.value);
+  a.innerHTML=contenidoAntes(a.getAttribute('data-base'), parseFloat(a.getAttribute('data-prev')), cur,
+                             a.getAttribute('data-q')||'', a.getAttribute('data-u')||'', parseInt(a.getAttribute('data-dec'),10), decDe(el.value));
+}
+function refrescarTodosAntes(){
+  app.querySelectorAll('.antes[data-prev]').forEach(function(a){
+    var cp=a.closest ? a.closest('.campo') : null, el=cp ? cp.querySelector('[data-c]') : null;
+    if(el) refrescarAntes(el);
+  });
+}
+/* Archiva la intervención en curso y deja una vacía. */
+function archivarActual(){
+  ST.archivo.push({obra:JSON.parse(JSON.stringify(ST.obra)), registro:ST.registro.slice(), cerrada:Date.now()});
+  if(ST.archivo.length>MAX_ARCH) ST.archivo.splice(0, ST.archivo.length-MAX_ARCH);
+  ST.registro=[]; ST.t0=null; ST.editando=null;
+  ST.obra=obraVacia();
+}
+/* Nueva visita a una obra archivada: mismos datos, tableros y circuitos; protocolo y registros en blanco. */
+function nuevaVisita(a){
+  if(!a || !a.obra) return;
+  var nom=nombreObra(a.obra), n;
+  if(hayIntervencion()){
+    if(!confirm('La intervención en curso tiene datos: se archiva y se abre una visita nueva a «'+nom+'». ¿Seguir?')) return;
+    archivarActual();
+  } else if(!confirm('¿Abrir una visita nueva a «'+nom+'»? Se cargan sus tableros y circuitos, y cada medición se compara con las visitas anteriores.')) return;
+  var o=normalizarObra(JSON.parse(JSON.stringify(a.obra)));
+  ST.archivo.forEach(function(x){ if(x && x.obra && !x.obra.uid && mismaObra(x.obra, a.obra)) x.obra.uid=o.uid; });
+  a.obra.uid=o.uid;
+  o.fecha=hoyISO(); o.tipo='Verificación periódica'; o.obs=''; o.cAct='';
+  o.prot={rp:'', c:{}, ra:{}, vis:{}, modoVis:''};
+  ST.obra=o; ST.registro=[]; ST.t0=null; ST.editando=null;
+  /* lo cargado en las fichas de esos circuitos es de la visita anterior: no se precarga en la nueva */
+  Object.keys(ST.guardados).forEach(function(k){
+    var p=k.lastIndexOf('@');
+    if(p>=0 && buscarCirc(k.slice(p+1), o)) delete ST.guardados[k];
+  });
+  guardar(); vistaInforme(); pintarNav();
+  n=visitasPrevias().length;
+  toast('Visita nueva a «'+nom+'»'+(n ? ': se compara con '+n+' visita'+(n===1?'':'s')+' anterior'+(n===1?'':'es') : ''));
+}
+/* Reabrir: la intervención archivada vuelve a quedar en curso, tal como se archivó. */
+function reabrirArchivada(a){
+  if(!a || !a.obra) return;
+  var fe=fechaAR(fechaVisita(a));
+  if(hayIntervencion()){
+    if(!confirm('La intervención en curso tiene datos: se archiva, y la del '+fe+' vuelve a quedar en curso. ¿Seguir?')) return;
+    archivarActual();
+  } else if(!confirm('¿Reabrir la intervención del '+fe+'? Vuelve a quedar en curso, tal como se archivó, y sale del archivo.')) return;
+  var i=ST.archivo.indexOf(a);
+  if(i>=0) ST.archivo.splice(i, 1);
+  ST.obra=normalizarObra(JSON.parse(JSON.stringify(a.obra)));
+  ST.registro=(a.registro||[]).slice(); ST.t0=null; ST.editando=null;
+  ST.registro.forEach(function(it){
+    if(!it || !it.v) return;
+    var b=(it.k==='F') ? it.id : 'calc:'+it.id;
+    ST.guardados[(it.circ && it.circ.id) ? b+'@'+it.circ.id : b]=JSON.parse(JSON.stringify(it.v));
+  });
+  guardar(); vistaInforme(); pintarNav();
+  toast('Reabierta: quedó en curso');
+}
+
+function htmlTendCirc(id, pz){
+  return '<span data-tend="'+esc(id)+'"'+(pz && pz.length ? ' class="tend peor" title="'+
+         esc(pz.map(function(q){ return TEND[q].txt; }).join('; '))+'">↘ peor que antes' : '>')+'</span>';
 }
 
 /* ---------- qué corregir: las soluciones de cada ficha que no cumplió ---------- */
